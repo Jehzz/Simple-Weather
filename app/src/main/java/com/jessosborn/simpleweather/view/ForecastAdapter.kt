@@ -49,7 +49,7 @@ class ForecastAdapter(
                 R.string.degrees, dataSet[position].main.temp.roundToInt()
             )
             tvTime.text = DateFormat.format(
-                if (DateFormat.is24HourFormat(context)) "H:00" else "h:00",
+                if (DateFormat.is24HourFormat(context)) "HH:00" else "h:00 a",
                 Calendar.getInstance(Locale.ENGLISH).apply {
                     timeInMillis = dataSet[position].dt.toLong() * 1000L
                 }
