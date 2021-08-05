@@ -48,18 +48,18 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
 
     //AndroidX
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     //Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0-native-mt'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1-native-mt'
 
     //DataStore
-    implementation "androidx.datastore:datastore-preferences:1.0.0-rc01"
+    implementation 'androidx.datastore:datastore-preferences:1.0.0'
 
     //testing
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
@@ -77,6 +77,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
 
     //Hilt
-    implementation 'com.google.dagger:hilt-android:2.37'
-    kapt 'com.google.dagger:hilt-android-compiler:2.37'
+    implementation 'com.google.dagger:hilt-android:2.38.1'
+    kapt 'com.google.dagger:hilt-android-compiler:2.38.1'
 }
