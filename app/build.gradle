@@ -3,16 +3,29 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
 
+// Load keystore
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
     buildFeatures {
-        viewBinding = true
+        viewBinding true
     }
 
     kotlinOptions{
         jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
     }
 
     //PUT YOUR OWN API KEY IN LOCAL.PROPERTIES, LABELED "apikey"
@@ -32,6 +45,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
