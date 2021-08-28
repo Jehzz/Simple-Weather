@@ -4,10 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.databinding.ActivityMainBinding
 import com.jessosborn.simpleweather.utils.DataStoreUtil
+import com.jessosborn.simpleweather.utils.getColorFromAttr
 import com.jessosborn.simpleweather.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             swipeRefreshLayout.apply {
                 setOnRefreshListener { refresh() }
-                setColorSchemeColors(getColor(R.color.blueLight))
+                setColorSchemeColors(getColorFromAttr(R.attr.colorPrimary))
             }
             todaysWeather.btnSettings.setOnClickListener { navigateToSettings() }
         }
@@ -84,11 +84,11 @@ class MainActivity : AppCompatActivity() {
                                 ((it.main.temp < 15.6) && (preferredUnits.equals("Metric")))
                             ) {
                                 root.setBackgroundColor(
-                                    ContextCompat.getColor(applicationContext, R.color.blueLight)
+                                    root.context.getColorFromAttr(R.attr.colorPrimary)
                                 )
                             } else {
                                 root.setBackgroundColor(
-                                    ContextCompat.getColor(applicationContext, R.color.orange)
+                                    root.context.getColorFromAttr(R.attr.colorSecondary)
                                 )
                             }
                         }

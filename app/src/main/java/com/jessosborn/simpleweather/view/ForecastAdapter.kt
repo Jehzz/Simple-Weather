@@ -4,14 +4,13 @@ import android.content.Context
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
 import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.databinding.WeatherItemLayoutBinding
 import com.jessosborn.simpleweather.model.repository.WeatherList
+import com.jessosborn.simpleweather.utils.getColorFromAttr
 import com.squareup.picasso.Picasso
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 import kotlin.math.roundToInt
 
 class ForecastAdapter(
@@ -61,13 +60,11 @@ class ForecastAdapter(
             }
 
             if (position == coldestIndex) {
-                tvTemp.setTextColor(getColor(context, R.color.blueLight))
-                tvTime.setTextColor(getColor(context, R.color.blueLight))
-                ivWeatherIcon.setColorFilter(getColor(context, R.color.blueLight))
+                tvTemp.setTextColor(context.getColorFromAttr(R.attr.colorPrimary))
+                ivWeatherIcon.setColorFilter(context.getColorFromAttr(R.attr.colorPrimary))
             } else if (position == hottestIndex) {
-                tvTemp.setTextColor(getColor(context, R.color.orange))
-                tvTime.setTextColor(getColor(context, R.color.orange))
-                ivWeatherIcon.setColorFilter(getColor(context, R.color.orange))
+                tvTemp.setTextColor(context.getColorFromAttr(R.attr.colorSecondary))
+                ivWeatherIcon.setColorFilter(context.getColorFromAttr(R.attr.colorSecondary))
             }
         }
     }
