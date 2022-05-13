@@ -16,7 +16,8 @@
         <activity android:name="com.jessosborn.simpleweather.view.SettingsActivity" />
         <activity
             android:name="com.jessosborn.simpleweather.view.MainActivity"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
