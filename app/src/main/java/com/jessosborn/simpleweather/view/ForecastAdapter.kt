@@ -10,7 +10,8 @@ import com.jessosborn.simpleweather.databinding.WeatherItemLayoutBinding
 import com.jessosborn.simpleweather.model.repository.WeatherList
 import com.jessosborn.simpleweather.utils.getColorFromAttr
 import com.squareup.picasso.Picasso
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 import kotlin.math.roundToInt
 
 class ForecastAdapter(
