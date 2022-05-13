@@ -17,8 +17,6 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        populateSpinnerArray()
         binding.apply {
             etZip.setText(
                 runBlocking { DataStoreUtil.getString(applicationContext, DataStoreUtil.USER_ZIP) }
@@ -32,6 +30,8 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
         }
+        populateSpinnerArray()
+        setContentView(binding.root)
     }
 
     private fun populateSpinnerArray() {

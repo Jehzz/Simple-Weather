@@ -34,56 +34,58 @@ class WeatherRepository @Inject constructor(
     fun fetchWeatherFromApi(zip: String, country: String, units: String, key: String) {
         _isNetworkLoading.value = true
         CoroutineScope(IO).launch {
-            withContext(this.coroutineContext) {
-                network.initRetrofit().getCurrentWeather("$zip,$country", key, units)
-                    .enqueue(object : Callback<CurrentWeatherData> {
-                        override fun onResponse(
-                            call: Call<CurrentWeatherData>,
-                            response: Response<CurrentWeatherData>,
-                        ) {
-                            when (response.code()) {
-                                200 -> _currentWeatherData.value = response.body()
-                                401 ->
-                                    _errorMessage.value =
-                                        context.getString(R.string.error_api_key)
-                                404 ->
-                                    _errorMessage.value =
-                                        context.getString(R.string.error_city_not_found)
-                                else -> _errorMessage.value = response.message()
-                            }
-                        }
-                        override fun onFailure(call: Call<CurrentWeatherData>, t: Throwable) {
-                            _errorMessage.value =
-                                context.getString(R.string.error_weather_service_unavailable)
-                        }
-                    })
-            }
-            withContext(this.coroutineContext) {
-                network.initRetrofit().getForecastWeather("$zip,$country", key, units)
-                    .enqueue(object : Callback<ForecastWeatherData> {
-                        override fun onResponse(
-                            call: Call<ForecastWeatherData>,
-                            response: Response<ForecastWeatherData>,
-                        ) {
-                            when (response.code()) {
-                                200 -> _forecastWeatherData.value = response.body()
-                                401 ->
-                                    _errorMessage.value =
-                                        context.getString(R.string.error_api_key)
-                                404 ->
-                                    _errorMessage.value =
-                                        context.getString(R.string.error_city_not_found)
-                                else -> _errorMessage.value = response.message()
-                            }
-                            _isNetworkLoading.value = false
-                        }
-                        override fun onFailure(call: Call<ForecastWeatherData>, t: Throwable) {
-                            _isNetworkLoading.value = false
-                            _errorMessage.value =
-                                context.getString(R.string.error_weather_service_unavailable)
-                        }
-                    })
-            }
+            withContext(this.coroutineContext) { fetchCurrentWeather(zip, country, key, units) }
+            withContext(this.coroutineContext) { fetchForecastData(zip, country, key, units) }
         }
+    }
+
+    private fun fetchForecastData(zip: String, country: String, key: String, units: String,) {
+        network.initRetrofit().getForecastWeather("$zip,$country", key, units)
+            .enqueue(object : Callback<ForecastWeatherData> {
+                override fun onResponse(
+                    call: Call<ForecastWeatherData>,
+                    response: Response<ForecastWeatherData>,
+                ) {
+                    when (response.code()) {
+                        200 -> _forecastWeatherData.value = response.body()
+                        401 ->
+                            _errorMessage.value =
+                                context.getString(R.string.error_api_key)
+                        404 ->
+                            _errorMessage.value =
+                                context.getString(R.string.error_city_not_found)
+                        else -> _errorMessage.value = response.message()
+                    }
+                    _isNetworkLoading.value = false
+                }
+
+                override fun onFailure(call: Call<ForecastWeatherData>, t: Throwable) {
+                    _isNetworkLoading.value = false
+                    _errorMessage.value =
+                        context.getString(R.string.error_weather_service_unavailable)
+                }
+            })
+    }
+
+    private fun fetchCurrentWeather(zip: String, country: String, key: String, units: String,) {
+        network.initRetrofit().getCurrentWeather("$zip,$country", key, units)
+            .enqueue(object : Callback<CurrentWeatherData> {
+                override fun onResponse(
+                    call: Call<CurrentWeatherData>,
+                    response: Response<CurrentWeatherData>,
+                ) {
+                    when (response.code()) {
+                        200 -> _currentWeatherData.value = response.body()
+                        401 -> _errorMessage.value = context.getString(R.string.error_api_key)
+                        404 -> _errorMessage.value = context.getString(R.string.error_city_not_found)
+                        else -> _errorMessage.value = response.message()
+                    }
+                }
+
+                override fun onFailure(call: Call<CurrentWeatherData>, t: Throwable) {
+                    _errorMessage.value =
+                        context.getString(R.string.error_weather_service_unavailable)
+                }
+            })
     }
 }
