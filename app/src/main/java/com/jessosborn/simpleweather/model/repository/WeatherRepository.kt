@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jessosborn.simpleweather.R
+import com.jessosborn.simpleweather.model.data.CurrentWeather
+import com.jessosborn.simpleweather.model.data.ForecastWeather
 import com.jessosborn.simpleweather.model.network.Network
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -21,13 +23,13 @@ class WeatherRepository @Inject constructor(
     private val network: Network
 ) {
 
-    private val _currentWeatherData = MutableLiveData<CurrentWeatherData>()
-    private val _forecastWeatherData = MutableLiveData<ForecastWeatherData>()
+    private val _currentWeatherData = MutableLiveData<CurrentWeather>()
+    private val _forecastWeatherData = MutableLiveData<ForecastWeather>()
     private val _isNetworkLoading = MutableLiveData<Boolean>()
     private val _errorMessage = MutableLiveData<String>()
 
-    val currentWeatherData: LiveData<CurrentWeatherData> get() = _currentWeatherData
-    val forecastWeatherData: LiveData<ForecastWeatherData> get() = _forecastWeatherData
+    val currentWeather: LiveData<CurrentWeather> get() = _currentWeatherData
+    val forecastWeather: LiveData<ForecastWeather> get() = _forecastWeatherData
     val isNetworkLoading: LiveData<Boolean> get() = _isNetworkLoading
     val errorMessage: LiveData<String> get() = _errorMessage
 
@@ -41,10 +43,10 @@ class WeatherRepository @Inject constructor(
 
     private fun fetchForecastData(zip: String, country: String, key: String, units: String,) {
         network.initRetrofit().getForecastWeather("$zip,$country", key, units)
-            .enqueue(object : Callback<ForecastWeatherData> {
+            .enqueue(object : Callback<ForecastWeather> {
                 override fun onResponse(
-                    call: Call<ForecastWeatherData>,
-                    response: Response<ForecastWeatherData>,
+                    call: Call<ForecastWeather>,
+                    response: Response<ForecastWeather>,
                 ) {
                     when (response.code()) {
                         200 -> _forecastWeatherData.value = response.body()
@@ -59,7 +61,7 @@ class WeatherRepository @Inject constructor(
                     _isNetworkLoading.value = false
                 }
 
-                override fun onFailure(call: Call<ForecastWeatherData>, t: Throwable) {
+                override fun onFailure(call: Call<ForecastWeather>, t: Throwable) {
                     _isNetworkLoading.value = false
                     _errorMessage.value =
                         context.getString(R.string.error_weather_service_unavailable)
@@ -69,10 +71,10 @@ class WeatherRepository @Inject constructor(
 
     private fun fetchCurrentWeather(zip: String, country: String, key: String, units: String,) {
         network.initRetrofit().getCurrentWeather("$zip,$country", key, units)
-            .enqueue(object : Callback<CurrentWeatherData> {
+            .enqueue(object : Callback<CurrentWeather> {
                 override fun onResponse(
-                    call: Call<CurrentWeatherData>,
-                    response: Response<CurrentWeatherData>,
+                    call: Call<CurrentWeather>,
+                    response: Response<CurrentWeather>,
                 ) {
                     when (response.code()) {
                         200 -> _currentWeatherData.value = response.body()
@@ -82,7 +84,7 @@ class WeatherRepository @Inject constructor(
                     }
                 }
 
-                override fun onFailure(call: Call<CurrentWeatherData>, t: Throwable) {
+                override fun onFailure(call: Call<CurrentWeather>, t: Throwable) {
                     _errorMessage.value =
                         context.getString(R.string.error_weather_service_unavailable)
                 }
