@@ -1,31 +1,29 @@
 package com.jessosborn.simpleweather.utils
 
 fun String.isValidZip(): Boolean {
-    return isUsZip(this) ||
-        isCanadianZip(this) ||
-        isUkZip(this)
+    return this.isUsZip() || this.isCanadianZip() || this.isUkZip()
 }
 
-fun isUsZip(zip: String): Boolean {
+fun String.isUsZip(): Boolean {
     val americanZipFormat = Regex("^[0-9]{5}\$")
-    return americanZipFormat.matches(zip.uppercase())
+    return americanZipFormat.matches(this.uppercase())
 }
 
-fun isCanadianZip(zip: String): Boolean {
-    val canadianZipFormat = Regex("^[ABCEGHJKLMNPRSTVXY]\\d[A-Z]\$")
-    return canadianZipFormat.matches(zip.uppercase())
+fun String.isCanadianZip(): Boolean {
+    val canadianZipFormat = Regex("^[ABCEGHJKLMNPRSTVXY][0-9][A-Z]\$")
+    return canadianZipFormat.matches(this.uppercase())
 }
 
-fun isUkZip(zip: String): Boolean {
+fun String.isUkZip(): Boolean {
     val ukZipFormat = Regex("^[A-Z]{1,2}[0-9R][0-9A-Z]?\$")
-    return ukZipFormat.matches(zip.uppercase())
+    return ukZipFormat.matches(this.uppercase())
 }
 
 fun getCountryFromZip(zip: String): String {
     return when {
-        isUsZip(zip.uppercase()) -> "us"
-        isCanadianZip(zip.uppercase()) -> "ca"
-        isUkZip(zip.uppercase()) -> "gb"
+        zip.isUsZip() -> "us"
+        zip.isCanadianZip() -> "ca"
+        zip.isUkZip() -> "gb"
         else -> "NULL"
     }
 }

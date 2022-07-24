@@ -16,37 +16,37 @@ class ZipUtilsTest {
 
     @Test
     fun validUsZipIsUsZip() {
-        assertTrue(isUsZip(VALID_USA_ZIP))
+        assertTrue(VALID_USA_ZIP.isUsZip())
     }
 
     @Test
     fun nonUsZipIsNotUsZip() {
-        assertFalse(isUsZip(VALID_CAN_ZIP))
-        assertFalse(isUsZip(VALID_UK_3_ZIP))
-        assertFalse(isUsZip(VALID_UK_4_ZIP))
+        assertFalse(VALID_CAN_ZIP.isUsZip())
+        assertFalse(VALID_UK_3_ZIP.isUsZip())
+        assertFalse(VALID_UK_4_ZIP.isUsZip())
     }
 
     @Test
     fun validCanZipIsCanZip() {
-        assertTrue(isCanadianZip(VALID_CAN_ZIP))
+        assertTrue(VALID_CAN_ZIP.isCanadianZip())
     }
 
     @Test
     fun nonCanZipIsNotCanZip() {
-        assertFalse(isCanadianZip(VALID_USA_ZIP))
-        assertFalse(isCanadianZip(VALID_UK_3_ZIP))
-        assertFalse(isCanadianZip(VALID_UK_4_ZIP))
+        assertFalse(VALID_USA_ZIP.isCanadianZip())
+        assertFalse(VALID_UK_3_ZIP.isCanadianZip())
+        assertFalse(VALID_UK_4_ZIP.isCanadianZip())
     }
 
     @Test
     fun validUkZipIsUkZip() {
-        assertTrue(isUkZip(VALID_UK_4_ZIP))
-        assertTrue(isUkZip(VALID_UK_3_ZIP))
+        assertTrue(VALID_UK_4_ZIP.isUkZip())
+        assertTrue(VALID_UK_3_ZIP.isUkZip())
     }
 
     @Test
     fun nonUkZipIsNotUkZip() {
-        assertFalse(isUkZip(VALID_USA_ZIP))
+        assertFalse(VALID_USA_ZIP.isUkZip())
     }
 
     companion object {
