@@ -9,8 +9,8 @@ class WeatherViewModel @Inject constructor(
     private val weatherRepo: WeatherRepository
 ) : ViewModel() {
 
-    val currentWeatherDataSet by lazy { weatherRepo.currentWeatherData }
-    val forecastWeatherDataSet by lazy { weatherRepo.forecastWeatherData }
+    val currentWeatherDataSet by lazy { weatherRepo.currentWeather }
+    val forecastWeatherDataSet by lazy { weatherRepo.forecastWeather }
     val isNetworkLoading by lazy { weatherRepo.isNetworkLoading }
     val networkError by lazy { weatherRepo.errorMessage }
 

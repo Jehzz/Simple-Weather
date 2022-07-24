@@ -1,13 +1,13 @@
-package com.jessosborn.simpleweather.model.repository
+package com.jessosborn.simpleweather.model.data
 
-data class CurrentWeatherData(
+data class CurrentWeather(
     var name: String,
     var main: Main,
     var weather: List<WeatherData>,
     var wind: Wind,
 )
 
-data class ForecastWeatherData(
+data class ForecastWeather(
     var list: List<WeatherList>,
 )
 
