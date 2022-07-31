@@ -1,10 +1,12 @@
 package com.jessosborn.simpleweather.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.jessosborn.simpleweather.model.repository.WeatherRepository
+import com.jessosborn.simpleweather.domain.repository.WeatherRepository
 import com.jessosborn.simpleweather.utils.getCountryFromZip
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+@HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val weatherRepo: WeatherRepository
 ) : ViewModel() {

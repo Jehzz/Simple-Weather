@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.databinding.WeatherItemLayoutBinding
-import com.jessosborn.simpleweather.model.data.WeatherList
+import com.jessosborn.simpleweather.domain.remote.responses.WeatherList
 import com.jessosborn.simpleweather.utils.getColorFromAttr
 import com.squareup.picasso.Picasso
 import java.util.Calendar
