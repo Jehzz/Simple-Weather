@@ -1,12 +1,12 @@
-package com.jessosborn.simpleweather.model.network
+package com.jessosborn.simpleweather.domain.remote
 
-import com.jessosborn.simpleweather.model.data.CurrentWeather
-import com.jessosborn.simpleweather.model.data.ForecastWeather
+import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
+import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface WeatherEndpoint {
+interface OpenWeatherEndpoint {
 
     @GET("weather")
     fun getCurrentWeather(

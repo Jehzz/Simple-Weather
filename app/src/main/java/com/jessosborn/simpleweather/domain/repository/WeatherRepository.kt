@@ -1,13 +1,12 @@
-package com.jessosborn.simpleweather.model.repository
+package com.jessosborn.simpleweather.domain.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jessosborn.simpleweather.R
-import com.jessosborn.simpleweather.model.data.CurrentWeather
-import com.jessosborn.simpleweather.model.data.ForecastWeather
-import com.jessosborn.simpleweather.model.network.Network
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.jessosborn.simpleweather.domain.remote.OpenWeatherEndpoint
+import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
+import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -15,25 +14,23 @@ import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import javax.inject.Inject
 
-class WeatherRepository @Inject constructor(
-    @ApplicationContext
+class WeatherRepository constructor(
     private val context: Context,
-    private val network: Network
-) {
+    private val service: OpenWeatherEndpoint
+) : IWeatherRepository {
 
     private val _currentWeatherData = MutableLiveData<CurrentWeather>()
     private val _forecastWeatherData = MutableLiveData<ForecastWeather>()
     private val _isNetworkLoading = MutableLiveData<Boolean>()
     private val _errorMessage = MutableLiveData<String>()
 
-    val currentWeather: LiveData<CurrentWeather> get() = _currentWeatherData
-    val forecastWeather: LiveData<ForecastWeather> get() = _forecastWeatherData
-    val isNetworkLoading: LiveData<Boolean> get() = _isNetworkLoading
-    val errorMessage: LiveData<String> get() = _errorMessage
+    override val currentWeather: LiveData<CurrentWeather> get() = _currentWeatherData
+    override val forecastWeather: LiveData<ForecastWeather> get() = _forecastWeatherData
+    override val isNetworkLoading: LiveData<Boolean> get() = _isNetworkLoading
+    override val errorMessage: LiveData<String> get() = _errorMessage
 
-    fun fetchWeatherFromApi(zip: String, country: String, units: String, key: String) {
+    override fun fetchWeatherFromApi(zip: String, country: String, units: String, key: String) {
         _isNetworkLoading.value = true
         CoroutineScope(IO).launch {
             withContext(this.coroutineContext) { fetchCurrentWeather(zip, country, key, units) }
@@ -42,7 +39,7 @@ class WeatherRepository @Inject constructor(
     }
 
     private fun fetchForecastData(zip: String, country: String, key: String, units: String,) {
-        network.initRetrofit().getForecastWeather("$zip,$country", key, units)
+        service.getForecastWeather("$zip,$country", key, units)
             .enqueue(object : Callback<ForecastWeather> {
                 override fun onResponse(
                     call: Call<ForecastWeather>,
@@ -70,7 +67,7 @@ class WeatherRepository @Inject constructor(
     }
 
     private fun fetchCurrentWeather(zip: String, country: String, key: String, units: String,) {
-        network.initRetrofit().getCurrentWeather("$zip,$country", key, units)
+        service.getCurrentWeather("$zip,$country", key, units)
             .enqueue(object : Callback<CurrentWeather> {
                 override fun onResponse(
                     call: Call<CurrentWeather>,

@@ -3,6 +3,7 @@ package com.jessosborn.simpleweather.view
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.databinding.ActivityMainBinding
@@ -13,14 +14,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var viewModel: WeatherViewModel
+    val viewModel: WeatherViewModel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
 
