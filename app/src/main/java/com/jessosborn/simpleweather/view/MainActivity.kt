@@ -1,105 +1,21 @@
 package com.jessosborn.simpleweather.view
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.viewModels
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import com.jessosborn.simpleweather.R
-import com.jessosborn.simpleweather.databinding.ActivityMainBinding
-import com.jessosborn.simpleweather.utils.DataStoreUtil
-import com.jessosborn.simpleweather.utils.getColorFromAttr
-import com.jessosborn.simpleweather.viewmodel.WeatherViewModel
+import com.jessosborn.simpleweather.view.compose.SimpleWeatherNavigation
+import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    val viewModel: WeatherViewModel by viewModels()
-
-    private lateinit var binding: ActivityMainBinding
-
-    private var preferredUnits: String? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        binding.apply {
-            swipeRefreshLayout.apply {
-                setOnRefreshListener { refresh() }
-                setColorSchemeColors(getColorFromAttr(R.attr.colorPrimary))
-            }
-            todaysWeather.btnSettings.setOnClickListener { navigateToSettings() }
-        }
-        setContentView(binding.root)
-        createObservers()
-        refresh()
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        refresh()
-    }
-
-    private fun refresh() {
-        CoroutineScope(Dispatchers.Main).launch {
-            preferredUnits = DataStoreUtil.getString(applicationContext, DataStoreUtil.USER_UNITS)
-            DataStoreUtil.getString(applicationContext, DataStoreUtil.USER_ZIP)?.let {
-                viewModel.fetchWeatherFromApi(
-                    zip = it,
-                    units = preferredUnits ?: "Imperial",
-                    key = resources.getString(R.string.api_key)
-                )
-            } ?: run {
-                navigateToSettings()
-            }
-        }
-    }
-
-    private fun navigateToSettings() {
-        startActivity(Intent(this, SettingsActivity::class.java))
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-    }
-
-    private fun createObservers() {
-        with(viewModel) {
-            currentWeatherDataSet.observe(this@MainActivity) {
-                it?.let {
-                    binding.todaysWeather.apply {
-                        tvCityName.text = it.name
-                        tvDescription.text = it.weather[0].main
-                        tvCurrentTemp.text = getString(R.string.degrees, it.main.temp.roundToInt())
-                        tvCurrentHumidity.text = getString(R.string.humidity, it.main.humidity)
-                        tvCurrentWind.text = getString(R.string.wind_speed, it.wind.speed)
-
-                        if ((it.main.temp < 60.0) && (preferredUnits.equals("Imperial")) ||
-                            ((it.main.temp < 15.6) && (preferredUnits.equals("Metric")))
-                        ) {
-                            root.setBackgroundColor(getColor(R.color.blueLight))
-                        } else {
-                            root.setBackgroundColor(getColor(R.color.orange))
-                        }
-                    }
-                }
-            }
-            forecastWeatherDataSet.observe(this@MainActivity) { forecastWeatherData ->
-                forecastWeatherData?.let { it ->
-                    binding.todaysForecast.rvTodaysWeather.adapter =
-                        ForecastAdapter(this@MainActivity, it.list.take(8))
-                    binding.tomorrowForecast.rvTomorrowsWeather.adapter =
-                        ForecastAdapter(this@MainActivity, it.list.drop(8).take(8))
-                }
-            }
-            isNetworkLoading.observe(this@MainActivity) {
-                binding.swipeRefreshLayout.isRefreshing = it
-            }
-            networkError.observe(this@MainActivity) {
-                Toast.makeText(this@MainActivity, it, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
+		super.onCreate(savedInstanceState)
+		setContent {
+			SimpleWeatherTheme {
+				SimpleWeatherNavigation()
+			}
+		}
+	}
 }
