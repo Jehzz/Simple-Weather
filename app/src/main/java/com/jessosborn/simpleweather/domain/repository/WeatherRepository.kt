@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jessosborn.simpleweather.R
+import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.domain.remote.OpenWeatherEndpoint
 import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,23 +22,26 @@ class WeatherRepository constructor(
 
     private val _currentWeatherData = MutableLiveData<CurrentWeather>()
     private val _forecastWeatherData = MutableLiveData<ForecastWeather>()
-    private val _isNetworkLoading = MutableLiveData<Boolean>()
-    private val _errorMessage = MutableLiveData<String>()
+    private val _isNetworkLoading = MutableLiveData(false)
+    private val _errorMessage = MutableLiveData("")
 
     override val currentWeather: LiveData<CurrentWeather> get() = _currentWeatherData
     override val forecastWeather: LiveData<ForecastWeather> get() = _forecastWeatherData
     override val isNetworkLoading: LiveData<Boolean> get() = _isNetworkLoading
     override val errorMessage: LiveData<String> get() = _errorMessage
 
-    override fun fetchWeatherFromApi(zip: String, country: String, units: String, key: String) {
+    private val key = context.resources.getString(R.string.api_key)
+
+    override fun fetchWeatherFromApi(zip: String, country: String, units: Units) {
         _isNetworkLoading.value = true
-        CoroutineScope(IO).launch {
-            withContext(this.coroutineContext) { fetchCurrentWeather(zip, country, key, units) }
-            withContext(this.coroutineContext) { fetchForecastData(zip, country, key, units) }
+        _errorMessage.value = ""
+        CoroutineScope(IO).apply {
+            launch { fetchCurrentWeather(zip, country, units.name) }
+            launch { fetchForecastData(zip, country, units.name) }
         }
     }
 
-    private fun fetchForecastData(zip: String, country: String, key: String, units: String,) {
+    private fun fetchForecastData(zip: String, country: String, units: String) {
         service.getForecastWeather("$zip,$country", key, units)
             .enqueue(object : Callback<ForecastWeather> {
                 override fun onResponse(
@@ -66,7 +69,7 @@ class WeatherRepository constructor(
             })
     }
 
-    private fun fetchCurrentWeather(zip: String, country: String, key: String, units: String,) {
+    private fun fetchCurrentWeather(zip: String, country: String, units: String) {
         service.getCurrentWeather("$zip,$country", key, units)
             .enqueue(object : Callback<CurrentWeather> {
                 override fun onResponse(
@@ -76,7 +79,8 @@ class WeatherRepository constructor(
                     when (response.code()) {
                         200 -> _currentWeatherData.value = response.body()
                         401 -> _errorMessage.value = context.getString(R.string.error_api_key)
-                        404 -> _errorMessage.value = context.getString(R.string.error_city_not_found)
+                        404 -> _errorMessage.value =
+                            context.getString(R.string.error_city_not_found)
                         else -> _errorMessage.value = response.message()
                     }
                 }

@@ -1,8 +1,8 @@
 package com.jessosborn.simpleweather.utils
 
-fun String.isValidZip(): Boolean {
-    return this.isUsZip() || this.isCanadianZip() || this.isUkZip()
-}
+fun String.isValidZip(): Boolean = this.isUsZip() || this.isCanadianZip() || this.isUkZip()
+
+fun String.isInvalidZip(): Boolean = !this.isValidZip()
 
 fun String.isUsZip(): Boolean {
     val americanZipFormat = Regex("^[0-9]{5}\$")
@@ -21,9 +21,15 @@ fun String.isUkZip(): Boolean {
 
 fun getCountryFromZip(zip: String): String {
     return when {
-        zip.isUsZip() -> "us"
-        zip.isCanadianZip() -> "ca"
-        zip.isUkZip() -> "gb"
+        zip.isUsZip() -> CountryCode.US.code
+        zip.isCanadianZip() -> CountryCode.CANADA.code
+        zip.isUkZip() -> CountryCode.UK.code
         else -> "NULL"
     }
+}
+
+enum class CountryCode(val code: String) {
+    US("us"),
+    CANADA("ca"),
+    UK("gb")
 }
