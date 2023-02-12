@@ -10,17 +10,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.FabPosition
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,10 +46,9 @@ import com.jessosborn.simpleweather.utils.isInvalidZip
 import com.jessosborn.simpleweather.utils.isValidZip
 import com.jessosborn.simpleweather.view.compose.composables.UnitsSelector
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
-import com.jessosborn.simpleweather.view.compose.theme.coldColor
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
 	onSettingsEntered: () -> Unit,
@@ -67,11 +67,10 @@ fun SettingsScreen(
 	}
 
 	Scaffold(
-		scaffoldState = rememberScaffoldState(),
 		topBar = {
 			TopAppBar(
 				title = { Text(stringResource(id = R.string.settings)) },
-				backgroundColor = MaterialTheme.colors.coldColor
+				colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
 			)
 		},
 		floatingActionButtonPosition = FabPosition.End,
@@ -87,7 +86,8 @@ fun SettingsScreen(
 		content = { padding ->
 			Column(
 				modifier = Modifier
-					.fillMaxSize(),
+					.fillMaxSize()
+					.padding(top = padding.calculateTopPadding()),
 				horizontalAlignment = Alignment.CenterHorizontally
 			) {
 				Spacer(modifier = Modifier.height(24.dp))
@@ -102,7 +102,7 @@ fun SettingsScreen(
 						modifier = Modifier
 							.padding(horizontal = 12.dp),
 						text = stringResource(id = R.string.units),
-						style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold)
+						style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
 					)
 					UnitsSelector(
 						selectedUnits = selectedUnits,
@@ -129,7 +129,7 @@ fun SettingsScreen(
 						modifier = Modifier
 							.padding(horizontal = 12.dp),
 						text = "Zip",
-						style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold)
+						style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
 					)
 					TextField(
 						value = zip,

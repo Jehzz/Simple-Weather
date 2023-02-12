@@ -1,15 +1,21 @@
 package com.jessosborn.simpleweather.view.compose.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.Colors
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Typography
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 
+val darkColors = darkColorScheme(
+	primary = Color(0xff539DE7),
+	secondary = Color(0xffdf7020)
+)
+val lightColors = lightColorScheme(
+	primary = Color(0xff1A8DFF),
+	secondary = Color(0xfff57c00)
+)
 
 @Composable
 fun SimpleWeatherTheme(
@@ -17,14 +23,8 @@ fun SimpleWeatherTheme(
 	content: @Composable () -> Unit,
 ) {
 	MaterialTheme(
-		colors = if (darkTheme) darkColors() else lightColors(),
-		typography = Typography(defaultFontFamily = FontFamily.Monospace),
+		colorScheme = if (darkTheme) darkColors else lightColors,
+		typography = Typography(),
 		content = content
 	)
 }
-
-val Colors.coldColor: Color
-	get() = if (isLight) Color(0xff1A8DFF) else Color(0xff539DE7)
-
-val Colors.hotColor: Color
-	get() = if (isLight) Color(0xfff57c00) else Color(0xffdf7020)

@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,8 +30,6 @@ import com.jessosborn.simpleweather.domain.remote.responses.Sys
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherData
 import com.jessosborn.simpleweather.domain.remote.responses.Wind
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
-import com.jessosborn.simpleweather.view.compose.theme.coldColor
-import com.jessosborn.simpleweather.view.compose.theme.hotColor
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -48,15 +46,15 @@ fun CurrentWeatherInfo(
 				.background(
 					color = when (preferredUnits) {
 						Units.Metric -> if ((data?.main?.temp ?: 0.0f) < 21.1) {
-							MaterialTheme.colors.coldColor
+							MaterialTheme.colorScheme.primary
 						} else {
-							MaterialTheme.colors.hotColor
+							MaterialTheme.colorScheme.secondary
 						}
 
 						Units.Imperial -> if ((data?.main?.temp ?: 0.0f) < 70.0) {
-							MaterialTheme.colors.coldColor
+							MaterialTheme.colorScheme.primary
 						} else {
-							MaterialTheme.colors.hotColor
+							MaterialTheme.colorScheme.secondary
 						}
 					}
 				)
@@ -70,7 +68,7 @@ fun CurrentWeatherInfo(
 				Text(
 					modifier = Modifier.weight(1f),
 					text = data?.name.orEmpty(),
-					style = MaterialTheme.typography.h4
+					style = MaterialTheme.typography.headlineMedium
 				)
 				Icon(
 					modifier = Modifier.clickable { onSettingsClicked() },
@@ -87,11 +85,11 @@ fun CurrentWeatherInfo(
 						text = data?.main?.temp?.let {
 							stringResource(id = R.string.degrees, it.roundToInt())
 						}.orEmpty(),
-						style = MaterialTheme.typography.h4
+						style = MaterialTheme.typography.headlineMedium
 					)
 					Text(
 						text = data?.weather?.get(0)?.main.orEmpty(),
-						style = MaterialTheme.typography.h6
+						style = MaterialTheme.typography.headlineSmall
 					)
 				}
 				Column(
@@ -103,13 +101,15 @@ fun CurrentWeatherInfo(
 						text = stringResource(
 							id = R.string.wind_speed,
 							data?.wind?.speed.orEmpty()
-						)
+						),
+						style = MaterialTheme.typography.bodyLarge
 					)
 					Text(
 						text = stringResource(
 							id = R.string.humidity,
 							data?.main?.humidity.orEmpty()
-						)
+						),
+						style = MaterialTheme.typography.bodyLarge
 					)
 					Text(
 						text = stringResource(
@@ -122,7 +122,8 @@ fun CurrentWeatherInfo(
 									}
 								).toString()
 							}.orEmpty()
-						)
+						),
+						style = MaterialTheme.typography.bodyLarge
 					)
 				}
 			}

@@ -8,7 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -19,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
-import com.jessosborn.simpleweather.view.compose.theme.coldColor
 
 @Composable
 fun SplashScreen(
@@ -39,7 +38,7 @@ fun SplashScreen(
 	}
 	Box(
 		modifier = Modifier
-			.background(MaterialTheme.colors.coldColor)
+			.background(MaterialTheme.colorScheme.primary)
 			.fillMaxSize(1f),
 		contentAlignment = Alignment.Center,
 	) {

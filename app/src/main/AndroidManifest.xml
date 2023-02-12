@@ -12,7 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/SimpleWeatherTheme">
-        <activity android:name="com.jessosborn.simpleweather.view.SettingsActivity" />
         <activity
             android:name="com.jessosborn.simpleweather.view.MainActivity"
             android:launchMode="singleInstance"
