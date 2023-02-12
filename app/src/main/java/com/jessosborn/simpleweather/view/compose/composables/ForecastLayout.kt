@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +36,7 @@ fun ForecastLayout(forecastWeather: ForecastWeather?) {
 			) {
 				Text(
 					text = stringResource(id = R.string.todays_forecast),
-					style = MaterialTheme.typography.h5
+					style = MaterialTheme.typography.titleMedium
 				)
 			}
 			LazyVerticalGrid(columns = GridCells.Fixed(4)) {
@@ -44,6 +44,7 @@ fun ForecastLayout(forecastWeather: ForecastWeather?) {
 					itemsIndexed(list) { index, item ->
 						val iconId = list[index].weather[0].icon
 						WeatherItem(
+							modifier = Modifier.padding(4.dp),
 							imgUrl = "https://openweathermap.org/img/wn/$iconId@4x.png",
 							item = item
 						)
@@ -66,9 +67,26 @@ fun ForecastPreview(
 }
 
 class ForecastPreviewParams : PreviewParameterProvider<ForecastWeather> {
+
 	override val values: Sequence<ForecastWeather> = sequenceOf(
 		ForecastWeather(
 			listOf(
+				WeatherSnapshot(
+					dt = "1635220400",
+					dt_txt = "2023-02-01 00:00:00",
+					main = Main(humidity = "89", temp = 88.8f, temp_min = "80", temp_max = "90"),
+					weather = listOf(
+						WeatherData(804, "Clouds", "overcast clouds", "04n")
+					)
+				),
+				WeatherSnapshot(
+					dt = "1661331600",
+					dt_txt = "2022-08-24 06:00:00",
+					main = Main(humidity = "89", temp = 50.0f, temp_min = "40", temp_max = "90"),
+					weather = listOf(
+						WeatherData(800, "Clear", "clear sky", "01n")
+					)
+				),
 				WeatherSnapshot(
 					dt = "1675220400",
 					dt_txt = "2023-02-01 00:00:00",
@@ -80,13 +98,44 @@ class ForecastPreviewParams : PreviewParameterProvider<ForecastWeather> {
 				WeatherSnapshot(
 					dt = "1661331600",
 					dt_txt = "2022-08-24 06:00:00",
-					main = Main(temp = 2f, temp_min = "60", temp_max = "70", humidity = "40"),
+					main = Main(humidity = "89", temp = 50.0f, temp_min = "40", temp_max = "90"),
+					weather = listOf(
+						WeatherData(800, "Clear", "clear sky", "01n")
+					)
+				),
+				WeatherSnapshot(
+					dt = "1675220400",
+					dt_txt = "2023-02-01 00:00:00",
+					main = Main(humidity = "89", temp = 88.8f, temp_min = "80", temp_max = "90"),
+					weather = listOf(
+						WeatherData(804, "Clouds", "overcast clouds", "04n")
+					)
+				),
+				WeatherSnapshot(
+					dt = "1661331600",
+					dt_txt = "2022-08-24 06:00:00",
+					main = Main(humidity = "89", temp = 50.0f, temp_min = "40", temp_max = "90"),
+					weather = listOf(
+						WeatherData(800, "Clear", "clear sky", "01n")
+					)
+				),
+				WeatherSnapshot(
+					dt = "1675220400",
+					dt_txt = "2023-02-01 00:00:00",
+					main = Main(humidity = "89", temp = 88.8f, temp_min = "80", temp_max = "90"),
+					weather = listOf(
+						WeatherData(804, "Clouds", "overcast clouds", "04n")
+					)
+				),
+				WeatherSnapshot(
+					dt = "1661331600",
+					dt_txt = "2022-08-24 06:00:00",
+					main = Main(humidity = "89", temp = 50.0f, temp_min = "40", temp_max = "90"),
 					weather = listOf(
 						WeatherData(800, "Clear", "clear sky", "01n")
 					)
 				)
-			),
-			// todo add more
+			)
 		)
 	)
 }

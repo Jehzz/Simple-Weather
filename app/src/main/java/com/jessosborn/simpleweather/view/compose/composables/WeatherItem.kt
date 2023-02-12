@@ -2,11 +2,13 @@ package com.jessosborn.simpleweather.view.compose.composables
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.text.format.DateFormat
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,15 +33,18 @@ fun WeatherItem(
 	item: WeatherSnapshot,
 ) {
 	Card(
-		modifier = modifier.padding(all = 8.dp),
+		modifier = modifier,
 	) {
 		Column(
-			modifier = Modifier.padding(vertical = 4.dp),
-			horizontalAlignment = Alignment.CenterHorizontally
+			modifier = Modifier
+				.padding(all = 4.dp)
+				.fillMaxWidth(1f),
+			horizontalAlignment = Alignment.CenterHorizontally,
+			verticalArrangement = Arrangement.SpaceBetween
 		) {
 			Text(
 				text = stringResource(id = R.string.degrees, item.main.temp.roundToInt()),
-				style = MaterialTheme.typography.h5
+				style = MaterialTheme.typography.titleMedium
 			)
 			AsyncImage(
 				model = imgUrl,
@@ -53,7 +58,7 @@ fun WeatherItem(
 						timeInMillis = item.dt.toLong() * 1000L
 					}
 				).toString(),
-				style = MaterialTheme.typography.body1
+				style = MaterialTheme.typography.bodyMedium
 			)
 		}
 	}

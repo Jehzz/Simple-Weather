@@ -1,11 +1,12 @@
 package com.jessosborn.simpleweather.view.compose.screens
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
-import androidx.compose.material.Scaffold
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -14,9 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
@@ -27,11 +30,11 @@ import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import com.jessosborn.simpleweather.domain.remote.responses.Main
 import com.jessosborn.simpleweather.domain.remote.responses.Sys
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherData
-import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
 import com.jessosborn.simpleweather.domain.remote.responses.Wind
 import com.jessosborn.simpleweather.utils.DataStoreUtil
 import com.jessosborn.simpleweather.view.compose.composables.CurrentWeatherInfo
 import com.jessosborn.simpleweather.view.compose.composables.ForecastLayout
+import com.jessosborn.simpleweather.view.compose.composables.ForecastPreviewParams
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import com.jessosborn.simpleweather.viewmodel.WeatherViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -83,7 +86,7 @@ fun MainScreen(
 	)
 }
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreenContent(
 	currentWeather: CurrentWeather?,
@@ -103,8 +106,9 @@ private fun MainScreenContent(
 				onSettingsClicked = { onSettingsClicked() }
 			)
 		},
-		content = {
+		content = { padding ->
 			SwipeRefresh(
+				modifier = Modifier.padding(top = padding.calculateTopPadding()),
 				state = swipeRefreshState,
 				onRefresh = {
 					scope.launch {
@@ -123,8 +127,7 @@ private fun MainScreenContent(
 					}
 				}
 			)
-		},
-		scaffoldState = rememberScaffoldState()
+		}
 	)
 }
 
@@ -134,6 +137,7 @@ private fun MainScreenContent(
 @Preview(showBackground = true, device = Devices.TABLET, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun MainScreenPreview(
+	@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
 ) {
 	SimpleWeatherTheme {
 		MainScreenContent(
@@ -163,31 +167,7 @@ fun MainScreenPreview(
 					deg = "200"
 				)
 			),
-			forecast = ForecastWeather(
-				listOf(
-					WeatherSnapshot(
-						dt = "1675220400",
-						dt_txt = "2023-02-01 00:00:00",
-						main = Main(
-							humidity = "89",
-							temp = 88.8f,
-							temp_min = "80",
-							temp_max = "90"
-						),
-						weather = listOf(
-							WeatherData(804, "Clouds", "overcast clouds", "04n")
-						)
-					),
-					WeatherSnapshot(
-						dt = "1661331600",
-						dt_txt = "2022-08-24 06:00:00",
-						main = Main(temp = 2f, temp_min = "60", temp_max = "70", humidity = "40"),
-						weather = listOf(
-							WeatherData(800, "Clear", "clear sky", "01n")
-						)
-					)
-				)
-			),
+			forecast = forecast,
 			preferredUnits = Units.Imperial,
 			swipeRefreshState = rememberSwipeRefreshState(false),
 			scope = rememberCoroutineScope(),
