@@ -1,6 +1,5 @@
 package com.jessosborn.simpleweather.view.compose.screens
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,13 +34,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.utils.DataStoreUtil
 import com.jessosborn.simpleweather.utils.DataStoreUtil.USER_ZIP
+import com.jessosborn.simpleweather.utils.DevicePreviews
 import com.jessosborn.simpleweather.utils.isInvalidZip
 import com.jessosborn.simpleweather.utils.isValidZip
 import com.jessosborn.simpleweather.view.compose.composables.UnitsSelector
@@ -88,7 +86,8 @@ fun SettingsScreen(
 				modifier = Modifier
 					.fillMaxSize()
 					.padding(top = padding.calculateTopPadding()),
-				horizontalAlignment = Alignment.CenterHorizontally
+				horizontalAlignment = Alignment.CenterHorizontally,
+				verticalArrangement = Arrangement.spacedBy(20.dp)
 			) {
 				Spacer(modifier = Modifier.height(24.dp))
 				Row(
@@ -102,9 +101,10 @@ fun SettingsScreen(
 						modifier = Modifier
 							.padding(horizontal = 12.dp),
 						text = stringResource(id = R.string.units),
-						style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+						style = MaterialTheme.typography.titleLarge
 					)
 					UnitsSelector(
+						modifier = Modifier.padding(end = 10.dp),
 						selectedUnits = selectedUnits,
 						onClick = { chosenUnits ->
 							selectedUnits = chosenUnits
@@ -129,7 +129,7 @@ fun SettingsScreen(
 						modifier = Modifier
 							.padding(horizontal = 12.dp),
 						text = "Zip",
-						style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+						style = MaterialTheme.typography.titleLarge
 					)
 					TextField(
 						value = zip,
@@ -160,8 +160,7 @@ fun SettingsScreen(
 	)
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@DevicePreviews
 @Composable
 fun SettingsScreenPreview() {
 	SimpleWeatherTheme {

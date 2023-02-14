@@ -1,6 +1,5 @@
 package com.jessosborn.simpleweather.view.compose.screens
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.padding
@@ -17,8 +16,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -32,6 +29,7 @@ import com.jessosborn.simpleweather.domain.remote.responses.Sys
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherData
 import com.jessosborn.simpleweather.domain.remote.responses.Wind
 import com.jessosborn.simpleweather.utils.DataStoreUtil
+import com.jessosborn.simpleweather.utils.DevicePreviews
 import com.jessosborn.simpleweather.view.compose.composables.CurrentWeatherInfo
 import com.jessosborn.simpleweather.view.compose.composables.ForecastLayout
 import com.jessosborn.simpleweather.view.compose.composables.ForecastPreviewParams
@@ -131,10 +129,7 @@ private fun MainScreenContent(
 	)
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, device = Devices.TABLET)
-@Preview(showBackground = true, device = Devices.TABLET, uiMode = UI_MODE_NIGHT_YES)
+@DevicePreviews
 @Composable
 fun MainScreenPreview(
 	@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
