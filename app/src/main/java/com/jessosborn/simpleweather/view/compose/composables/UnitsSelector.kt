@@ -9,16 +9,18 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 
 @Composable
 fun UnitsSelector(
+	modifier: Modifier = Modifier,
 	selectedUnits: Units,
 	onClick: (Units) -> Unit,
 ) {
-	Row {
+	Row(modifier = modifier) {
 		UnitsSelectionChip(
 			unit = Units.Imperial,
 			selected = selectedUnits == Units.Imperial,
