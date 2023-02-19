@@ -29,7 +29,6 @@ import kotlin.math.roundToInt
 @Composable
 fun WeatherItem(
 	modifier: Modifier = Modifier,
-	imgUrl: String,
 	item: WeatherSnapshot,
 ) {
 	Card(
@@ -46,8 +45,9 @@ fun WeatherItem(
 				text = stringResource(id = R.string.degrees, item.main.temp.roundToInt()),
 				style = MaterialTheme.typography.titleMedium
 			)
+			val iconId = item.weather[0].icon
 			AsyncImage(
-				model = imgUrl,
+				model = "https://openweathermap.org/img/wn/$iconId@4x.png",
 				placeholder = debugPlaceholder(debugPreview = R.drawable.ic_settings_24dp),
 				contentDescription = item.weather.first().main
 			)
@@ -71,11 +71,7 @@ fun WeatherItem(
 fun WeatherItemPreview(
 	@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
 ) {
-	val iconUrl = forecast.list.first().weather.first().icon
 	SimpleWeatherTheme {
-		WeatherItem(
-			imgUrl = "https://openweathermap.org/img/wn/$iconUrl@4x.png",
-			item = forecast.list.first()
-		)
+		WeatherItem(item = forecast.list.first())
 	}
 }
