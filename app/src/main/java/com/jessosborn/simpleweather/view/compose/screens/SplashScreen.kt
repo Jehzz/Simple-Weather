@@ -1,6 +1,5 @@
 package com.jessosborn.simpleweather.view.compose.screens
 
-import android.content.res.Configuration
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -16,8 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.jessosborn.simpleweather.R
+import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 
 @Composable
@@ -50,8 +49,7 @@ fun SplashScreen(
 	}
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@CombinedPreviews
 @Composable
 fun SplashScreenPreview() {
 	SimpleWeatherTheme {

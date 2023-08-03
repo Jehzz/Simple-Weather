@@ -22,7 +22,7 @@ import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import com.jessosborn.simpleweather.domain.remote.responses.Main
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherData
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
-import com.jessosborn.simpleweather.utils.DevicePreviews
+import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 
 @Composable
@@ -68,7 +68,7 @@ fun ForecastLayout(forecastWeather: ForecastWeather?) {
 	}
 }
 
-@DevicePreviews
+@CombinedPreviews
 @Composable
 fun ForecastPreview(
 	@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,

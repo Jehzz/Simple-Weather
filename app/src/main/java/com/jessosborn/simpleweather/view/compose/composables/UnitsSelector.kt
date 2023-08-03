@@ -1,6 +1,5 @@
 package com.jessosborn.simpleweather.view.compose.composables
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -10,8 +9,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.jessosborn.simpleweather.domain.Units
+import com.jessosborn.simpleweather.utils.DayNightPreviews
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 
 @Composable
@@ -55,8 +54,7 @@ fun UnitsSelectionChip(
 }
 
 
-@Preview
-@Preview(uiMode = UI_MODE_NIGHT_YES)
+@DayNightPreviews
 @Composable
 fun ChipSelectorPreview() {
 	SimpleWeatherTheme {
