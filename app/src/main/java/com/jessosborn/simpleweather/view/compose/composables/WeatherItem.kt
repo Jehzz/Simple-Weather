@@ -1,6 +1,5 @@
 package com.jessosborn.simpleweather.view.compose.composables
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.text.format.DateFormat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,13 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
+import com.jessosborn.simpleweather.utils.DayNightPreviews
 import com.jessosborn.simpleweather.utils.debugPlaceholder
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import java.util.Calendar
@@ -65,8 +64,7 @@ fun WeatherItem(
 }
 
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+@DayNightPreviews
 @Composable
 fun WeatherItemPreview(
 	@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,

@@ -28,8 +28,8 @@ import com.jessosborn.simpleweather.domain.remote.responses.Main
 import com.jessosborn.simpleweather.domain.remote.responses.Sys
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherData
 import com.jessosborn.simpleweather.domain.remote.responses.Wind
+import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.utils.DataStoreUtil
-import com.jessosborn.simpleweather.utils.DevicePreviews
 import com.jessosborn.simpleweather.view.compose.composables.CurrentWeatherInfo
 import com.jessosborn.simpleweather.view.compose.composables.ForecastLayout
 import com.jessosborn.simpleweather.view.compose.composables.ForecastPreviewParams
@@ -129,7 +129,7 @@ private fun MainScreenContent(
 	)
 }
 
-@DevicePreviews
+@CombinedPreviews
 @Composable
 fun MainScreenPreview(
 	@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
