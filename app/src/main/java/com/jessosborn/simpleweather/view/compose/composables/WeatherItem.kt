@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,23 +33,20 @@ fun WeatherItem(
 	modifier: Modifier = Modifier,
 	item: WeatherSnapshot,
 ) {
-	Card(
-		modifier = modifier,
-	) {
+	Surface {
 		Column(
-			modifier = Modifier
+			modifier = modifier
 				.padding(all = 4.dp)
-				.fillMaxWidth(1f),
+				.fillMaxWidth(),
 			horizontalAlignment = Alignment.CenterHorizontally,
-			verticalArrangement = Arrangement.SpaceBetween
+			verticalArrangement = Arrangement.SpaceAround
 		) {
 			Text(
 				text = stringResource(id = R.string.degrees, item.main.temp.roundToInt()),
-				style = MaterialTheme.typography.titleMedium
+				style = MaterialTheme.typography.titleLarge
 			)
-			val iconId = item.weather[0].icon
 			AsyncImage(
-				model = "https://openweathermap.org/img/wn/$iconId@4x.png",
+				model = "https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png",
 				placeholder = debugPlaceholder(debugPreview = R.drawable.ic_settings_24dp),
 				contentDescription = item.weather.first().main
 			)
@@ -57,7 +57,7 @@ fun WeatherItem(
 						timeInMillis = item.dt.toLong() * 1000L
 					}
 				).toString(),
-				style = MaterialTheme.typography.bodyMedium
+				style = MaterialTheme.typography.titleMedium
 			)
 		}
 	}
@@ -66,10 +66,15 @@ fun WeatherItem(
 
 @DayNightPreviews
 @Composable
-fun WeatherItemPreview(
-	@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
-) {
+fun WeatherItemPreview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
 	SimpleWeatherTheme {
-		WeatherItem(item = forecast.list.first())
+		LazyVerticalGrid(columns = GridCells.Fixed(4)) {
+			items(forecast.list.take(4)) { item ->
+				WeatherItem(
+					modifier = Modifier.padding(4.dp),
+					item = item
+				)
+			}
+		}
 	}
 }
