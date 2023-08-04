@@ -1,6 +1,7 @@
 package com.jessosborn.simpleweather.view.compose.composables
 
 import android.text.format.DateFormat
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +28,7 @@ import com.jessosborn.simpleweather.domain.remote.responses.Main
 import com.jessosborn.simpleweather.domain.remote.responses.Sys
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherData
 import com.jessosborn.simpleweather.domain.remote.responses.Wind
-import com.jessosborn.simpleweather.utils.DayNightPreviews
+import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import java.util.Calendar
 import java.util.Locale
@@ -39,24 +40,27 @@ fun CurrentWeatherInfo(
 	preferredUnits: Units,
 	onSettingsClicked: () -> Unit,
 ) {
+	val backgroundColor = animateColorAsState(
+		targetValue = when (preferredUnits) {
+			Units.Metric -> if ((data?.main?.temp ?: 0.0f) < 21.1) {
+				MaterialTheme.colorScheme.primary
+			} else {
+				MaterialTheme.colorScheme.secondary
+			}
+
+			Units.Imperial -> if ((data?.main?.temp ?: 0.0f) < 70.0) {
+				MaterialTheme.colorScheme.primary
+			} else {
+				MaterialTheme.colorScheme.secondary
+			}
+		},
+		label = ""
+	)
+
 	Surface {
 		Column(
 			modifier = Modifier
-				.background(
-					color = when (preferredUnits) {
-						Units.Metric -> if ((data?.main?.temp ?: 0.0f) < 21.1) {
-							MaterialTheme.colorScheme.primary
-						} else {
-							MaterialTheme.colorScheme.secondary
-						}
-
-						Units.Imperial -> if ((data?.main?.temp ?: 0.0f) < 70.0) {
-							MaterialTheme.colorScheme.primary
-						} else {
-							MaterialTheme.colorScheme.secondary
-						}
-					}
-				)
+				.background(color = backgroundColor.value)
 				.fillMaxWidth(1f)
 				.padding(all = 4.dp)
 		) {
@@ -75,27 +79,27 @@ fun CurrentWeatherInfo(
 					contentDescription = null
 				)
 			}
-			Row {
+			Row(
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(all = 4.dp),
+				horizontalArrangement = Arrangement.SpaceAround
+			) {
 				Column(
-					modifier = Modifier.weight(1f),
 					horizontalAlignment = Alignment.CenterHorizontally
 				) {
 					Text(
 						text = data?.main?.temp?.let {
 							stringResource(id = R.string.degrees, it.roundToInt())
 						}.orEmpty(),
-						style = MaterialTheme.typography.headlineMedium
+						style = MaterialTheme.typography.headlineLarge
 					)
 					Text(
 						text = data?.weather?.get(0)?.main.orEmpty(),
 						style = MaterialTheme.typography.headlineSmall
 					)
 				}
-				Column(
-					modifier = Modifier
-						.weight(1f)
-						.padding(start = 4.dp)
-				) {
+				Column {
 					Text(
 						text = stringResource(
 							id = R.string.wind_speed,
@@ -130,7 +134,7 @@ fun CurrentWeatherInfo(
 	}
 }
 
-@DayNightPreviews
+@CombinedPreviews
 @Composable
 fun CurrentWeatherInfoPreview(
 	@PreviewParameter(WeatherPreviewParams::class) weather: CurrentWeather,
@@ -143,7 +147,6 @@ fun CurrentWeatherInfoPreview(
 		)
 	}
 }
-
 
 class WeatherPreviewParams : PreviewParameterProvider<CurrentWeather> {
 	override val values: Sequence<CurrentWeather> = sequenceOf(
