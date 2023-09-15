@@ -29,6 +29,7 @@ import com.jessosborn.simpleweather.domain.remote.responses.Sys
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherData
 import com.jessosborn.simpleweather.domain.remote.responses.Wind
 import com.jessosborn.simpleweather.utils.CombinedPreviews
+import com.jessosborn.simpleweather.view.compose.theme.ExtendedTheme
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import java.util.Calendar
 import java.util.Locale
@@ -43,15 +44,15 @@ fun CurrentWeatherInfo(
 	val backgroundColor = animateColorAsState(
 		targetValue = when (preferredUnits) {
 			Units.Metric -> if ((data?.main?.temp ?: 0.0f) < 21.1) {
-				MaterialTheme.colorScheme.primary
+				ExtendedTheme.colors.cold
 			} else {
-				MaterialTheme.colorScheme.secondary
+				ExtendedTheme.colors.hot
 			}
 
 			Units.Imperial -> if ((data?.main?.temp ?: 0.0f) < 70.0) {
-				MaterialTheme.colorScheme.primary
+				ExtendedTheme.colors.cold
 			} else {
-				MaterialTheme.colorScheme.secondary
+				ExtendedTheme.colors.hot
 			}
 		},
 		label = ""

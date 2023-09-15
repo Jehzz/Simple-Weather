@@ -68,7 +68,9 @@ fun SettingsScreen(
 		topBar = {
 			TopAppBar(
 				title = { Text(stringResource(id = R.string.settings)) },
-				colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+				colors = TopAppBarDefaults.smallTopAppBarColors(
+					containerColor = MaterialTheme.colorScheme.primaryContainer
+				)
 			)
 		},
 		floatingActionButtonPosition = FabPosition.End,
