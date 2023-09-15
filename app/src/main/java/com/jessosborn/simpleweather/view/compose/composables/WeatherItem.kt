@@ -33,7 +33,9 @@ fun WeatherItem(
 	modifier: Modifier = Modifier,
 	item: WeatherSnapshot,
 ) {
-	Surface {
+	Surface(
+		color = MaterialTheme.colorScheme.background
+	) {
 		Column(
 			modifier = modifier
 				.padding(all = 4.dp)
