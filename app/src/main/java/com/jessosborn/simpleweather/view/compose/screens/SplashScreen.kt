@@ -33,8 +33,8 @@ fun SplashScreen(
 			)
 		)
 		onLoadComplete()
-
 	}
+
 	Box(
 		modifier = Modifier
 			.background(MaterialTheme.colorScheme.primary)
@@ -53,6 +53,6 @@ fun SplashScreen(
 @Composable
 fun SplashScreenPreview() {
 	SimpleWeatherTheme {
-		SplashScreen(onLoadComplete = { })
+		SplashScreen {}
 	}
 }

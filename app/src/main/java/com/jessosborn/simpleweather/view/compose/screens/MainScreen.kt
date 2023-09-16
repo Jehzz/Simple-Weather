@@ -35,12 +35,14 @@ import com.jessosborn.simpleweather.viewmodel.WeatherViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(onSettingsClicked: () -> Unit) {
+fun MainScreen(
+	onSettingsClicked: () -> Unit,
+) {
 	val context = LocalContext.current
 	val weatherViewModel = hiltViewModel<WeatherViewModel>()
 
-	val forecast by weatherViewModel.forecastWeatherDataSet.collectAsState(null)
-	val currentWeather by weatherViewModel.currentWeatherDataSet.collectAsState(null)
+	val forecast by weatherViewModel.forecastWeatherData.collectAsState(null)
+	val currentWeather by weatherViewModel.currentWeatherData.collectAsState(null)
 	val isNetworkLoading by weatherViewModel.isNetworkLoading.collectAsState(false)
 	val networkError by weatherViewModel.networkError.collectAsState("")
 
@@ -59,12 +61,10 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 			onSettingsClicked()
 		} else {
 			scope.launch {
-				DataStoreUtil.getZip(context = context).let { zip ->
-					weatherViewModel.fetchWeatherFromApi(
-						zip = userZip,
-						units = preferredUnits
-					)
-				}
+				weatherViewModel.fetchWeatherFromApi(
+					zip = userZip,
+					units = preferredUnits
+				)
 			}
 		}
 	}
@@ -73,7 +73,7 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 			scaffoldState.snackbarHostState.showSnackbar(networkError)
 		}
 	}
-	MainScreenContent(
+	MainScreenLayout(
 		currentWeather = currentWeather,
 		forecast = forecast,
 		preferredUnits = preferredUnits,
@@ -85,7 +85,7 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreenContent(
+private fun MainScreenLayout(
 	currentWeather: CurrentWeather?,
 	forecast: ForecastWeather?,
 	preferredUnits: Units,
@@ -123,7 +123,7 @@ private fun MainScreenContent(
 @Composable
 fun MainScreenPreview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
 	SimpleWeatherTheme {
-		MainScreenContent(
+		MainScreenLayout(
 			currentWeather = CurrentWeather(
 				name = "Hollywood",
 				main = Main(
@@ -154,7 +154,7 @@ fun MainScreenPreview(@PreviewParameter(ForecastPreviewParams::class) forecast: 
 			preferredUnits = Units.Imperial,
 			swipeRefreshState = rememberSwipeRefreshState(false),
 			onSettingsClicked = {},
-			refresh = { },
+			refresh = {},
 		)
 	}
 }

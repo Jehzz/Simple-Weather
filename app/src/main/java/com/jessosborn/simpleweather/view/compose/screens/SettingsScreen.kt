@@ -1,5 +1,6 @@
 package com.jessosborn.simpleweather.view.compose.screens
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jessosborn.simpleweather.R
@@ -41,9 +43,10 @@ import com.jessosborn.simpleweather.utils.isValidZip
 import com.jessosborn.simpleweather.view.compose.composables.ThemeSelector
 import com.jessosborn.simpleweather.view.compose.composables.UnitsSelector
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SettingsScreen(
 	onSettingsEntered: () -> Unit,
@@ -58,6 +61,28 @@ fun SettingsScreen(
 	val keyboardController = LocalSoftwareKeyboardController.current
 	val scope = rememberCoroutineScope()
 
+	SettingsScreenLayout(
+		userZip = userZip,
+		onSettingsEntered = onSettingsEntered,
+		scope = scope,
+		context = context,
+		keyboardController = keyboardController,
+		selectedTheme = selectedTheme,
+		selectedUnits = selectedUnits
+	)
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+private fun SettingsScreenLayout(
+	userZip: String,
+	onSettingsEntered: () -> Unit,
+	scope: CoroutineScope,
+	context: Context,
+	keyboardController: SoftwareKeyboardController?,
+	selectedTheme: Theme,
+	selectedUnits: Units,
+) {
 	Scaffold(
 		topBar = {
 			TopAppBar(

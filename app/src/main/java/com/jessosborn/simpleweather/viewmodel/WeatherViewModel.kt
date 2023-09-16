@@ -13,12 +13,14 @@ class WeatherViewModel @Inject constructor(
     private val weatherRepo: WeatherRepository
 ) : ViewModel() {
 
-    val currentWeatherDataSet by lazy { weatherRepo.currentWeather.asFlow() }
-    val forecastWeatherDataSet by lazy { weatherRepo.forecastWeather.asFlow() }
+    val currentWeatherData by lazy { weatherRepo.currentWeather.asFlow() }
+    val forecastWeatherData by lazy { weatherRepo.forecastWeather.asFlow() }
     val isNetworkLoading by lazy { weatherRepo.isNetworkLoading.asFlow() }
     val networkError by lazy { weatherRepo.errorMessage.asFlow() }
 
-    fun fetchWeatherFromApi(zip: String, units: Units) {
-        weatherRepo.fetchWeatherFromApi(zip, getCountryFromZip(zip), units)
-    }
+    fun fetchWeatherFromApi(zip: String, units: Units) = weatherRepo.fetchWeatherFromApi(
+        zip = zip,
+        country = getCountryFromZip(zip),
+        units = units
+    )
 }
