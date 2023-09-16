@@ -10,10 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -35,14 +32,11 @@ import com.jessosborn.simpleweather.view.compose.composables.ForecastLayout
 import com.jessosborn.simpleweather.view.compose.composables.ForecastPreviewParams
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import com.jessosborn.simpleweather.viewmodel.WeatherViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(
-	onSettingsClicked: () -> Unit,
-) {
-
+fun MainScreen(onSettingsClicked: () -> Unit) {
+	val context = LocalContext.current
 	val weatherViewModel = hiltViewModel<WeatherViewModel>()
 
 	val forecast by weatherViewModel.forecastWeatherDataSet.collectAsState(null)
@@ -50,22 +44,28 @@ fun MainScreen(
 	val isNetworkLoading by weatherViewModel.isNetworkLoading.collectAsState(false)
 	val networkError by weatherViewModel.networkError.collectAsState("")
 
+	val preferredUnits by DataStoreUtil
+		.getUnits(context = context).collectAsState(initial = Units.Imperial)
+	val userZip by DataStoreUtil
+		.getZip(context = context).collectAsState(initial = "")
+
 	val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isNetworkLoading)
-	var preferredUnits by remember { mutableStateOf(Units.Imperial) }
 	val scaffoldState = rememberScaffoldState()
-	val context = LocalContext.current
 	val scope = rememberCoroutineScope()
 
 	// Fetch the weather, navigate to Settings if required inputs are missing
-	LaunchedEffect(key1 = Unit) {
-		scope.launch {
-			preferredUnits = DataStoreUtil.getUnits(context)
-			DataStoreUtil.getString(context = context, DataStoreUtil.USER_ZIP)?.let { zip ->
-				weatherViewModel.fetchWeatherFromApi(
-					zip = zip,
-					units = preferredUnits
-				)
-			} ?: onSettingsClicked()
+	LaunchedEffect(key1 = userZip) {
+		if (userZip.isEmpty()) {
+			onSettingsClicked()
+		} else {
+			scope.launch {
+				DataStoreUtil.getZip(context = context).let { zip ->
+					weatherViewModel.fetchWeatherFromApi(
+						zip = userZip,
+						units = preferredUnits
+					)
+				}
+			}
 		}
 	}
 	LaunchedEffect(key1 = networkError) {
@@ -78,9 +78,8 @@ fun MainScreen(
 		forecast = forecast,
 		preferredUnits = preferredUnits,
 		swipeRefreshState = swipeRefreshState,
-		scope = scope,
 		onSettingsClicked = onSettingsClicked,
-		refresh = weatherViewModel::fetchWeatherFromApi
+		refresh = { weatherViewModel.fetchWeatherFromApi(userZip, preferredUnits) }
 	)
 }
 
@@ -91,11 +90,9 @@ private fun MainScreenContent(
 	forecast: ForecastWeather?,
 	preferredUnits: Units,
 	swipeRefreshState: SwipeRefreshState,
-	scope: CoroutineScope,
 	onSettingsClicked: () -> Unit,
-	refresh: (String, Units) -> Unit,
+	refresh: () -> Unit,
 ) {
-	val context = LocalContext.current
 	Scaffold(
 		topBar = {
 			CurrentWeatherInfo(
@@ -108,14 +105,7 @@ private fun MainScreenContent(
 			SwipeRefresh(
 				modifier = Modifier.padding(top = padding.calculateTopPadding()),
 				state = swipeRefreshState,
-				onRefresh = {
-					scope.launch {
-						DataStoreUtil.getString(context = context, DataStoreUtil.USER_ZIP)
-							?.let { zip ->
-								refresh(zip, preferredUnits)
-							} ?: onSettingsClicked()
-					}
-				},
+				onRefresh = refresh,
 				content = {
 					AnimatedVisibility(
 						visible = forecast != null,
@@ -131,9 +121,7 @@ private fun MainScreenContent(
 
 @CombinedPreviews
 @Composable
-fun MainScreenPreview(
-	@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
-) {
+fun MainScreenPreview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
 	SimpleWeatherTheme {
 		MainScreenContent(
 			currentWeather = CurrentWeather(
@@ -165,9 +153,8 @@ fun MainScreenPreview(
 			forecast = forecast,
 			preferredUnits = Units.Imperial,
 			swipeRefreshState = rememberSwipeRefreshState(false),
-			scope = rememberCoroutineScope(),
 			onSettingsClicked = {},
-			refresh = { _, _ -> },
+			refresh = { },
 		)
 	}
 }
