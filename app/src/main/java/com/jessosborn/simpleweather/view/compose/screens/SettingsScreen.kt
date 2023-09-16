@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,18 +15,15 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -36,12 +32,13 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jessosborn.simpleweather.R
+import com.jessosborn.simpleweather.domain.Theme
 import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.utils.DataStoreUtil
-import com.jessosborn.simpleweather.utils.DataStoreUtil.USER_ZIP
 import com.jessosborn.simpleweather.utils.isInvalidZip
 import com.jessosborn.simpleweather.utils.isValidZip
+import com.jessosborn.simpleweather.view.compose.composables.ThemeSelector
 import com.jessosborn.simpleweather.view.compose.composables.UnitsSelector
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import kotlinx.coroutines.launch
@@ -51,18 +48,15 @@ import kotlinx.coroutines.launch
 fun SettingsScreen(
 	onSettingsEntered: () -> Unit,
 ) {
-
-	var zip by rememberSaveable { mutableStateOf("") }
-	var selectedUnits by rememberSaveable { mutableStateOf(Units.Imperial) }
-
 	val context = LocalContext.current
+
+	val userZip by DataStoreUtil.getZip(context).collectAsState(initial = "")
+	val selectedUnits by DataStoreUtil.getUnits(context).collectAsState(initial = Units.Imperial)
+	val selectedTheme by DataStoreUtil.getTheme(context)
+		.collectAsState(initial = Theme.FollowSystem)
+
 	val keyboardController = LocalSoftwareKeyboardController.current
 	val scope = rememberCoroutineScope()
-
-	LaunchedEffect(key1 = Unit) {
-		zip = DataStoreUtil.getString(context, USER_ZIP).orEmpty()
-		selectedUnits = DataStoreUtil.getUnits(context)
-	}
 
 	Scaffold(
 		topBar = {
@@ -75,23 +69,81 @@ fun SettingsScreen(
 		},
 		floatingActionButtonPosition = FabPosition.End,
 		floatingActionButton = {
-			FloatingActionButton(onClick = {
-				if (zip.isValidZip()) {
-					onSettingsEntered()
-				}
-			}) {
+			FloatingActionButton(
+				onClick = { if (userZip.isValidZip()) onSettingsEntered() }
+			) {
 				Icon(imageVector = Icons.Default.Save, contentDescription = "save settings")
 			}
 		},
 		content = { padding ->
 			Column(
-				modifier = Modifier
-					.fillMaxSize()
-					.padding(top = padding.calculateTopPadding()),
+				modifier = Modifier.padding(
+					top = padding.calculateTopPadding(),
+					start = 12.dp,
+					end = 12.dp
+				),
 				horizontalAlignment = Alignment.CenterHorizontally,
 				verticalArrangement = Arrangement.spacedBy(20.dp)
 			) {
 				Spacer(modifier = Modifier.height(24.dp))
+				Row(
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(all = 6.dp),
+					verticalAlignment = Alignment.CenterVertically,
+					horizontalArrangement = Arrangement.SpaceBetween
+				) {
+					Text(
+						modifier = Modifier
+							.padding(horizontal = 12.dp),
+						text = "Zip",
+						style = MaterialTheme.typography.titleLarge
+					)
+					OutlinedTextField(
+						value = userZip,
+						onValueChange = { newZip ->
+							scope.launch {
+								DataStoreUtil.saveZip(context = context, value = newZip)
+							}
+						},
+						modifier = Modifier.padding(horizontal = 4.dp),
+						label = {},
+						isError = userZip.isInvalidZip() == true,
+						singleLine = true,
+						keyboardActions = KeyboardActions(onDone = {
+							keyboardController?.hide()
+							onSettingsEntered()
+						})
+					)
+				}
+				Spacer(modifier = Modifier.height(32.dp))
+				Row(
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(all = 6.dp),
+					verticalAlignment = Alignment.CenterVertically,
+					horizontalArrangement = Arrangement.SpaceBetween
+				) {
+					Text(
+						modifier = Modifier
+							.padding(horizontal = 12.dp),
+						text = stringResource(id = R.string.theme),
+						style = MaterialTheme.typography.titleLarge
+					)
+					ThemeSelector(
+						modifier = Modifier.padding(end = 10.dp),
+						selectedTheme = selectedTheme,
+						onClick = { chosenTheme ->
+							scope.launch {
+								DataStoreUtil.saveTheme(
+									context = context,
+									value = chosenTheme
+								)
+							}
+						}
+					)
+				}
+				Spacer(modifier = Modifier.height(32.dp))
 				Row(
 					modifier = Modifier
 						.fillMaxWidth()
@@ -109,52 +161,13 @@ fun SettingsScreen(
 						modifier = Modifier.padding(end = 10.dp),
 						selectedUnits = selectedUnits,
 						onClick = { chosenUnits ->
-							selectedUnits = chosenUnits
 							scope.launch {
 								DataStoreUtil.saveUnits(
 									context = context,
-									value = selectedUnits
+									value = chosenUnits
 								)
 							}
 						}
-					)
-				}
-				Spacer(modifier = Modifier.height(32.dp))
-				Row(
-					modifier = Modifier
-						.fillMaxWidth()
-						.padding(all = 6.dp),
-					verticalAlignment = Alignment.CenterVertically,
-					horizontalArrangement = Arrangement.SpaceBetween
-				) {
-					Text(
-						modifier = Modifier
-							.padding(horizontal = 12.dp),
-						text = "Zip",
-						style = MaterialTheme.typography.titleLarge
-					)
-					TextField(
-						value = zip,
-						onValueChange = {
-							zip = it
-							if (zip.isValidZip()) {
-								scope.launch {
-									DataStoreUtil.saveString(
-										context = context,
-										key = USER_ZIP,
-										value = zip
-									)
-								}
-							}
-						},
-						modifier = Modifier.padding(horizontal = 4.dp),
-						label = { Text(text = stringResource(id = R.string.enter_zip_code)) },
-						isError = zip.isInvalidZip(),
-						singleLine = true,
-						keyboardActions = KeyboardActions(onDone = {
-							keyboardController?.hide()
-							onSettingsEntered()
-						})
 					)
 				}
 			}
