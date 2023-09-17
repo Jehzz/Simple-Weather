@@ -39,7 +39,7 @@ import kotlin.math.roundToInt
 fun CurrentWeatherInfo(
 	data: CurrentWeather?,
 	preferredUnits: Units,
-	onSettingsClicked: () -> Unit,
+	onSettingsClicked: () -> Unit
 ) {
 	val backgroundColor = animateColorAsState(
 		targetValue = when (preferredUnits) {

@@ -20,7 +20,7 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 fun UnitsSelector(
 	modifier: Modifier = Modifier,
 	selectedUnits: Units,
-	onClick: (Units) -> Unit,
+	onClick: (Units) -> Unit
 ) {
 	Row(modifier = modifier) {
 		UnitsSelectionChip(

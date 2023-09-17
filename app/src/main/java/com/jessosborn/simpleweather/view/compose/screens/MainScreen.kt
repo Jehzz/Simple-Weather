@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
-	onSettingsClicked: () -> Unit,
+	onSettingsClicked: () -> Unit
 ) {
 	val context = LocalContext.current
 	val weatherViewModel = hiltViewModel<WeatherViewModel>()

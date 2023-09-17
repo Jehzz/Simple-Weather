@@ -21,7 +21,7 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 
 @Composable
 fun SplashScreen(
-	onLoadComplete: () -> Unit,
+	onLoadComplete: () -> Unit
 ) {
 	val scale = remember { Animatable(1f) }
 	LaunchedEffect(key1 = Unit) {

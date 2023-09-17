@@ -22,7 +22,7 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 fun ThemeSelector(
 	modifier: Modifier = Modifier,
 	selectedTheme: Theme,
-	onClick: (Theme) -> Unit,
+	onClick: (Theme) -> Unit
 ) {
 	Column(
 		modifier = modifier,
