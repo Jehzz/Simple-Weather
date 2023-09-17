@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 @Immutable
 data class ExtendedColors(
 	val hot: Color,
-	val cold: Color,
+	val cold: Color
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {

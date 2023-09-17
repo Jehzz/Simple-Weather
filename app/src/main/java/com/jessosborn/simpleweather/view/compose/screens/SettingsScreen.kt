@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-	onSettingsEntered: () -> Unit,
+	onSettingsEntered: () -> Unit
 ) {
 	val context = LocalContext.current
 	val keyboardController = LocalSoftwareKeyboardController.current

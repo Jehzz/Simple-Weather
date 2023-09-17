@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 @Composable
 fun SimpleWeatherTheme(
 	darkTheme: Boolean = isSystemInDarkTheme(),
-	content: @Composable () -> Unit,
+	content: @Composable () -> Unit
 ) {
 	val extendedColors = ExtendedColors(
 		hot = if (darkTheme) Color(0xFFB35919) else Color(0xffF57C00),

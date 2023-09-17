@@ -31,7 +31,7 @@ import kotlin.math.roundToInt
 @Composable
 fun WeatherItem(
 	modifier: Modifier = Modifier,
-	item: WeatherSnapshot,
+	item: WeatherSnapshot
 ) {
 	Surface(
 		color = MaterialTheme.colorScheme.background
