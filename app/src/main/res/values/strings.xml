@@ -18,6 +18,7 @@
     <string name="units_imperial" translatable="false">Imperial</string>
     <string name="units_metric" translatable="false">Metric</string>
     <string name="wind_speed">Wind speed %s</string>
+    <string name="zip_code">Zip code</string>
 
     <string-array name="spinner_units_array">
         <item>@string/units_imperial</item>
