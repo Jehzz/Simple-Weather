@@ -12,7 +12,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -56,9 +56,7 @@ fun SettingsScreen(
 		topBar = {
 			TopAppBar(
 				title = { Text(stringResource(id = R.string.settings)) },
-				colors = TopAppBarDefaults.smallTopAppBarColors(
-					containerColor = MaterialTheme.colorScheme.primaryContainer
-				)
+				colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
 			)
 		},
 		content = { padding ->
