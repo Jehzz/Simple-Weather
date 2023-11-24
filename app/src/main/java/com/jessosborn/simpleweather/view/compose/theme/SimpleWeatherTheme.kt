@@ -23,16 +23,10 @@ fun SimpleWeatherTheme(
 		cold = if (darkTheme) Color(0xFF3E70A1) else Color(0xff1A8DFF)
 	)
 
+	val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 	val colorScheme = when {
-		Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-			val context = LocalContext.current
-			if (darkTheme) {
-				dynamicDarkColorScheme(context).copy(background = Color.Black)
-			} else {
-				dynamicLightColorScheme(context)
-			}
-		}
-
+		dynamicColor && darkTheme -> dynamicDarkColorScheme(LocalContext.current)
+		dynamicColor && !darkTheme -> dynamicLightColorScheme(LocalContext.current)
 		darkTheme -> darkColorScheme().copy(background = Color.Black)
 		else -> lightColorScheme()
 	}
