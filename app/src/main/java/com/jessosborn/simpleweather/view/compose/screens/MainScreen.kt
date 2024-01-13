@@ -2,22 +2,24 @@ package com.jessosborn.simpleweather.view.compose.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshState
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
@@ -35,10 +37,7 @@ import com.jessosborn.simpleweather.viewmodel.WeatherViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(
-	onSettingsClicked: () -> Unit
-) {
-	val context = LocalContext.current
+fun MainScreen(onSettingsClicked: () -> Unit) {
 	val weatherViewModel = hiltViewModel<WeatherViewModel>()
 
 	val forecast by weatherViewModel.forecastWeatherData.collectAsState(null)
@@ -47,11 +46,10 @@ fun MainScreen(
 	val networkError by weatherViewModel.networkError.collectAsState("")
 
 	val preferredUnits by DataStoreUtil
-		.getUnits(context = context).collectAsState(initial = Units.Imperial)
+		.getUnits(context = LocalContext.current).collectAsState(initial = Units.Imperial)
 	val userZip by DataStoreUtil
-		.getZip(context = context).collectAsState(initial = "")
+		.getZip(context = LocalContext.current).collectAsState(initial = "")
 
-	val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isNetworkLoading)
 	val scaffoldState = rememberScaffoldState()
 	val scope = rememberCoroutineScope()
 
@@ -77,22 +75,24 @@ fun MainScreen(
 		currentWeather = currentWeather,
 		forecast = forecast,
 		preferredUnits = preferredUnits,
-		swipeRefreshState = swipeRefreshState,
 		onSettingsClicked = onSettingsClicked,
-		refresh = { weatherViewModel.fetchWeatherFromApi(userZip, preferredUnits) }
+		refresh = { weatherViewModel.fetchWeatherFromApi(userZip, preferredUnits) },
+		isRefreshing = isNetworkLoading
 	)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MainScreenLayout(
 	currentWeather: CurrentWeather?,
 	forecast: ForecastWeather?,
 	preferredUnits: Units,
-	swipeRefreshState: SwipeRefreshState,
+	isRefreshing: Boolean,
 	onSettingsClicked: () -> Unit,
-	refresh: () -> Unit,
+	refresh: () -> Unit
 ) {
+	val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing, onRefresh = refresh)
+
 	Scaffold(
 		topBar = {
 			CurrentWeatherInfo(
@@ -102,26 +102,30 @@ private fun MainScreenLayout(
 			)
 		},
 		content = { padding ->
-			SwipeRefresh(
-				modifier = Modifier.padding(top = padding.calculateTopPadding()),
-				state = swipeRefreshState,
-				onRefresh = refresh,
-				content = {
-					AnimatedVisibility(
-						visible = forecast != null,
-						enter = fadeIn()
-					) {
-						ForecastLayout(forecastWeather = forecast)
-					}
+			Box(
+				modifier = Modifier
+					.padding(padding)
+					.pullRefresh(pullRefreshState)
+			) {
+				AnimatedVisibility(
+					visible = forecast != null,
+					enter = fadeIn()
+				) {
+					ForecastLayout(forecastWeather = forecast)
 				}
-			)
+				PullRefreshIndicator(
+					refreshing = isRefreshing,
+					state = pullRefreshState,
+					modifier = Modifier.align(Alignment.TopCenter)
+				)
+			}
 		}
 	)
 }
 
 @CombinedPreviews
 @Composable
-fun MainScreenPreview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
+private fun Preview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
 	SimpleWeatherTheme {
 		MainScreenLayout(
 			currentWeather = CurrentWeather(
@@ -152,7 +156,7 @@ fun MainScreenPreview(@PreviewParameter(ForecastPreviewParams::class) forecast: 
 			),
 			forecast = forecast,
 			preferredUnits = Units.Imperial,
-			swipeRefreshState = rememberSwipeRefreshState(false),
+			isRefreshing = false,
 			onSettingsClicked = {},
 			refresh = {},
 		)
