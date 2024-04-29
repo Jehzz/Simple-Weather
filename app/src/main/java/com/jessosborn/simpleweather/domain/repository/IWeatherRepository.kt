@@ -1,16 +1,9 @@
 package com.jessosborn.simpleweather.domain.repository
 
-import androidx.lifecycle.LiveData
-import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 
 interface IWeatherRepository {
-
-    val currentWeather: LiveData<CurrentWeather>
-    val forecastWeather: LiveData<ForecastWeather>
-    val isNetworkLoading: LiveData<Boolean>
-    val errorMessage: LiveData<String>
-
-    fun fetchWeatherFromApi(zip: String, country: String, units: Units)
+    suspend fun fetchCurrentData(zip: String, country: String, units: String): Result<CurrentWeather>
+    suspend fun fetchForecastData(zip: String, country: String, units: String): Result<ForecastWeather>
 }

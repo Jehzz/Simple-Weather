@@ -14,12 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.asFlow
 import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
@@ -34,16 +34,15 @@ import com.jessosborn.simpleweather.view.compose.composables.ForecastLayout
 import com.jessosborn.simpleweather.view.compose.composables.ForecastPreviewParams
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import com.jessosborn.simpleweather.viewmodel.WeatherViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(onSettingsClicked: () -> Unit) {
 	val weatherViewModel = hiltViewModel<WeatherViewModel>()
 
-	val forecast by weatherViewModel.forecastWeatherData.collectAsState(null)
-	val currentWeather by weatherViewModel.currentWeatherData.collectAsState(null)
-	val isNetworkLoading by weatherViewModel.isNetworkLoading.collectAsState(false)
-	val networkError by weatherViewModel.networkError.collectAsState("")
+	val forecast by weatherViewModel.forecastWeather.asFlow().collectAsState(null)
+	val currentWeather by weatherViewModel.currentWeather.asFlow().collectAsState(null)
+	val isNetworkLoading by weatherViewModel.isNetworkLoading.asFlow().collectAsState(false)
+	val networkError by weatherViewModel.networkError.asFlow().collectAsState("")
 
 	val preferredUnits by DataStoreUtil
 		.getUnits(context = LocalContext.current).collectAsState(initial = Units.Imperial)
@@ -51,23 +50,17 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 		.getZip(context = LocalContext.current).collectAsState(initial = "")
 
 	val scaffoldState = rememberScaffoldState()
-	val scope = rememberCoroutineScope()
 
 	// Fetch the weather, navigate to Settings if required inputs are missing
 	LaunchedEffect(key1 = userZip) {
 		if (userZip.isEmpty()) {
 			onSettingsClicked()
 		} else {
-			scope.launch {
-				weatherViewModel.fetchWeatherFromApi(
-					zip = userZip,
-					units = preferredUnits
-				)
-			}
+			weatherViewModel.fetchWeatherFromApi(zip = userZip, units = preferredUnits)
 		}
 	}
 	LaunchedEffect(key1 = networkError) {
-		if (networkError.isNotEmpty()) {
+		if (networkError?.isNotEmpty() == true) {
 			scaffoldState.snackbarHostState.showSnackbar(networkError)
 		}
 	}
@@ -89,7 +82,7 @@ private fun MainScreenLayout(
 	preferredUnits: Units,
 	isRefreshing: Boolean,
 	onSettingsClicked: () -> Unit,
-	refresh: () -> Unit
+	refresh: () -> Unit,
 ) {
 	val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing, onRefresh = refresh)
 
