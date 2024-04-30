@@ -15,7 +15,7 @@ class WeatherRepository(
     private val key = context.resources.getString(R.string.api_key)
 
     override suspend fun fetchForecastData(zip: String, country: String, units: String): Result<ForecastWeather> {
-        val response = service.getForecastWeather("$zip, $country", key, units)
+        val response = service.getForecastWeather("$zip,$country", key, units)
         return if (response.isSuccessful) {
             response.body()?.let {
                 Result.success(it)
@@ -26,7 +26,7 @@ class WeatherRepository(
     }
 
     override suspend fun fetchCurrentData(zip: String, country: String, units: String): Result<CurrentWeather> {
-        val response = service.getCurrentWeather("$zip, $country", key, units)
+        val response = service.getCurrentWeather("$zip,$country", key, units)
         return if (response.isSuccessful) {
             response.body()?.let {
                 Result.success(it)
