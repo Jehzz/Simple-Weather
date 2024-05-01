@@ -1,6 +1,5 @@
 package com.jessosborn.simpleweather.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jessosborn.simpleweather.domain.Units
@@ -9,6 +8,8 @@ import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import com.jessosborn.simpleweather.domain.repository.WeatherRepository
 import com.jessosborn.simpleweather.utils.getCountryFromZip
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,21 +18,28 @@ class WeatherViewModel @Inject constructor(
     private val weatherRepo: WeatherRepository
 ) : ViewModel() {
 
-    var currentWeather: MutableLiveData<CurrentWeather> = MutableLiveData(null)
-    var forecastWeather: MutableLiveData<ForecastWeather> = MutableLiveData(null)
-    var isNetworkLoading: MutableLiveData<Boolean> = MutableLiveData(false)
-    var networkError: MutableLiveData<String> = MutableLiveData(null)
+    private val _currentWeather = MutableStateFlow<CurrentWeather?>(null)
+    val currentWeather = _currentWeather.asStateFlow()
+
+    private val _forecastWeather = MutableStateFlow<ForecastWeather?>(null)
+    val forecastWeather = _forecastWeather.asStateFlow()
+
+    private val _isNetworkLoading = MutableStateFlow(false)
+    val isNetworkLoading = _isNetworkLoading.asStateFlow()
+
+    private val _networkError = MutableStateFlow<String?>(null)
+    val networkError = _networkError.asStateFlow()
 
     fun fetchWeatherFromApi(zip: String, units: Units) {
-        isNetworkLoading.postValue(true)
+        _isNetworkLoading.value = true
         viewModelScope.launch {
             weatherRepo.fetchCurrentData(zip, getCountryFromZip(zip), units.name)
-                .onSuccess { currentWeather.postValue(it) }
-                .onFailure { networkError.postValue("Error") }
+                .onSuccess { _currentWeather.value = it }
+                .onFailure { _networkError.emit("Error") }
             weatherRepo.fetchForecastData(zip, getCountryFromZip(zip), units.name)
-                .onSuccess { forecastWeather.postValue(it) }
-                .onFailure { networkError.postValue("Error") }
+                .onSuccess { _forecastWeather.value = it }
+                .onFailure { _networkError.emit("Error") }
         }
-        isNetworkLoading.postValue(false)
+        _isNetworkLoading.value = false
     }
 }

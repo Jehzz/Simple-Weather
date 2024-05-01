@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.asFlow
 import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
@@ -39,10 +38,10 @@ import com.jessosborn.simpleweather.viewmodel.WeatherViewModel
 fun MainScreen(onSettingsClicked: () -> Unit) {
 	val weatherViewModel = hiltViewModel<WeatherViewModel>()
 
-	val forecast by weatherViewModel.forecastWeather.asFlow().collectAsState(null)
-	val currentWeather by weatherViewModel.currentWeather.asFlow().collectAsState(null)
-	val isNetworkLoading by weatherViewModel.isNetworkLoading.asFlow().collectAsState(false)
-	val networkError by weatherViewModel.networkError.asFlow().collectAsState("")
+	val forecast = weatherViewModel.forecastWeather.collectAsState()
+	val currentWeather = weatherViewModel.currentWeather.collectAsState()
+	val isNetworkLoading = weatherViewModel.isNetworkLoading.collectAsState()
+	val networkError = weatherViewModel.networkError.collectAsState()
 
 	val preferredUnits by DataStoreUtil
 		.getUnits(context = LocalContext.current).collectAsState(initial = Units.Imperial)
@@ -60,17 +59,17 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 		}
 	}
 	LaunchedEffect(key1 = networkError) {
-		if (networkError?.isNotEmpty() == true) {
-			scaffoldState.snackbarHostState.showSnackbar(networkError)
+		networkError.value?.let {
+			scaffoldState.snackbarHostState.showSnackbar(it)
 		}
 	}
 	MainScreenLayout(
-		currentWeather = currentWeather,
-		forecast = forecast,
+		currentWeather = currentWeather.value,
+		forecast = forecast.value,
 		preferredUnits = preferredUnits,
 		onSettingsClicked = onSettingsClicked,
 		refresh = { weatherViewModel.fetchWeatherFromApi(userZip, preferredUnits) },
-		isRefreshing = isNetworkLoading
+		isRefreshing = isNetworkLoading.value
 	)
 }
 
