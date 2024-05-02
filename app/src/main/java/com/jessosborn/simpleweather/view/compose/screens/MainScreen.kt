@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -33,6 +34,7 @@ import com.jessosborn.simpleweather.view.compose.composables.ForecastLayout
 import com.jessosborn.simpleweather.view.compose.composables.ForecastPreviewParams
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import com.jessosborn.simpleweather.viewmodel.WeatherViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MainScreen(onSettingsClicked: () -> Unit) {
@@ -41,7 +43,6 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 	val forecast = weatherViewModel.forecastWeather.collectAsState()
 	val currentWeather = weatherViewModel.currentWeather.collectAsState()
 	val isNetworkLoading = weatherViewModel.isNetworkLoading.collectAsState()
-	val networkError = weatherViewModel.networkError.collectAsState()
 
 	val preferredUnits by DataStoreUtil
 		.getUnits(context = LocalContext.current).collectAsState(initial = Units.Imperial)
@@ -58,11 +59,12 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 			weatherViewModel.fetchWeatherFromApi(zip = userZip, units = preferredUnits)
 		}
 	}
-	LaunchedEffect(key1 = networkError) {
-		networkError.value?.let {
-			scaffoldState.snackbarHostState.showSnackbar(it)
+	LaunchedEffect(Unit) {
+		weatherViewModel.networkError.collectLatest { errorMessage ->
+			scaffoldState.snackbarHostState.showSnackbar(message = errorMessage, duration = SnackbarDuration.Indefinite)
 		}
 	}
+
 	MainScreenLayout(
 		currentWeather = currentWeather.value,
 		forecast = forecast.value,
