@@ -5,16 +5,17 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -49,7 +50,7 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 	val userZip by DataStoreUtil
 		.getZip(context = LocalContext.current).collectAsState(initial = "")
 
-	val scaffoldState = rememberScaffoldState()
+	val snackbarHostState = remember { SnackbarHostState() }
 
 	// Fetch the weather, navigate to Settings if required inputs are missing
 	LaunchedEffect(key1 = userZip) {
@@ -61,7 +62,7 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 	}
 	LaunchedEffect(Unit) {
 		weatherViewModel.networkError.collectLatest { errorMessage ->
-			scaffoldState.snackbarHostState.showSnackbar(message = errorMessage, duration = SnackbarDuration.Indefinite)
+			snackbarHostState.showSnackbar(message = errorMessage, duration = SnackbarDuration.Indefinite)
 		}
 	}
 
