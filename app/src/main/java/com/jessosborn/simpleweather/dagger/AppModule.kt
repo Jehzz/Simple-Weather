@@ -2,6 +2,7 @@ package com.jessosborn.simpleweather.dagger
 
 import android.content.Context
 import com.jessosborn.simpleweather.domain.remote.OpenWeatherEndpoint
+import com.jessosborn.simpleweather.domain.repository.IWeatherRepository
 import com.jessosborn.simpleweather.domain.repository.WeatherRepository
 import dagger.Module
 import dagger.Provides
@@ -17,9 +18,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideWeatherRepository(
-        @ApplicationContext context: Context,
-        network: OpenWeatherEndpoint
-    ): WeatherRepository {
+		@ApplicationContext context: Context,
+		network: OpenWeatherEndpoint,
+	): IWeatherRepository {
         return WeatherRepository(
             context = context,
             service = network

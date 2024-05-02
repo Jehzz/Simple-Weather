@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
-import com.jessosborn.simpleweather.domain.repository.WeatherRepository
+import com.jessosborn.simpleweather.domain.repository.IWeatherRepository
 import com.jessosborn.simpleweather.utils.getCountryFromZip
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-	private val weatherRepo: WeatherRepository,
+	private val weatherRepo: IWeatherRepository,
 ) : ViewModel() {
 
 	private val _currentWeather = MutableStateFlow<CurrentWeather?>(null)
