@@ -15,19 +15,16 @@ val Context.datastore: DataStore<Preferences> by preferencesDataStore("settings"
 
 object DataStoreUtil {
 
-	const val USER_UNITS = "units"
-	const val USER_ZIP = "zip"
-	const val USER_THEME = "theme"
+	private const val USER_UNITS = "units"
+	private const val USER_ZIP = "zip"
+	private const val USER_THEME = "theme"
+
 	private suspend fun saveString(context: Context, key: String, value: String) {
-		context.datastore.edit {
-			it[stringPreferencesKey(key)] = value
-		}
+		context.datastore.edit { it[stringPreferencesKey(key)] = value }
 	}
 
 	private fun getString(context: Context, key: String): Flow<String?> {
-		return context.datastore.data.map {
-			it[stringPreferencesKey(key)]
-		}
+		return context.datastore.data.map { it[stringPreferencesKey(key)] }
 	}
 
 	fun getTheme(context: Context): Flow<Theme> {

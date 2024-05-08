@@ -1,5 +1,7 @@
 package com.jessosborn.simpleweather.utils
 
+import com.jessosborn.simpleweather.domain.CountryCode
+
 fun String.isValidZip(): Boolean = this.isUsZip() || this.isCanadianZip() || this.isUkZip()
 
 fun String.isInvalidZip(): Boolean = !this.isValidZip()
@@ -26,10 +28,4 @@ fun getCountryFromZip(zip: String): String {
         zip.isUkZip() -> CountryCode.UK.code
         else -> "NULL"
     }
-}
-
-enum class CountryCode(val code: String) {
-    US("us"),
-    CANADA("ca"),
-    UK("gb")
 }
