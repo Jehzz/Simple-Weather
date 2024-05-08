@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jessosborn.simpleweather.domain.Theme
 import com.jessosborn.simpleweather.utils.DataStoreUtil
 import com.jessosborn.simpleweather.view.compose.SimpleWeatherNavigation
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		installSplashScreen()
 		setContent {
 			val theme = DataStoreUtil
 				.getTheme(context = applicationContext)

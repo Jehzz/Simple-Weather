@@ -3,7 +3,6 @@ package com.jessosborn.simpleweather.view.compose
 import androidx.annotation.StringRes
 
 sealed class Screen(val route: String, @StringRes val resourceId: Int?) {
-	object Splash : Screen("splash_screen", null)
 	object Main : Screen("main_screen", null)
 	object Settings : Screen("settings_screen", null)
 
