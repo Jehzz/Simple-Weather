@@ -1,6 +1,7 @@
 package com.jessosborn.simpleweather.view.compose.composables
 
 import android.text.format.DateFormat
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +32,8 @@ import kotlin.math.roundToInt
 @Composable
 fun WeatherItem(
 	modifier: Modifier = Modifier,
-	item: WeatherSnapshot
+	item: WeatherSnapshot,
+	onClick: (WeatherSnapshot) -> Unit,
 ) {
 	Surface(
 		color = MaterialTheme.colorScheme.background
@@ -39,7 +41,8 @@ fun WeatherItem(
 		Column(
 			modifier = modifier
 				.padding(all = 4.dp)
-				.fillMaxWidth(),
+				.fillMaxWidth()
+				.clickable { onClick(item) },
 			horizontalAlignment = Alignment.CenterHorizontally,
 			verticalArrangement = Arrangement.SpaceAround
 		) {
@@ -74,7 +77,8 @@ fun WeatherItemPreview(@PreviewParameter(ForecastPreviewParams::class) forecast:
 			items(forecast.list.take(4)) { item ->
 				WeatherItem(
 					modifier = Modifier.padding(4.dp),
-					item = item
+					item = item,
+					onClick = {}
 				)
 			}
 		}

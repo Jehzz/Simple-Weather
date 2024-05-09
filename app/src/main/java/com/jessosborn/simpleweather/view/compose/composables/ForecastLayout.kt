@@ -1,5 +1,8 @@
 package com.jessosborn.simpleweather.view.compose.composables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +34,23 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 
 @Composable
 fun ForecastLayout(forecastWeather: ForecastWeather?) {
+
+	var showDialog by remember { mutableStateOf(false) }
+	var selectedSnapshot by remember { mutableStateOf<WeatherSnapshot?>(null) }
+
+	AnimatedVisibility(
+		visible = showDialog,
+		enter = fadeIn(),
+		exit = fadeOut()
+	) {
+		selectedSnapshot?.let {
+			WeatherDetailDialog(
+				weatherSnapshot = it,
+				onDismiss = { showDialog = false }
+			)
+		}
+	}
+
 	BoxWithConstraints {
 		val gridCount = when {
 			maxWidth > 700.dp -> 8
@@ -45,7 +69,11 @@ fun ForecastLayout(forecastWeather: ForecastWeather?) {
 					items(forecast.take(8)) { item ->
 						WeatherItem(
 							modifier = Modifier.padding(4.dp),
-							item = item
+							item = item,
+							onClick = {
+								selectedSnapshot = it
+								showDialog = true
+							}
 						)
 					}
 				}
@@ -59,7 +87,11 @@ fun ForecastLayout(forecastWeather: ForecastWeather?) {
 					items(forecast.drop(8)) { item ->
 						WeatherItem(
 							modifier = Modifier.padding(4.dp),
-							item = item
+							item = item,
+							onClick = {
+								selectedSnapshot = it
+								showDialog = true
+							}
 						)
 					}
 				}

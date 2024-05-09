@@ -20,7 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -38,7 +37,7 @@ import com.jessosborn.simpleweather.view.compose.composables.UnitsSelector
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
 	onSettingsEntered: () -> Unit
@@ -145,7 +144,7 @@ fun SettingsScreen(
 					)
 				}
 			}
-		},
+		}
 	)
 }
 
