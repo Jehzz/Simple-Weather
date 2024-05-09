@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -55,81 +55,79 @@ fun CurrentWeatherInfo(
 				ExtendedTheme.colors.hot
 			}
 		},
-		label = ""
+		label = "Temperature Color"
 	)
-
-	Surface {
-		Column(
-			modifier = Modifier
-				.background(color = backgroundColor.value)
-				.fillMaxWidth(1f)
-				.padding(all = 4.dp)
+	Column(
+		modifier = Modifier
+			.background(color = backgroundColor.value)
+			.fillMaxWidth(1f)
+			.padding(horizontal = 8.dp)
+			.statusBarsPadding()
+	) {
+		Row(
+			modifier = Modifier.padding(all = 4.dp),
+			horizontalArrangement = Arrangement.SpaceBetween
 		) {
-			Row(
-				modifier = Modifier.padding(all = 4.dp),
-				horizontalArrangement = Arrangement.SpaceBetween
+			Text(
+				modifier = Modifier.weight(1f),
+				text = data?.name.orEmpty(),
+				style = MaterialTheme.typography.headlineMedium
+			)
+			Icon(
+				modifier = Modifier.clickable { onSettingsClicked() },
+				painter = painterResource(id = R.drawable.ic_settings_24dp),
+				contentDescription = null
+			)
+		}
+		Row(
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(all = 4.dp),
+			horizontalArrangement = Arrangement.SpaceAround
+		) {
+			Column(
+				horizontalAlignment = Alignment.CenterHorizontally
 			) {
 				Text(
-					modifier = Modifier.weight(1f),
-					text = data?.name.orEmpty(),
-					style = MaterialTheme.typography.headlineMedium
+					text = data?.main?.temp?.let {
+						stringResource(id = R.string.degrees, it.roundToInt())
+					}.orEmpty(),
+					style = MaterialTheme.typography.headlineLarge
 				)
-				Icon(
-					modifier = Modifier.clickable { onSettingsClicked() },
-					painter = painterResource(id = R.drawable.ic_settings_24dp),
-					contentDescription = null
+				Text(
+					text = data?.weather?.get(0)?.main.orEmpty(),
+					style = MaterialTheme.typography.headlineSmall
 				)
 			}
-			Row(
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(all = 4.dp),
-				horizontalArrangement = Arrangement.SpaceAround
-			) {
-				Column(
-					horizontalAlignment = Alignment.CenterHorizontally
-				) {
-					Text(
-						text = data?.main?.temp?.let {
-							stringResource(id = R.string.degrees, it.roundToInt())
-						}.orEmpty(),
-						style = MaterialTheme.typography.headlineLarge
-					)
-					Text(
-						text = data?.weather?.get(0)?.main.orEmpty(),
-						style = MaterialTheme.typography.headlineSmall
-					)
-				}
-				Column {
-					Text(
-						text = stringResource(
-							id = R.string.wind_speed,
-							data?.wind?.speed.orEmpty()
-						),
-						style = MaterialTheme.typography.bodyLarge
-					)
-					Text(
-						text = stringResource(
-							id = R.string.humidity,
-							data?.main?.humidity.orEmpty()
-						),
-						style = MaterialTheme.typography.bodyLarge
-					)
-					Text(
-						text = stringResource(
-							id = R.string.sunset_time,
-							data?.sys?.sunset?.let { sunset ->
-								DateFormat.format(
-									"HH:mm",
-									Calendar.getInstance(Locale.ENGLISH).apply {
-										timeInMillis = sunset.toLong() * 1000L
-									}
-								).toString()
-							}.orEmpty()
-						),
-						style = MaterialTheme.typography.bodyLarge
-					)
-				}
+			Column {
+				Text(
+					text = stringResource(
+						id = R.string.wind_speed,
+						data?.wind?.speed.orEmpty()
+					),
+					style = MaterialTheme.typography.bodyLarge
+				)
+				Text(
+					text = stringResource(
+						id = R.string.humidity,
+						data?.main?.humidity.orEmpty()
+					),
+					style = MaterialTheme.typography.bodyLarge
+				)
+				Text(
+					text = stringResource(
+						id = R.string.sunset_time,
+						data?.sys?.sunset?.let { sunset ->
+							DateFormat.format(
+								"HH:mm",
+								Calendar.getInstance(Locale.ENGLISH).apply {
+									timeInMillis = sunset.toLong() * 1000L
+								}
+							).toString()
+						}.orEmpty()
+					),
+					style = MaterialTheme.typography.bodyLarge
+				)
 			}
 		}
 	}

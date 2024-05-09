@@ -13,7 +13,6 @@ fun SimpleWeatherNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Screen.Main.route) {
-        // TODO - version check, fix duplicate splash screen
         composable(route = Screen.Main.route) {
             MainScreen(
                 onSettingsClicked = { navController.navigate(Screen.Settings.route) }
