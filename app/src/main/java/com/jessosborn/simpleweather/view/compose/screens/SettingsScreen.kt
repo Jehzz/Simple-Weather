@@ -32,6 +32,7 @@ import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.utils.DataStoreUtil
 import com.jessosborn.simpleweather.utils.isInvalidZip
+import com.jessosborn.simpleweather.utils.isValidZip
 import com.jessosborn.simpleweather.view.compose.composables.ThemeSelector
 import com.jessosborn.simpleweather.view.compose.composables.UnitsSelector
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
@@ -61,10 +62,8 @@ fun SettingsScreen(
 		content = { padding ->
 			Column(
 				modifier = Modifier.padding(
-					top = padding.calculateTopPadding(),
-					start = 12.dp,
-					end = 12.dp,
-					bottom = padding.calculateBottomPadding()
+					vertical = padding.calculateTopPadding(),
+					horizontal = 12.dp,
 				),
 				horizontalAlignment = Alignment.CenterHorizontally,
 				verticalArrangement = Arrangement.spacedBy(40.dp)
@@ -84,10 +83,7 @@ fun SettingsScreen(
 						selectedTheme = selectedTheme,
 						onClick = { chosenTheme ->
 							scope.launch {
-								DataStoreUtil.saveTheme(
-									context = context,
-									value = chosenTheme
-								)
+								DataStoreUtil.saveTheme(context = context, value = chosenTheme)
 							}
 						}
 					)
@@ -107,10 +103,7 @@ fun SettingsScreen(
 						selectedUnits = selectedUnits,
 						onClick = { chosenUnits ->
 							scope.launch {
-								DataStoreUtil.saveUnits(
-									context = context,
-									value = chosenUnits
-								)
+								DataStoreUtil.saveUnits(context = context, value = chosenUnits)
 							}
 						}
 					)
@@ -129,18 +122,22 @@ fun SettingsScreen(
 						value = textState.value,
 						onValueChange = {
 							textState.value = it
-							scope.launch {
-								DataStoreUtil.saveZip(context = context, value = it.text)
+							if (it.text.isValidZip()) {
+								scope.launch {
+									DataStoreUtil.saveZip(context = context, value = it.text)
+								}
 							}
 						},
 						modifier = Modifier.padding(horizontal = 4.dp),
 						label = {},
 						isError = textState.value.text.isInvalidZip(),
 						singleLine = true,
-						keyboardActions = KeyboardActions(onDone = {
-							keyboardController?.hide()
-							onSettingsEntered()
-						})
+						keyboardActions = KeyboardActions(
+							onDone = {
+								keyboardController?.hide()
+								onSettingsEntered()
+							}
+						)
 					)
 				}
 			}
@@ -152,6 +149,6 @@ fun SettingsScreen(
 @Composable
 fun SettingsScreenPreview() {
 	SimpleWeatherTheme {
-		SettingsScreen {}
+		SettingsScreen(onSettingsEntered = {})
 	}
 }
