@@ -37,6 +37,7 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import com.jessosborn.simpleweather.viewmodel.WeatherViewModel
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(onSettingsClicked: () -> Unit) {
 	val weatherViewModel = hiltViewModel<WeatherViewModel>()
@@ -52,6 +53,11 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 
 	val snackbarHostState = remember { SnackbarHostState() }
 
+	val pullRefreshState = rememberPullRefreshState(
+		refreshing = isNetworkLoading.value,
+		onRefresh = { weatherViewModel.fetchWeatherFromApi(userZip, preferredUnits) }
+	)
+
 	// Fetch the weather, navigate to Settings if required inputs are missing
 	LaunchedEffect(key1 = userZip) {
 		if (userZip.isEmpty()) {
@@ -66,32 +72,10 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 		}
 	}
 
-	MainScreenLayout(
-		currentWeather = currentWeather.value,
-		forecast = forecast.value,
-		preferredUnits = preferredUnits,
-		onSettingsClicked = onSettingsClicked,
-		refresh = { weatherViewModel.fetchWeatherFromApi(userZip, preferredUnits) },
-		isRefreshing = isNetworkLoading.value
-	)
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-private fun MainScreenLayout(
-	currentWeather: CurrentWeather?,
-	forecast: ForecastWeather?,
-	preferredUnits: Units,
-	isRefreshing: Boolean,
-	onSettingsClicked: () -> Unit,
-	refresh: () -> Unit,
-) {
-	val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing, onRefresh = refresh)
-
 	Scaffold(
 		topBar = {
 			CurrentWeatherInfo(
-				data = currentWeather,
+				data = currentWeather.value,
 				preferredUnits = preferredUnits,
 				onSettingsClicked = { onSettingsClicked() }
 			)
@@ -103,13 +87,13 @@ private fun MainScreenLayout(
 					.pullRefresh(pullRefreshState)
 			) {
 				AnimatedVisibility(
-					visible = forecast != null,
+					visible = forecast.value != null,
 					enter = fadeIn()
 				) {
-					ForecastLayout(forecastWeather = forecast)
+					ForecastLayout(forecastWeather = forecast.value)
 				}
 				PullRefreshIndicator(
-					refreshing = isRefreshing,
+					refreshing = isNetworkLoading.value,
 					state = pullRefreshState,
 					modifier = Modifier.align(Alignment.TopCenter)
 				)
@@ -118,42 +102,64 @@ private fun MainScreenLayout(
 	)
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @CombinedPreviews
 @Composable
 private fun Preview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
 	SimpleWeatherTheme {
-		MainScreenLayout(
-			currentWeather = CurrentWeather(
-				name = "Hollywood",
-				main = Main(
-					temp = 73.38f,
-					temp_min = "67.01",
-					temp_max = "76.87",
-					humidity = "78"
-				),
-				sys = Sys(
-					country = "US",
-					sunrise = "1674998066",
-					sunset = "1675036678"
-				),
-				weather = listOf(
-					WeatherData(
-						id = 804,
-						main = "Clouds",
-						description = "overcast clouds",
-						icon = "04d"
-					)
-				),
-				wind = Wind(
-					speed = "14.97",
-					deg = "200"
+		val pullRefreshState = rememberPullRefreshState(refreshing = false, onRefresh = {})
+		Scaffold(
+			topBar = {
+				CurrentWeatherInfo(
+					data = CurrentWeather(
+						name = "Hollywood",
+						main = Main(
+							temp = 73.38f,
+							temp_min = "67.01",
+							temp_max = "76.87",
+							humidity = "78"
+						),
+						sys = Sys(
+							country = "US",
+							sunrise = "1674998066",
+							sunset = "1675036678"
+						),
+						weather = listOf(
+							WeatherData(
+								id = 804,
+								main = "Clouds",
+								description = "overcast clouds",
+								icon = "04d"
+							)
+						),
+						wind = Wind(
+							speed = "14.97",
+							deg = "200"
+						)
+					),
+					preferredUnits = Units.Imperial,
+					onSettingsClicked = { }
 				)
-			),
-			forecast = forecast,
-			preferredUnits = Units.Imperial,
-			isRefreshing = false,
-			onSettingsClicked = {},
-			refresh = {},
+			},
+			content = { padding ->
+				Box(
+					modifier = Modifier
+						.padding(padding)
+						.pullRefresh(pullRefreshState)
+				) {
+					AnimatedVisibility(
+						visible = forecast != null,
+						enter = fadeIn()
+					) {
+						ForecastLayout(forecastWeather = forecast)
+					}
+					PullRefreshIndicator(
+						refreshing = false,
+						state = pullRefreshState,
+						modifier = Modifier.align(Alignment.TopCenter)
+					)
+				}
+			}
 		)
 	}
 }
