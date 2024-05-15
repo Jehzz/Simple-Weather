@@ -10,6 +10,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -73,6 +74,7 @@ fun MainScreen(onSettingsClicked: () -> Unit) {
 	}
 
 	Scaffold(
+		snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
 		topBar = {
 			CurrentWeatherInfo(
 				data = currentWeather.value,
