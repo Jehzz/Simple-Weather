@@ -9,3 +9,4 @@
 .cxx
 /SimpleWeatherKeyStore.jks
 /keystore.properties
+/apikey.properties
