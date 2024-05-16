@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <color name="blue">#1A8DFF</color>
-    <color name="blueLight">#539DE7</color>
     <color name="blueDark">#004c8c</color>
-
-    <color name="orange">#f57c00</color>
-    <color name="orangeLight">#EF6C00</color>
-    <color name="orangeDark">#df7020</color>
-
-    <color name="yellow">#FFC107</color>
-
 </resources>

@@ -101,9 +101,6 @@ dependencies {
 	implementation(libs.hilt.android)
 	ksp(libs.hilt.android.compiler)
 
-	//Material Design
-	implementation(libs.material)
-
 	//Retrofit
 	implementation(libs.retrofit)
 	implementation(libs.converter.gson)
