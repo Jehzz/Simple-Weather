@@ -1,4 +1,4 @@
-package com.jessosborn.simpleweather.view.compose.composables
+package com.jessosborn.simpleweather.view.compose.components
 
 import android.text.format.DateFormat
 import androidx.compose.animation.animateColorAsState

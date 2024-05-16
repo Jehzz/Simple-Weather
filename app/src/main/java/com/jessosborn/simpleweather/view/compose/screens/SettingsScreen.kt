@@ -33,8 +33,8 @@ import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.utils.DataStoreUtil
 import com.jessosborn.simpleweather.utils.isInvalidZip
 import com.jessosborn.simpleweather.utils.isValidZip
-import com.jessosborn.simpleweather.view.compose.composables.ThemeSelector
-import com.jessosborn.simpleweather.view.compose.composables.UnitsSelector
+import com.jessosborn.simpleweather.view.compose.components.ThemeSelector
+import com.jessosborn.simpleweather.view.compose.components.UnitsSelector
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import kotlinx.coroutines.launch
 

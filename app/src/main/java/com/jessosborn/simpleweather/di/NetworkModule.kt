@@ -1,4 +1,4 @@
-package com.jessosborn.simpleweather.dagger
+package com.jessosborn.simpleweather.di
 
 import android.content.Context
 import com.jessosborn.simpleweather.domain.remote.OpenWeatherEndpoint

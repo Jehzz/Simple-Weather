@@ -31,11 +31,11 @@ import com.jessosborn.simpleweather.domain.remote.responses.WeatherData
 import com.jessosborn.simpleweather.domain.remote.responses.Wind
 import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.utils.DataStoreUtil
-import com.jessosborn.simpleweather.view.compose.composables.CurrentWeatherInfo
-import com.jessosborn.simpleweather.view.compose.composables.ForecastLayout
-import com.jessosborn.simpleweather.view.compose.composables.ForecastPreviewParams
+import com.jessosborn.simpleweather.view.WeatherViewModel
+import com.jessosborn.simpleweather.view.compose.components.CurrentWeatherInfo
+import com.jessosborn.simpleweather.view.compose.components.ForecastLayout
+import com.jessosborn.simpleweather.view.compose.components.ForecastPreviewParams
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
-import com.jessosborn.simpleweather.viewmodel.WeatherViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterialApi::class)

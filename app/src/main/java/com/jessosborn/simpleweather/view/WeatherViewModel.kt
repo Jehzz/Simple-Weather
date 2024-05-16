@@ -1,4 +1,4 @@
-package com.jessosborn.simpleweather.viewmodel
+package com.jessosborn.simpleweather.view
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,4 +1,4 @@
-package com.jessosborn.simpleweather.view.compose.composables
+package com.jessosborn.simpleweather.view.compose.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
