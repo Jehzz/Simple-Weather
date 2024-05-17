@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,7 @@ import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
 import com.jessosborn.simpleweather.utils.DayNightPreviews
 import com.jessosborn.simpleweather.utils.debugPlaceholder
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -55,9 +57,10 @@ fun WeatherItem(
 				placeholder = debugPlaceholder(debugPreview = R.drawable.ic_settings_24dp),
 				contentDescription = item.weather.first().main
 			)
+			val timeFormat = (DateFormat.getTimeFormat(LocalContext.current) as SimpleDateFormat).toLocalizedPattern()
 			Text(
 				text = DateFormat.format(
-					"HH:mm",
+					timeFormat,
 					Calendar.getInstance(Locale.ENGLISH).apply {
 						timeInMillis = item.dt.toLong() * 1000L
 					}

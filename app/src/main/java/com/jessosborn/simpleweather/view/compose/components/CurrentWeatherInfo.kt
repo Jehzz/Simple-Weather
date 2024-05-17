@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -31,6 +32,7 @@ import com.jessosborn.simpleweather.domain.remote.responses.Wind
 import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.view.compose.theme.ExtendedTheme
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -119,7 +121,7 @@ fun CurrentWeatherInfo(
 						id = R.string.sunset_time,
 						data?.sys?.sunset?.let { sunset ->
 							DateFormat.format(
-								"HH:mm",
+								(DateFormat.getTimeFormat(LocalContext.current) as SimpleDateFormat).toLocalizedPattern(),
 								Calendar.getInstance(Locale.ENGLISH).apply {
 									timeInMillis = sunset.toLong() * 1000L
 								}
