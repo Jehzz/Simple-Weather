@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jessosborn.simpleweather.domain.Theme
@@ -28,7 +29,9 @@ class MainActivity : AppCompatActivity() {
 			SimpleWeatherTheme(
 				darkTheme = (theme.value == Theme.FollowSystem && isSystemInDarkTheme() || theme.value == Theme.Dark)
 			) {
-				SimpleWeatherNavigation()
+				Surface {
+					SimpleWeatherNavigation()
+				}
 			}
 		}
 	}
