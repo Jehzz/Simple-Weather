@@ -7,12 +7,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jessosborn.simpleweather.domain.Units
-import com.jessosborn.simpleweather.utils.DayNightPreviews
+import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 
 @Composable
@@ -56,10 +57,12 @@ fun UnitsSelectionChip(
 }
 
 
-@DayNightPreviews
+@CombinedPreviews
 @Composable
-fun ChipSelectorPreview() {
+private fun ChipSelectorPreview() {
 	SimpleWeatherTheme {
-		UnitsSelector(selectedUnits = Units.Metric) {}
+		Surface {
+			UnitsSelector(selectedUnits = Units.Metric) {}
+		}
 	}
 }

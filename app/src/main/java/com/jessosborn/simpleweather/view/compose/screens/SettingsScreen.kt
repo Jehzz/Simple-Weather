@@ -145,7 +145,7 @@ fun SettingsScreen(onSettingsEntered: () -> Unit) {
 
 @CombinedPreviews
 @Composable
-fun SettingsScreenPreview() {
+private fun SettingsScreenPreview() {
 	SimpleWeatherTheme {
 		SettingsScreen(onSettingsEntered = {})
 	}

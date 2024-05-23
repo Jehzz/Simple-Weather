@@ -137,9 +137,7 @@ fun CurrentWeatherInfo(
 
 @CombinedPreviews
 @Composable
-fun CurrentWeatherInfoPreview(
-	@PreviewParameter(WeatherPreviewParams::class) weather: CurrentWeather,
-) {
+private fun CurrentWeatherInfoPreview(@PreviewParameter(WeatherPreviewParams::class) weather: CurrentWeather) {
 	SimpleWeatherTheme {
 		CurrentWeatherInfo(
 			data = weather,

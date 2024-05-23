@@ -23,7 +23,7 @@ import coil.compose.AsyncImage
 import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
-import com.jessosborn.simpleweather.utils.DayNightPreviews
+import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.utils.debugPlaceholder
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import java.text.SimpleDateFormat
@@ -72,9 +72,9 @@ fun WeatherItem(
 }
 
 
-@DayNightPreviews
+@CombinedPreviews
 @Composable
-fun WeatherItemPreview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
+private fun WeatherItemPreview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
 	SimpleWeatherTheme {
 		LazyVerticalGrid(columns = GridCells.Fixed(4)) {
 			items(forecast.list.take(4)) { item ->

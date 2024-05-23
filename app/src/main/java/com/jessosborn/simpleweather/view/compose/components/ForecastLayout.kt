@@ -98,9 +98,7 @@ fun ForecastLayout(
 
 @CombinedPreviews
 @Composable
-fun ForecastPreview(
-	@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
-) {
+fun ForecastPreview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
 	SimpleWeatherTheme {
 		Surface {
 			ForecastLayout(

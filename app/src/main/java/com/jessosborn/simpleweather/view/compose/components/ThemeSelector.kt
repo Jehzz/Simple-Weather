@@ -8,13 +8,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jessosborn.simpleweather.domain.Theme
-import com.jessosborn.simpleweather.utils.DayNightPreviews
+import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 
 @Composable
@@ -68,10 +69,12 @@ fun ThemeSelectionChip(
 }
 
 
-@DayNightPreviews
+@CombinedPreviews
 @Composable
 private fun Preview() {
 	SimpleWeatherTheme {
-		ThemeSelector(selectedTheme = Theme.FollowSystem) {}
+		Surface(onClick = { /*TODO*/ }) {
+			ThemeSelector(selectedTheme = Theme.FollowSystem) {}
+		}
 	}
 }
