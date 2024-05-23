@@ -15,24 +15,32 @@ class WeatherRepository(
     private val key = context.resources.getString(R.string.api_key)
 
     override suspend fun fetchForecastData(zip: String, country: String, units: String): Result<ForecastWeather> {
-        val response = service.getForecastWeather("$zip,$country", key, units)
-        return if (response.isSuccessful) {
-            response.body()?.let {
-                Result.success(it)
-            } ?: Result.failure(IOException("Body null"))
-        } else {
-            Result.failure(IOException("Fail"))
-        }
+		val response = service.getForecastWeather("$zip,$country", key, units)
+		try {
+			if (response.isSuccessful) {
+				response.body()?.let {
+					return Result.success(it)
+				} ?: return Result.failure(IOException("Body null"))
+			} else {
+				return Result.failure(IOException(response.errorBody()?.string() ?: "Fail"))
+			}
+		} catch (e: Exception) {
+			return Result.failure(e)
+		}
     }
 
     override suspend fun fetchCurrentData(zip: String, country: String, units: String): Result<CurrentWeather> {
         val response = service.getCurrentWeather("$zip,$country", key, units)
-        return if (response.isSuccessful) {
-            response.body()?.let {
-                Result.success(it)
-            } ?: Result.failure(IOException("Body null"))
-        } else {
-            Result.failure(IOException("Fail"))
-        }
+		try {
+			if (response.isSuccessful) {
+				response.body()?.let {
+					return Result.success(it)
+				} ?: return Result.failure(IOException("Body null"))
+			} else {
+				return Result.failure(IOException(response.errorBody()?.string() ?: "Fail"))
+			}
+		} catch (e: Exception) {
+			return Result.failure(e)
+		}
     }
 }
