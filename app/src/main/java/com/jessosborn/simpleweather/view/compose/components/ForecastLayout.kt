@@ -38,60 +38,40 @@ fun ForecastLayout(
 	val dayAftersWeather = partitionedWeather.second.drop(8).take(8)
 
 	Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-		Text(
-			text = stringResource(id = R.string.todays_forecast),
-			modifier = Modifier.fillMaxWidth(1f),
-			textAlign = TextAlign.Center,
-			style = MaterialTheme.typography.titleLarge
-		)
-		LazyRow(
-			modifier = Modifier.fillMaxWidth(),
-			horizontalArrangement = Arrangement.SpaceEvenly
-		) {
-			items(todaysWeather) { item ->
-				WeatherItem(
-					modifier = Modifier.padding(4.dp),
-					item = item,
-					onClick = { onSnapshotSelected(it) }
-				)
-			}
-		}
+		ForecastHeader(text = stringResource(id = R.string.todays_forecast))
+		ForecastRow(weather = todaysWeather, onSnapshotSelected = onSnapshotSelected)
+		ForecastHeader(text = stringResource(id = R.string.tomorrows_weather))
+		ForecastRow(weather = tomorrowsWeather, onSnapshotSelected = onSnapshotSelected)
+		ForecastHeader(text = stringResource(id = R.string.the_day_after))
+		ForecastRow(weather = dayAftersWeather, onSnapshotSelected = onSnapshotSelected)
+	}
+}
 
-		Text(
-			text = stringResource(id = R.string.tomorrows_weather),
-			modifier = Modifier.fillMaxWidth(1f),
-			textAlign = TextAlign.Center,
-			style = MaterialTheme.typography.titleLarge
-		)
-		LazyRow(
-			modifier = Modifier.fillMaxWidth(),
-			horizontalArrangement = Arrangement.SpaceEvenly
-		) {
-			items(tomorrowsWeather) { item ->
-				WeatherItem(
-					modifier = Modifier.padding(4.dp),
-					item = item,
-					onClick = { onSnapshotSelected(it) }
-				)
-			}
-		}
-		Text(
-			text = stringResource(id = R.string.the_day_after),
-			modifier = Modifier.fillMaxWidth(1f),
-			textAlign = TextAlign.Center,
-			style = MaterialTheme.typography.titleLarge
-		)
-		LazyRow(
-			modifier = Modifier.fillMaxWidth(),
-			horizontalArrangement = Arrangement.SpaceEvenly
-		) {
-			items(dayAftersWeather) { item ->
-				WeatherItem(
-					modifier = Modifier.padding(4.dp),
-					item = item,
-					onClick = { onSnapshotSelected(it) }
-				)
-			}
+@Composable
+private fun ForecastHeader(text: String) {
+	Text(
+		text = text,
+		modifier = Modifier.fillMaxWidth(1f),
+		textAlign = TextAlign.Center,
+		style = MaterialTheme.typography.titleLarge
+	)
+}
+
+@Composable
+private fun ForecastRow(
+	weather: List<WeatherSnapshot>,
+	onSnapshotSelected: (WeatherSnapshot) -> Unit
+) {
+	LazyRow(
+		modifier = Modifier.fillMaxWidth(),
+		horizontalArrangement = Arrangement.SpaceEvenly
+	) {
+		items(weather) { item ->
+			WeatherItem(
+				modifier = Modifier.padding(4.dp),
+				item = item,
+				onClick = { onSnapshotSelected(it) }
+			)
 		}
 	}
 }
