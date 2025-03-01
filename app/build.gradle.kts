@@ -1,17 +1,17 @@
-import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
 	id("com.android.application")
 	kotlin("android")
-	id("com.google.devtools.ksp")
-	id("dagger.hilt.android.plugin")
+	alias(libs.plugins.compose.compiler)
+	alias(libs.plugins.hiltAndroid)
+	alias(libs.plugins.kotlinAndroidKsp)
 }
 
 // Load keystore
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties().apply {
-	load(FileInputStream(keystorePropertiesFile))
+	load(keystorePropertiesFile.inputStream())
 }
 
 // Load the API Key
@@ -22,7 +22,8 @@ val apiProperties = Properties().apply {
 
 android {
 	namespace = "com.jessosborn.simpleweather"
-	compileSdk = 34
+	compileSdk = 35
+
 	buildFeatures {
 		compose = true
 	}
@@ -43,7 +44,7 @@ android {
 	defaultConfig {
 		applicationId = "com.jessosborn.weatherapp"
 		minSdk = 27
-		targetSdk = 34
+		targetSdk = 35
 		versionCode = 1
 		versionName = "1.0"
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -58,9 +59,7 @@ android {
 			signingConfig = signingConfigs.getByName("release")
 		}
 	}
-	composeOptions {
-		kotlinCompilerExtensionVersion = "1.5.2"
-	}
+
 	compileOptions {
 		sourceCompatibility = JavaVersion.VERSION_1_8
 		targetCompatibility = JavaVersion.VERSION_1_8
@@ -73,25 +72,22 @@ dependencies {
 	implementation(libs.androidx.activity.ktx)
 	implementation(libs.androidx.appcompat)
 	implementation(libs.androidx.core.ktx)
-	implementation(libs.androidx.lifecycle.viewmodel.ktx)
 	implementation(libs.androidx.core.splashscreen)
-	implementation(libs.androidx.material3.android)
 
 	//Compose
 	platform(libs.androidx.compose.bom)
 	implementation(libs.activity.compose)
-	implementation(libs.androidx.animation)
-	implementation(libs.androidx.material)
-	implementation(libs.ui.tooling)
-	implementation(libs.androidx.runtime.livedata)
-	implementation(libs.androidx.material.icons.core)
-	implementation(libs.androidx.material.icons.extended)
-	implementation(libs.material3)
-	implementation(libs.androidx.hilt.navigation.compose)
 	implementation(libs.androidx.lifecycle.viewmodel.compose)
-	implementation(libs.androidx.navigation.compose)
+	implementation(libs.compose.animation)
+	implementation(libs.compose.material)
+	implementation(libs.compose.material.icons.extended)
+	implementation(libs.compose.material3.android)
+	implementation(libs.compose.navigation)
+	implementation(libs.compose.runtime.livedata)
+	implementation(libs.hilt.navigation.compose)
+	implementation(libs.ui.tooling)
 
-	//Coil
+	//Coil image loading
 	implementation(libs.coil.compose)
 
 	//DataStore
@@ -101,15 +97,11 @@ dependencies {
 	implementation(libs.hilt.android)
 	ksp(libs.hilt.android.compiler)
 
+	//Junit
+	testImplementation(libs.junit)
+
 	//Retrofit
 	implementation(libs.retrofit)
 	implementation(libs.converter.gson)
 	implementation(libs.logging.interceptor)
-
-	//Testing
-	androidTestImplementation(libs.androidx.junit)
-	androidTestImplementation(libs.androidx.rules)
-	testImplementation(libs.junit)
-	testImplementation(libs.mockito.core)
-	androidTestImplementation(libs.ui.test.junit4)
 }
