@@ -6,7 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -14,41 +18,41 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.domain.Theme
 import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.utils.CombinedPreviews
-import com.jessosborn.simpleweather.utils.DataStoreUtil
 import com.jessosborn.simpleweather.utils.isInvalidZip
 import com.jessosborn.simpleweather.utils.isValidZip
 import com.jessosborn.simpleweather.view.compose.components.ThemeSelector
 import com.jessosborn.simpleweather.view.compose.components.UnitsSelector
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onSettingsEntered: () -> Unit) {
-	val context = LocalContext.current
+fun SettingsScreen(
+	theme: Theme,
+	units: Units,
+	zipCode: String,
+	onThemeChosen: (Theme) -> Unit,
+	onUnitsChosen: (Units) -> Unit,
+	onZipEntered: (String) -> Unit,
+	onSaveClicked: () -> Unit
+) {
 	val keyboardController = LocalSoftwareKeyboardController.current
 
-	val scope = rememberCoroutineScope()
-	val textState = remember { mutableStateOf(TextFieldValue()) }
-
-	val selectedUnits by DataStoreUtil.getUnits(context).collectAsState(initial = Units.Imperial)
-	val selectedTheme by DataStoreUtil.getTheme(context).collectAsState(initial = Theme.FollowSystem)
+	var zipCodeTextFieldValue by remember { mutableStateOf(TextFieldValue(text = zipCode)) }
 
 	Scaffold(
 		topBar = {
@@ -56,6 +60,11 @@ fun SettingsScreen(onSettingsEntered: () -> Unit) {
 				title = { Text(stringResource(id = R.string.settings)) },
 				colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
 			)
+		},
+		floatingActionButton = {
+			FloatingActionButton(onClick = { onSaveClicked() }) {
+				Icon(imageVector = Icons.Default.Save, contentDescription = "Save")
+			}
 		},
 		content = { padding ->
 			Column(
@@ -78,11 +87,9 @@ fun SettingsScreen(onSettingsEntered: () -> Unit) {
 					)
 					ThemeSelector(
 						modifier = Modifier.padding(end = 10.dp),
-						selectedTheme = selectedTheme,
+						selectedTheme = theme,
 						onClick = { chosenTheme ->
-							scope.launch {
-								DataStoreUtil.saveTheme(context = context, value = chosenTheme)
-							}
+							onThemeChosen(chosenTheme)
 						}
 					)
 				}
@@ -98,12 +105,8 @@ fun SettingsScreen(onSettingsEntered: () -> Unit) {
 					)
 					UnitsSelector(
 						modifier = Modifier.padding(end = 10.dp),
-						selectedUnits = selectedUnits,
-						onClick = { chosenUnits ->
-							scope.launch {
-								DataStoreUtil.saveUnits(context = context, value = chosenUnits)
-							}
-						}
+						selectedUnits = units,
+						onClick = { chosenUnits -> onUnitsChosen(chosenUnits) }
 					)
 				}
 				Row(
@@ -117,23 +120,24 @@ fun SettingsScreen(onSettingsEntered: () -> Unit) {
 						style = MaterialTheme.typography.titleLarge
 					)
 					OutlinedTextField(
-						value = textState.value,
+						value = zipCodeTextFieldValue,
 						onValueChange = {
-							textState.value = it
-							if (it.text.isValidZip()) {
-								scope.launch {
-									DataStoreUtil.saveZip(context = context, value = it.text)
-								}
-							}
+							zipCodeTextFieldValue = it
+							if (it.text.isValidZip()) onZipEntered(zipCodeTextFieldValue.text)
 						},
 						modifier = Modifier.padding(horizontal = 4.dp),
-						label = {},
-						isError = textState.value.text.isInvalidZip(),
+						textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
+						label = {
+							if (zipCodeTextFieldValue.text.isInvalidZip()) {
+								Text(text = "Enter a valid ZipCode")
+							}
+						},
+						isError = zipCodeTextFieldValue.text.isInvalidZip(),
 						singleLine = true,
 						keyboardActions = KeyboardActions(
 							onDone = {
 								keyboardController?.hide()
-								onSettingsEntered()
+								onSaveClicked()
 							}
 						)
 					)
@@ -145,8 +149,33 @@ fun SettingsScreen(onSettingsEntered: () -> Unit) {
 
 @CombinedPreviews
 @Composable
-private fun SettingsScreenPreview() {
+private fun Preview() {
 	SimpleWeatherTheme {
-		SettingsScreen(onSettingsEntered = {})
+		SettingsScreen(
+			theme = Theme.FollowSystem,
+			units = Units.Metric,
+			zipCode = "90210",
+			onThemeChosen = {},
+			onUnitsChosen = {},
+			onZipEntered = {},
+			onSaveClicked = {}
+		)
 	}
 }
+
+@CombinedPreviews
+@Composable
+private fun ErrorPreview() {
+	SimpleWeatherTheme {
+		SettingsScreen(
+			theme = Theme.FollowSystem,
+			units = Units.Metric,
+			zipCode = "9021",
+			onThemeChosen = {},
+			onUnitsChosen = {},
+			onZipEntered = {},
+			onSaveClicked = {}
+		)
+	}
+}
+
