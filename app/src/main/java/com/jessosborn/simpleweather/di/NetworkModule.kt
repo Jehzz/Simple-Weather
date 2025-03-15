@@ -23,7 +23,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-
 	@Provides
 	@Singleton
 	fun provideClient(@ApplicationContext context: Context): OkHttpClient {
@@ -44,7 +43,7 @@ object NetworkModule {
 			.addInterceptor(
 				Interceptor { chain ->
 					var request = chain.request()
-					if (!isOnline(context)) {
+					if (context.isOnline().not()) {
 						val cacheControl = CacheControl.Builder()
 							.maxStale(1, TimeUnit.DAYS)
 							.build()

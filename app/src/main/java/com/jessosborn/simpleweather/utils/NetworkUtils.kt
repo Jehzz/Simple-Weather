@@ -4,9 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 
-fun isOnline(context: Context): Boolean {
-    val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+fun Context.isOnline(): Boolean {
+    val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)?.let {
         if (it.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
