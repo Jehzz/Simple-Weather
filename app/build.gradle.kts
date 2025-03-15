@@ -76,14 +76,9 @@ dependencies {
 
 	//Compose
 	platform(libs.androidx.compose.bom)
-	implementation(libs.activity.compose)
-	implementation(libs.androidx.lifecycle.viewmodel.compose)
-	implementation(libs.compose.animation)
 	implementation(libs.compose.material)
 	implementation(libs.compose.material.icons.extended)
 	implementation(libs.compose.material3.android)
-	implementation(libs.compose.navigation)
-	implementation(libs.compose.runtime.livedata)
 	implementation(libs.hilt.navigation.compose)
 	implementation(libs.ui.tooling)
 
