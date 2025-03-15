@@ -37,9 +37,14 @@ fun ForecastLayout(
 	val tomorrowsWeather = partitionedWeather.second.take(8)
 	val dayAftersWeather = partitionedWeather.second.drop(8).take(8)
 
-	Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-		ForecastHeader(text = stringResource(id = R.string.todays_forecast))
-		ForecastRow(weather = todaysWeather, onSnapshotSelected = onSnapshotSelected)
+	Column(
+		modifier = Modifier.padding(vertical = 8.dp),
+		verticalArrangement = Arrangement.spacedBy(12.dp)
+	) {
+		if (todaysWeather.isNotEmpty()) {
+			ForecastHeader(text = stringResource(id = R.string.todays_forecast))
+			ForecastRow(weather = todaysWeather, onSnapshotSelected = onSnapshotSelected)
+		}
 		ForecastHeader(text = stringResource(id = R.string.tomorrows_weather))
 		ForecastRow(weather = tomorrowsWeather, onSnapshotSelected = onSnapshotSelected)
 		ForecastHeader(text = stringResource(id = R.string.the_day_after))
