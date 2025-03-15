@@ -14,5 +14,5 @@ plugins {
 }
 
 task<Delete>("clean") {
-	delete = setOf(rootProject.buildDir)
+	delete = setOf(getLayout().buildDirectory)
 }
