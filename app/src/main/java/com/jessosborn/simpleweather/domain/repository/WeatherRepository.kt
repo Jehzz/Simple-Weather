@@ -2,14 +2,18 @@ package com.jessosborn.simpleweather.domain.repository
 
 import android.content.Context
 import com.jessosborn.simpleweather.R
+import com.jessosborn.simpleweather.domain.db.dao.WeatherSnapshotDao
 import com.jessosborn.simpleweather.domain.remote.OpenWeatherEndpoint
 import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class WeatherRepository(
     context: Context,
-    private val service: OpenWeatherEndpoint
+	private val service: OpenWeatherEndpoint,
+	private val weatherSnapshotDao: WeatherSnapshotDao
 ) : IWeatherRepository {
 
     private val key = context.resources.getString(R.string.api_key)
@@ -19,6 +23,10 @@ class WeatherRepository(
 		try {
 			if (response.isSuccessful) {
 				response.body()?.let {
+					withContext(Dispatchers.IO) {
+						weatherSnapshotDao.deleteAll()
+						weatherSnapshotDao.insert(it.list)
+					}
 					return Result.success(it)
 				} ?: return Result.failure(IOException("Body null"))
 			} else {

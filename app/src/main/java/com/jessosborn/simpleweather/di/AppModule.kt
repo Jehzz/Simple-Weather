@@ -1,6 +1,9 @@
 package com.jessosborn.simpleweather.di
 
 import android.content.Context
+import androidx.room.Room
+import com.jessosborn.simpleweather.domain.db.WeatherSnapshotDb
+import com.jessosborn.simpleweather.domain.db.dao.WeatherSnapshotDao
 import com.jessosborn.simpleweather.domain.remote.OpenWeatherEndpoint
 import com.jessosborn.simpleweather.domain.repository.IWeatherRepository
 import com.jessosborn.simpleweather.domain.repository.WeatherRepository
@@ -20,10 +23,21 @@ object AppModule {
     fun provideWeatherRepository(
 		@ApplicationContext context: Context,
 		network: OpenWeatherEndpoint,
+		dao: WeatherSnapshotDao
 	): IWeatherRepository {
         return WeatherRepository(
             context = context,
-            service = network
+			service = network,
+			weatherSnapshotDao = dao
         )
     }
+
+	@Provides
+	@Singleton
+	fun providesAppDatabase(@ApplicationContext context: Context): WeatherSnapshotDb =
+		Room.databaseBuilder(context = context, klass = WeatherSnapshotDb::class.java, name = "current_weather")
+			.build()
+
+	@Provides
+	fun providesCurrentWeatherDao(db: WeatherSnapshotDb): WeatherSnapshotDao = db.weatherSnapshotDao()
 }

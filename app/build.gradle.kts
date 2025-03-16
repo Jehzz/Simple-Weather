@@ -6,6 +6,7 @@ plugins {
 	alias(libs.plugins.compose.compiler)
 	alias(libs.plugins.hiltAndroid)
 	alias(libs.plugins.kotlinAndroidKsp)
+	alias(libs.plugins.room)
 }
 
 // Load keystore
@@ -66,6 +67,10 @@ android {
 	}
 }
 
+room {
+	schemaDirectory("$projectDir/schemas")
+}
+
 dependencies {
 
 	//AndroidX
@@ -88,6 +93,9 @@ dependencies {
 	//DataStore
 	implementation(libs.androidx.datastore.preferences)
 
+	//Glance
+	implementation(libs.glance.appwidget)
+
 	//Hilt
 	implementation(libs.hilt.android)
 	ksp(libs.hilt.android.compiler)
@@ -99,4 +107,9 @@ dependencies {
 	implementation(libs.retrofit)
 	implementation(libs.converter.gson)
 	implementation(libs.logging.interceptor)
+
+	//Room
+	ksp(libs.androidx.room.compiler)
+	implementation(libs.androidx.room.ktx)
+	implementation(libs.androidx.room.runtime)
 }
