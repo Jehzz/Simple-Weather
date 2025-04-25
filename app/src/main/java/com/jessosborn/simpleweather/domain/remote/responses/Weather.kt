@@ -31,16 +31,19 @@ data class ForecastWeather(
 data class WeatherSnapshot(
     @PrimaryKey()
     val dt: String,
-    val dt_txt: String,
+    val dt_txt: String, // Time of data forecasted, ISO, UTC
     val main: Main,
     val weather: List<WeatherData>,
+    val pop: Float,
+    val rain: Rain? = null,
+    val snow: Snow? = null, // Added optional snow field
 )
 
 @Keep
 data class Main(
     val temp: Float,
-    val temp_min: String,
-    val temp_max: String,
+    val temp_min: Float,
+    val temp_max: Float,
     val humidity: String,
 )
 
@@ -53,7 +56,7 @@ class MainTypeConverter {
     @TypeConverter
     fun toMain(main: String): Main {
         val parts = main.split(",")
-        return Main(parts[0].toFloat(), parts[1], parts[2], parts[3])
+        return Main(parts[0].toFloat(), parts[1].toFloat(), parts[2].toFloat(), parts[3])
     }
 }
 
@@ -93,3 +96,37 @@ data class Wind(
     val speed: String,
     val deg: String,
 )
+
+@Keep
+data class Rain(
+    val `3h`: Float
+)
+
+class RainTypeConverter {
+    @TypeConverter
+    fun fromRain(rain: Rain?): String? {
+        return rain?.`3h`?.toString()
+    }
+
+    @TypeConverter
+    fun toRain(rain: String?): Rain? {
+        return rain?.toFloatOrNull()?.let { Rain(it) }
+    }
+}
+
+@Keep
+data class Snow(
+    val `3h`: Float
+)
+
+class SnowTypeConverter {
+    @TypeConverter
+    fun fromSnow(snow: Snow?): String? {
+        return snow?.`3h`?.toString()
+    }
+
+    @TypeConverter
+    fun toSnow(snow: String?): Snow? {
+        return snow?.toFloatOrNull()?.let { Snow(it) }
+    }
+}

@@ -131,8 +131,8 @@ private fun Preview(@PreviewParameter(ForecastPreviewParams::class) forecast: Fo
 				name = "Hollywood",
 				main = Main(
 					temp = 73.38f,
-					temp_min = "67.01",
-					temp_max = "76.87",
+					temp_min = 67.01f,
+					temp_max = 76.87f,
 					humidity = "78"
 				),
 				sys = Sys(

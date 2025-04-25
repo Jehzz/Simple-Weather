@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "eb3367e31722b327976eeeb073de2c98",
+    "identityHash": "3499748e4ce987791c5641ea3fd884a0",
     "entities": [
       {
         "tableName": "weather_snapshot",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dt` TEXT NOT NULL, `dt_txt` TEXT NOT NULL, `main` TEXT NOT NULL, `weather` TEXT NOT NULL, PRIMARY KEY(`dt`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dt` TEXT NOT NULL, `dt_txt` TEXT NOT NULL, `main` TEXT NOT NULL, `weather` TEXT NOT NULL, `pop` REAL NOT NULL, `rain` TEXT, `snow` TEXT, PRIMARY KEY(`dt`))",
         "fields": [
           {
             "fieldPath": "dt",
@@ -31,6 +31,24 @@
             "columnName": "weather",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "pop",
+            "columnName": "pop",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rain",
+            "columnName": "rain",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "snow",
+            "columnName": "snow",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -46,7 +64,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'eb3367e31722b327976eeeb073de2c98')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3499748e4ce987791c5641ea3fd884a0')"
     ]
   }
 }

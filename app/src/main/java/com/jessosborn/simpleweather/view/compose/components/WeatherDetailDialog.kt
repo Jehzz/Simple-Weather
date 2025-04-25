@@ -31,6 +31,13 @@ fun WeatherDetailDialog(
 					Text(text = "Temperature : ${weatherSnapshot.main.temp}")
 					Text(text = "Humidity : ${weatherSnapshot.main.humidity}")
 					Text(text = weatherSnapshot.weather.first().description)
+					Text(text = "Precipitation : ${(weatherSnapshot.pop * 100).toInt()}%")
+					weatherSnapshot.snow?.let {
+						Text(text = "Snow : ${it.`3h`}mm")
+					}
+					weatherSnapshot.rain?.let {
+						Text(text = "Rain : ${it.`3h`}mm")
+					}
 				}
 			}
 		}

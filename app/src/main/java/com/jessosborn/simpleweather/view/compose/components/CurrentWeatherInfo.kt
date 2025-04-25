@@ -153,8 +153,8 @@ class WeatherPreviewParams : PreviewParameterProvider<CurrentWeather> {
 			name = "Hollywood",
 			main = Main(
 				temp = 73.38f,
-				temp_min = "67.01",
-				temp_max = "76.87",
+				temp_min = 67.01f,
+				temp_max = 76.87f,
 				humidity = "78"
 			),
 			sys = Sys(
@@ -179,8 +179,8 @@ class WeatherPreviewParams : PreviewParameterProvider<CurrentWeather> {
 			name = "Las Vegas",
 			main = Main(
 				temp = 53.38f,
-				temp_min = "50.01",
-				temp_max = "66.87",
+				temp_min = 50.01f,
+				temp_max = 66.87f,
 				humidity = "40"
 			),
 			sys = Sys(
