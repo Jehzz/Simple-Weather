@@ -19,6 +19,8 @@ import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
+import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
@@ -39,6 +41,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
 import com.jessosborn.simpleweather.domain.repository.WidgetRepository
+import com.jessosborn.simpleweather.view.MainActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -68,8 +71,9 @@ private fun Content(weather: List<WeatherSnapshot>) {
 		modifier = GlanceModifier
 			.fillMaxSize()
 			.background(GlanceTheme.colors.background)
+			.clickable { actionStartActivity<MainActivity>() }
 	) {
-		weather.forEach { weather -> GlanceWeatherItem(weather = weather) }
+		weather.take(10).forEach { weather -> GlanceWeatherItem(weather = weather) }
 	}
 }
 
