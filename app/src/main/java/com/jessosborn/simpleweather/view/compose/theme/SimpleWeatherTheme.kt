@@ -15,27 +15,29 @@ import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun SimpleWeatherTheme(
-	darkTheme: Boolean = isSystemInDarkTheme(),
-	content: @Composable () -> Unit
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
 ) {
-	val extendedColors = ExtendedColors(
-		hot = if (darkTheme) Color(0xFFB35919) else Color(0xffF57C00),
-		cold = if (darkTheme) Color(0xFF3E70A1) else Color(0xff1A8DFF)
-	)
+    val extendedColors =
+        ExtendedColors(
+            hot = if (darkTheme) Color(0xFFB35919) else Color(0xffF57C00),
+            cold = if (darkTheme) Color(0xFF3E70A1) else Color(0xff1A8DFF),
+        )
 
-	val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-	val colorScheme = when {
-		dynamicColor && darkTheme -> dynamicDarkColorScheme(LocalContext.current)
-		dynamicColor && !darkTheme -> dynamicLightColorScheme(LocalContext.current)
-		darkTheme -> darkColorScheme().copy(background = Color.Black)
-		else -> lightColorScheme()
-	}
+    val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    val colorScheme =
+        when {
+            dynamicColor && darkTheme -> dynamicDarkColorScheme(LocalContext.current)
+            dynamicColor && !darkTheme -> dynamicLightColorScheme(LocalContext.current)
+            darkTheme -> darkColorScheme().copy(background = Color.Black)
+            else -> lightColorScheme()
+        }
 
-	CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
-		MaterialTheme(
-			colorScheme = colorScheme,
-			typography = Typography(),
-			content = content
-		)
-	}
+    CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography(),
+            content = content,
+        )
+    }
 }

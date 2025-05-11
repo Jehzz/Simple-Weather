@@ -42,140 +42,141 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-	theme: Theme,
-	units: Units,
-	zipCode: String,
-	onThemeChosen: (Theme) -> Unit,
-	onUnitsChosen: (Units) -> Unit,
-	onZipEntered: (String) -> Unit,
-	onSaveClicked: () -> Unit
+    theme: Theme,
+    units: Units,
+    zipCode: String,
+    onThemeChosen: (Theme) -> Unit,
+    onUnitsChosen: (Units) -> Unit,
+    onZipEntered: (String) -> Unit,
+    onSaveClicked: () -> Unit,
 ) {
-	val keyboardController = LocalSoftwareKeyboardController.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
-	var zipCodeTextFieldValue by remember { mutableStateOf(TextFieldValue(text = zipCode)) }
+    var zipCodeTextFieldValue by remember { mutableStateOf(TextFieldValue(text = zipCode)) }
 
-	Scaffold(
-		topBar = {
-			TopAppBar(
-				title = { Text(stringResource(id = R.string.settings)) },
-				colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-			)
-		},
-		floatingActionButton = {
-			FloatingActionButton(onClick = { onSaveClicked() }) {
-				Icon(imageVector = Icons.Default.Save, contentDescription = "Save")
-			}
-		},
-		content = { padding ->
-			Column(
-				modifier = Modifier.padding(
-					vertical = padding.calculateTopPadding(),
-					horizontal = 12.dp,
-				),
-				horizontalAlignment = Alignment.CenterHorizontally,
-				verticalArrangement = Arrangement.spacedBy(40.dp)
-			) {
-				Row(
-					modifier = Modifier.fillMaxWidth(),
-					verticalAlignment = Alignment.CenterVertically,
-					horizontalArrangement = Arrangement.SpaceBetween
-				) {
-					Text(
-						modifier = Modifier.padding(horizontal = 12.dp),
-						text = stringResource(id = R.string.theme),
-						style = MaterialTheme.typography.titleLarge
-					)
-					ThemeSelector(
-						modifier = Modifier.padding(end = 10.dp),
-						selectedTheme = theme,
-						onClick = { chosenTheme ->
-							onThemeChosen(chosenTheme)
-						}
-					)
-				}
-				Row(
-					modifier = Modifier.fillMaxWidth(),
-					verticalAlignment = Alignment.CenterVertically,
-					horizontalArrangement = Arrangement.SpaceBetween
-				) {
-					Text(
-						modifier = Modifier.padding(horizontal = 12.dp),
-						text = stringResource(id = R.string.units),
-						style = MaterialTheme.typography.titleLarge
-					)
-					UnitsSelector(
-						modifier = Modifier.padding(end = 10.dp),
-						selectedUnits = units,
-						onClick = { chosenUnits -> onUnitsChosen(chosenUnits) }
-					)
-				}
-				Row(
-					modifier = Modifier.fillMaxWidth(),
-					verticalAlignment = Alignment.CenterVertically,
-					horizontalArrangement = Arrangement.SpaceBetween
-				) {
-					Text(
-						modifier = Modifier.padding(horizontal = 12.dp),
-						text = stringResource(id = R.string.zip_code),
-						style = MaterialTheme.typography.titleLarge
-					)
-					OutlinedTextField(
-						value = zipCodeTextFieldValue,
-						onValueChange = {
-							zipCodeTextFieldValue = it
-							if (it.text.isValidZip()) onZipEntered(zipCodeTextFieldValue.text)
-						},
-						modifier = Modifier.padding(horizontal = 4.dp),
-						textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
-						label = {
-							if (zipCodeTextFieldValue.text.isInvalidZip()) {
-								Text(text = "Enter a valid ZipCode")
-							}
-						},
-						isError = zipCodeTextFieldValue.text.isInvalidZip(),
-						singleLine = true,
-						keyboardActions = KeyboardActions(
-							onDone = {
-								keyboardController?.hide()
-								onSaveClicked()
-							}
-						)
-					)
-				}
-			}
-		}
-	)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(id = R.string.settings)) },
+                colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { onSaveClicked() }) {
+                Icon(imageVector = Icons.Default.Save, contentDescription = "Save")
+            }
+        },
+        content = { padding ->
+            Column(
+                modifier =
+                    Modifier.padding(
+                        vertical = padding.calculateTopPadding(),
+                        horizontal = 12.dp,
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(40.dp),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        text = stringResource(id = R.string.theme),
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    ThemeSelector(
+                        modifier = Modifier.padding(end = 10.dp),
+                        selectedTheme = theme,
+                        onClick = { chosenTheme ->
+                            onThemeChosen(chosenTheme)
+                        },
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        text = stringResource(id = R.string.units),
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    UnitsSelector(
+                        modifier = Modifier.padding(end = 10.dp),
+                        selectedUnits = units,
+                        onClick = { chosenUnits -> onUnitsChosen(chosenUnits) },
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        text = stringResource(id = R.string.zip_code),
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    OutlinedTextField(
+                        value = zipCodeTextFieldValue,
+                        onValueChange = {
+                            zipCodeTextFieldValue = it
+                            if (it.text.isValidZip()) onZipEntered(zipCodeTextFieldValue.text)
+                        },
+                        modifier = Modifier.padding(horizontal = 4.dp),
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
+                        label = {
+                            if (zipCodeTextFieldValue.text.isInvalidZip()) {
+                                Text(text = "Enter a valid ZipCode")
+                            }
+                        },
+                        isError = zipCodeTextFieldValue.text.isInvalidZip(),
+                        singleLine = true,
+                        keyboardActions =
+                            KeyboardActions(
+                                onDone = {
+                                    keyboardController?.hide()
+                                    onSaveClicked()
+                                },
+                            ),
+                    )
+                }
+            }
+        },
+    )
 }
 
 @CombinedPreviews
 @Composable
 private fun Preview() {
-	SimpleWeatherTheme {
-		SettingsScreen(
-			theme = Theme.FollowSystem,
-			units = Units.Metric,
-			zipCode = "90210",
-			onThemeChosen = {},
-			onUnitsChosen = {},
-			onZipEntered = {},
-			onSaveClicked = {}
-		)
-	}
+    SimpleWeatherTheme {
+        SettingsScreen(
+            theme = Theme.FollowSystem,
+            units = Units.Metric,
+            zipCode = "90210",
+            onThemeChosen = {},
+            onUnitsChosen = {},
+            onZipEntered = {},
+            onSaveClicked = {},
+        )
+    }
 }
 
 @CombinedPreviews
 @Composable
 private fun ErrorPreview() {
-	SimpleWeatherTheme {
-		SettingsScreen(
-			theme = Theme.FollowSystem,
-			units = Units.Metric,
-			zipCode = "9021",
-			onThemeChosen = {},
-			onUnitsChosen = {},
-			onZipEntered = {},
-			onSaveClicked = {}
-		)
-	}
+    SimpleWeatherTheme {
+        SettingsScreen(
+            theme = Theme.FollowSystem,
+            units = Units.Metric,
+            zipCode = "9021",
+            onThemeChosen = {},
+            onUnitsChosen = {},
+            onZipEntered = {},
+            onSaveClicked = {},
+        )
+    }
 }
-

@@ -5,7 +5,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ZipUtilsTest {
-
     @Test
     fun isValidZip() {
         assertTrue(VALID_USA_ZIP.isValidZip())

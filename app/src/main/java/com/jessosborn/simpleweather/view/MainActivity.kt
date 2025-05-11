@@ -16,23 +16,23 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        installSplashScreen()
+        enableEdgeToEdge()
+        setContent {
+            val theme =
+                DataStoreUtil
+                    .getTheme(context = applicationContext)
+                    .collectAsState(initial = Theme.FollowSystem)
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		installSplashScreen()
-		enableEdgeToEdge()
-		setContent {
-			val theme = DataStoreUtil
-				.getTheme(context = applicationContext)
-				.collectAsState(initial = Theme.FollowSystem)
-
-			SimpleWeatherTheme(
-				darkTheme = (theme.value == Theme.FollowSystem && isSystemInDarkTheme() || theme.value == Theme.Dark)
-			) {
-				Surface {
-					SimpleWeatherNavigation()
-				}
-			}
-		}
-	}
+            SimpleWeatherTheme(
+                darkTheme = (theme.value == Theme.FollowSystem && isSystemInDarkTheme() || theme.value == Theme.Dark),
+            ) {
+                Surface {
+                    SimpleWeatherNavigation()
+                }
+            }
+        }
+    }
 }

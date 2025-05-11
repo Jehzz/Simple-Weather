@@ -9,41 +9,41 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 
 @Preview(
-	name = "small font",
-	group = "font scales",
-	fontScale = 0.5f
+    name = "small font",
+    group = "font scales",
+    fontScale = 0.5f,
 )
 @Preview(
-	name = "large font",
-	group = "font scales",
-	fontScale = 1.5f
+    name = "large font",
+    group = "font scales",
+    fontScale = 1.5f,
 )
 annotation class FontScalePreviews
 
 @Preview(
-	name = "day",
-	group = "daynight",
-	showBackground = true
+    name = "day",
+    group = "daynight",
+    showBackground = true,
 )
 @Preview(
-	name = "night",
-	group = "daynight",
-	showBackground = true,
-	uiMode = Configuration.UI_MODE_NIGHT_YES
+    name = "night",
+    group = "daynight",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 annotation class DayNightPreviews
 
 @Preview(
-	name = "small screen",
-	group = "screen scales",
-	showBackground = true,
-	device = Devices.PIXEL
+    name = "small screen",
+    group = "screen scales",
+    showBackground = true,
+    device = Devices.PIXEL,
 )
 @Preview(
-	name = "large screen",
-	group = "screen scales",
-	showBackground = true,
-	device = Devices.TABLET
+    name = "large screen",
+    group = "screen scales",
+    showBackground = true,
+    device = Devices.TABLET,
 )
 annotation class ScreenSizePreviews
 
@@ -53,5 +53,6 @@ annotation class ScreenSizePreviews
 annotation class CombinedPreviews
 
 @Composable
-fun debugPlaceholder(@DrawableRes debugPreview: Int) =
-	if (LocalInspectionMode.current) painterResource(id = debugPreview) else null
+fun debugPlaceholder(
+    @DrawableRes debugPreview: Int,
+) = if (LocalInspectionMode.current) painterResource(id = debugPreview) else null

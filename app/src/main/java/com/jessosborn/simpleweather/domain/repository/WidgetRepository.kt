@@ -11,33 +11,35 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class WidgetRepository @Inject constructor(
-	@ApplicationContext private val context: Context,
-	private val weatherSnapshotDao: WeatherSnapshotDao
-) {
-	@EntryPoint
-	@InstallIn(SingletonComponent::class)
-	interface RepositoryEntryPoint {
-		fun widgetRepository(): WidgetRepository
-	}
+class WidgetRepository
+    @Inject
+    constructor(
+        @ApplicationContext private val context: Context,
+        private val weatherSnapshotDao: WeatherSnapshotDao,
+    ) {
+        @EntryPoint
+        @InstallIn(SingletonComponent::class)
+        interface RepositoryEntryPoint {
+            fun widgetRepository(): WidgetRepository
+        }
 
-	fun addWeather(weatherSnapshot: List<WeatherSnapshot>) {
-		weatherSnapshotDao.insert(weatherSnapshot)
-	}
+        fun addWeather(weatherSnapshot: List<WeatherSnapshot>) {
+            weatherSnapshotDao.insert(weatherSnapshot)
+        }
 
-	fun deleteWeather(weatherSnapshot: List<WeatherSnapshot>) {
-		weatherSnapshotDao.delete(weatherSnapshot)
-	}
+        fun deleteWeather(weatherSnapshot: List<WeatherSnapshot>) {
+            weatherSnapshotDao.delete(weatherSnapshot)
+        }
 
-	fun getWeather(): Flow<List<WeatherSnapshot>> {
-		return weatherSnapshotDao.getWeather()
-	}
+        fun getWeather(): Flow<List<WeatherSnapshot>> {
+            return weatherSnapshotDao.getWeather()
+        }
 
-	companion object {
-		fun getRepository(context: Context) =
-			EntryPoints.get(
-				context,
-				RepositoryEntryPoint::class.java
-			).widgetRepository()
-	}
-}
+        companion object {
+            fun getRepository(context: Context) =
+                EntryPoints.get(
+                    context,
+                    RepositoryEntryPoint::class.java,
+                ).widgetRepository()
+        }
+    }

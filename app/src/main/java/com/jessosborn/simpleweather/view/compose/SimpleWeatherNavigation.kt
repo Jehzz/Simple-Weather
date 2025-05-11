@@ -38,7 +38,7 @@ fun SimpleWeatherNavigation() {
                 isNetworkLoading = weatherViewModel.isNetworkLoading.collectAsState().value,
                 networkError = weatherViewModel.networkError.collectAsState("").value,
                 refreshData = { zip, units -> weatherViewModel.fetchWeatherFromApi(zip, units) },
-                onSettingsClicked = { navController.navigate(Screen.Settings.route) }
+                onSettingsClicked = { navController.navigate(Screen.Settings.route) },
             )
         }
         composable(Screen.Settings.route) {
@@ -51,7 +51,7 @@ fun SimpleWeatherNavigation() {
                 onThemeChosen = { chosenTheme -> scope.launch { DataStoreUtil.saveTheme(context, chosenTheme) } },
                 onUnitsChosen = { chosenUnits -> scope.launch { DataStoreUtil.saveUnits(context, chosenUnits) } },
                 onZipEntered = { chosenZip -> scope.launch { DataStoreUtil.saveZip(context, chosenZip) } },
-                onSaveClicked = { navController.popBackStack() }
+                onSaveClicked = { navController.popBackStack() },
             )
         }
     }

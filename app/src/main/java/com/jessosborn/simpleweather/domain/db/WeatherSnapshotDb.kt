@@ -12,11 +12,11 @@ import com.jessosborn.simpleweather.domain.remote.responses.WeatherTypeConverter
 
 @Database(entities = [WeatherSnapshot::class], version = 1)
 @TypeConverters(
-	MainTypeConverter::class,
-	WeatherTypeConverter::class,
-	RainTypeConverter::class,
-	SnowTypeConverter::class
+    MainTypeConverter::class,
+    WeatherTypeConverter::class,
+    RainTypeConverter::class,
+    SnowTypeConverter::class,
 )
 abstract class WeatherSnapshotDb : RoomDatabase() {
-	abstract fun weatherSnapshotDao(): WeatherSnapshotDao
+    abstract fun weatherSnapshotDao(): WeatherSnapshotDao
 }

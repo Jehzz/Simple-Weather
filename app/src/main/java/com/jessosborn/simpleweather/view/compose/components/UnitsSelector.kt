@@ -18,51 +18,52 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 
 @Composable
 fun UnitsSelector(
-	modifier: Modifier = Modifier,
-	selectedUnits: Units,
-	onClick: (Units) -> Unit
+    modifier: Modifier = Modifier,
+    selectedUnits: Units,
+    onClick: (Units) -> Unit,
 ) {
-	Row(modifier = modifier) {
-		UnitsSelectionChip(
-			unit = Units.Imperial,
-			selected = selectedUnits == Units.Imperial,
-			onClick = { onClick(Units.Imperial) }
-		)
-		Spacer(modifier = Modifier.width(8.dp))
-		UnitsSelectionChip(
-			unit = Units.Metric,
-			selected = selectedUnits == Units.Metric,
-			onClick = { onClick(Units.Metric) }
-		)
-	}
+    Row(modifier = modifier) {
+        UnitsSelectionChip(
+            unit = Units.Imperial,
+            selected = selectedUnits == Units.Imperial,
+            onClick = { onClick(Units.Imperial) },
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        UnitsSelectionChip(
+            unit = Units.Metric,
+            selected = selectedUnits == Units.Metric,
+            onClick = { onClick(Units.Metric) },
+        )
+    }
 }
 
 @Composable
 fun UnitsSelectionChip(
-	unit: Units,
-	selected: Boolean,
-	onClick: () -> Unit,
+    unit: Units,
+    selected: Boolean,
+    onClick: () -> Unit,
 ) {
-	FilterChip(
-		selected = selected,
-		leadingIcon = {
-			if (selected) Icon(
-				imageVector = Icons.Filled.Check,
-				contentDescription = null
-			)
-		},
-		label = { Text(text = unit.name) },
-		onClick = onClick
-	)
+    FilterChip(
+        selected = selected,
+        leadingIcon = {
+            if (selected) {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = null,
+                )
+            }
+        },
+        label = { Text(text = unit.name) },
+        onClick = onClick,
+    )
 }
-
 
 @CombinedPreviews
 @Composable
 private fun ChipSelectorPreview() {
-	SimpleWeatherTheme {
-		Surface {
-			UnitsSelector(selectedUnits = Units.Metric) {}
-		}
-	}
+    SimpleWeatherTheme {
+        Surface {
+            UnitsSelector(selectedUnits = Units.Metric) {}
+        }
+    }
 }

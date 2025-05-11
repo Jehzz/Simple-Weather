@@ -20,61 +20,62 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 
 @Composable
 fun ThemeSelector(
-	modifier: Modifier = Modifier,
-	selectedTheme: Theme,
-	onClick: (Theme) -> Unit
+    modifier: Modifier = Modifier,
+    selectedTheme: Theme,
+    onClick: (Theme) -> Unit,
 ) {
-	Column(
-		modifier = modifier,
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
-		ThemeSelectionChip(
-			theme = Theme.FollowSystem,
-			selected = selectedTheme == Theme.FollowSystem,
-			onClick = { onClick(Theme.FollowSystem) }
-		)
-		Row {
-			ThemeSelectionChip(
-				theme = Theme.Dark,
-				selected = selectedTheme == Theme.Dark,
-				onClick = { onClick(Theme.Dark) }
-			)
-			Spacer(modifier = Modifier.width(8.dp))
-			ThemeSelectionChip(
-				theme = Theme.Light,
-				selected = selectedTheme == Theme.Light,
-				onClick = { onClick(Theme.Light) }
-			)
-		}
-	}
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        ThemeSelectionChip(
+            theme = Theme.FollowSystem,
+            selected = selectedTheme == Theme.FollowSystem,
+            onClick = { onClick(Theme.FollowSystem) },
+        )
+        Row {
+            ThemeSelectionChip(
+                theme = Theme.Dark,
+                selected = selectedTheme == Theme.Dark,
+                onClick = { onClick(Theme.Dark) },
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            ThemeSelectionChip(
+                theme = Theme.Light,
+                selected = selectedTheme == Theme.Light,
+                onClick = { onClick(Theme.Light) },
+            )
+        }
+    }
 }
 
 @Composable
 fun ThemeSelectionChip(
-	theme: Theme,
-	selected: Boolean,
-	onClick: () -> Unit,
+    theme: Theme,
+    selected: Boolean,
+    onClick: () -> Unit,
 ) {
-	FilterChip(
-		selected = selected,
-		leadingIcon = {
-			if (selected) Icon(
-				imageVector = Icons.Filled.Check,
-				contentDescription = null
-			)
-		},
-		label = { Text(text = theme.name) },
-		onClick = onClick
-	)
+    FilterChip(
+        selected = selected,
+        leadingIcon = {
+            if (selected) {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = null,
+                )
+            }
+        },
+        label = { Text(text = theme.name) },
+        onClick = onClick,
+    )
 }
-
 
 @CombinedPreviews
 @Composable
 private fun Preview() {
-	SimpleWeatherTheme {
-		Surface(onClick = { /*TODO*/ }) {
-			ThemeSelector(selectedTheme = Theme.FollowSystem) {}
-		}
-	}
+    SimpleWeatherTheme {
+        Surface(onClick = { /*TODO*/ }) {
+            ThemeSelector(selectedTheme = Theme.FollowSystem) {}
+        }
+    }
 }

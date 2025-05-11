@@ -42,121 +42,128 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
-	currentWeather: CurrentWeather? = null,
-	forecastWeather: ForecastWeather? = null,
-	userZip: String,
-	preferredUnits: Units,
-	isNetworkLoading: Boolean,
-	networkError: String,
-	refreshData: (String, Units) -> Unit,
-	onSettingsClicked: () -> Unit
+    currentWeather: CurrentWeather? = null,
+    forecastWeather: ForecastWeather? = null,
+    userZip: String,
+    preferredUnits: Units,
+    isNetworkLoading: Boolean,
+    networkError: String,
+    refreshData: (String, Units) -> Unit,
+    onSettingsClicked: () -> Unit,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
 
-	val snackbarHostState = remember { SnackbarHostState() }
+    val pullRefreshState =
+        rememberPullRefreshState(
+            refreshing = isNetworkLoading,
+            onRefresh = { refreshData(userZip, preferredUnits) },
+        )
 
-	val pullRefreshState = rememberPullRefreshState(
-		refreshing = isNetworkLoading,
-		onRefresh = { refreshData(userZip, preferredUnits) }
-	)
+    var selectedWeatherSnapshot by remember { mutableStateOf<WeatherSnapshot?>(null) }
 
-	var selectedWeatherSnapshot by remember { mutableStateOf<WeatherSnapshot?>(null) }
+    LaunchedEffect(key1 = userZip) {
+        if (userZip.isNotBlank()) {
+            refreshData(userZip, preferredUnits)
+        }
+    }
+    LaunchedEffect(networkError) {
+        if (networkError.isNotBlank()) {
+            snackbarHostState.showSnackbar(message = networkError, duration = SnackbarDuration.Long)
+        }
+    }
 
-	LaunchedEffect(key1 = userZip) {
-		if (userZip.isNotBlank()) {
-			refreshData(userZip, preferredUnits)
-		}
-	}
-	LaunchedEffect(networkError) {
-		if (networkError.isNotBlank()) {
-			snackbarHostState.showSnackbar(message = networkError, duration = SnackbarDuration.Long)
-		}
-	}
-
-	Scaffold(
-		snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-		topBar = {
-			CurrentWeatherInfo(
-				data = currentWeather,
-				preferredUnits = preferredUnits,
-				onSettingsClicked = { onSettingsClicked() }
-			)
-		},
-		content = { padding ->
-			Box(
-				modifier = Modifier
-					.padding(padding)
-					.pullRefresh(pullRefreshState)
-					.verticalScroll(rememberScrollState())
-			) {
-				AnimatedVisibility(
-					visible = selectedWeatherSnapshot != null,
-					enter = fadeIn(),
-					exit = fadeOut()
-				) {
-					selectedWeatherSnapshot?.let {
-						WeatherDetailDialog(
-							weatherSnapshot = it,
-							onDismiss = { selectedWeatherSnapshot = null }
-						)
-					}
-				}
-				AnimatedVisibility(
-					visible = forecastWeather != null,
-					enter = fadeIn()
-				) {
-					forecastWeather?.let { forecast ->
-						ForecastLayout(
-							forecastWeather = forecast,
-							onSnapshotSelected = { selectedWeatherSnapshot = it }
-						)
-					}
-				}
-				PullRefreshIndicator(
-					refreshing = isNetworkLoading,
-					state = pullRefreshState,
-					modifier = Modifier.align(Alignment.TopCenter)
-				)
-			}
-		}
-	)
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = {
+            CurrentWeatherInfo(
+                data = currentWeather,
+                preferredUnits = preferredUnits,
+                onSettingsClicked = { onSettingsClicked() },
+            )
+        },
+        content = { padding ->
+            Box(
+                modifier =
+                    Modifier
+                        .padding(padding)
+                        .pullRefresh(pullRefreshState)
+                        .verticalScroll(rememberScrollState()),
+            ) {
+                AnimatedVisibility(
+                    visible = selectedWeatherSnapshot != null,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                ) {
+                    selectedWeatherSnapshot?.let {
+                        WeatherDetailDialog(
+                            weatherSnapshot = it,
+                            onDismiss = { selectedWeatherSnapshot = null },
+                        )
+                    }
+                }
+                AnimatedVisibility(
+                    visible = forecastWeather != null,
+                    enter = fadeIn(),
+                ) {
+                    forecastWeather?.let { forecast ->
+                        ForecastLayout(
+                            forecastWeather = forecast,
+                            onSnapshotSelected = { selectedWeatherSnapshot = it },
+                        )
+                    }
+                }
+                PullRefreshIndicator(
+                    refreshing = isNetworkLoading,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                )
+            }
+        },
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @CombinedPreviews
 @Composable
-private fun Preview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
-	SimpleWeatherTheme {
-		MainScreen(
-			currentWeather = CurrentWeather(
-				name = "Hollywood",
-				main = Main(
-					temp = 73.38f,
-					temp_min = 67.01f,
-					temp_max = 76.87f,
-					humidity = "78"
-				),
-				sys = Sys(
-					country = "US",
-					sunrise = "1674998066",
-					sunset = "1675036678"
-				),
-				weather = listOf(
-					WeatherData(
-						id = 804,
-						main = "Clouds",
-						description = "overcast clouds",
-						icon = "04d"
-					)
-				),
-				wind = Wind(speed = "14.97", deg = "200")
-			),
-			forecastWeather = forecast,
-			userZip = "90210",
-			preferredUnits = Units.Imperial,
-			isNetworkLoading = false,
-			networkError = "",
-			refreshData = { _, _ -> },
-			onSettingsClicked = { }
-		)
-	}
+private fun Preview(
+    @PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
+) {
+    SimpleWeatherTheme {
+        MainScreen(
+            currentWeather =
+                CurrentWeather(
+                    name = "Hollywood",
+                    main =
+                        Main(
+                            temp = 73.38f,
+                            temp_min = 67.01f,
+                            temp_max = 76.87f,
+                            humidity = "78",
+                        ),
+                    sys =
+                        Sys(
+                            country = "US",
+                            sunrise = "1674998066",
+                            sunset = "1675036678",
+                        ),
+                    weather =
+                        listOf(
+                            WeatherData(
+                                id = 804,
+                                main = "Clouds",
+                                description = "overcast clouds",
+                                icon = "04d",
+                            ),
+                        ),
+                    wind = Wind(speed = "14.97", deg = "200"),
+                ),
+            forecastWeather = forecast,
+            userZip = "90210",
+            preferredUnits = Units.Imperial,
+            isNetworkLoading = false,
+            networkError = "",
+            refreshData = { _, _ -> },
+            onSettingsClicked = { },
+        )
+    }
 }

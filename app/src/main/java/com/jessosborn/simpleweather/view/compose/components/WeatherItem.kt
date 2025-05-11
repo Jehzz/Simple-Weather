@@ -33,57 +33,60 @@ import kotlin.math.roundToInt
 
 @Composable
 fun WeatherItem(
-	modifier: Modifier = Modifier,
-	item: WeatherSnapshot,
-	onClick: (WeatherSnapshot) -> Unit,
+    modifier: Modifier = Modifier,
+    item: WeatherSnapshot,
+    onClick: (WeatherSnapshot) -> Unit,
 ) {
-	Surface(
-		color = MaterialTheme.colorScheme.background
-	) {
-		Column(
-			modifier = modifier
-				.padding(all = 4.dp)
-				.fillMaxWidth()
-				.clickable { onClick(item) },
-			horizontalAlignment = Alignment.CenterHorizontally,
-			verticalArrangement = Arrangement.SpaceAround
-		) {
-			Text(
-				text = stringResource(id = R.string.degrees, item.main.temp.roundToInt()),
-				style = MaterialTheme.typography.titleLarge
-			)
-			AsyncImage(
-				model = "https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png",
-				placeholder = debugPlaceholder(debugPreview = R.drawable.ic_settings_24dp),
-				contentDescription = item.weather.first().main
-			)
-			val timeFormat = (DateFormat.getTimeFormat(LocalContext.current) as SimpleDateFormat).toLocalizedPattern()
-			Text(
-				text = DateFormat.format(
-					timeFormat,
-					Calendar.getInstance(Locale.ENGLISH).apply {
-						timeInMillis = item.dt.toLong() * 1000L
-					}
-				).toString(),
-				style = MaterialTheme.typography.titleMedium
-			)
-		}
-	}
+    Surface(
+        color = MaterialTheme.colorScheme.background,
+    ) {
+        Column(
+            modifier =
+                modifier
+                    .padding(all = 4.dp)
+                    .fillMaxWidth()
+                    .clickable { onClick(item) },
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround,
+        ) {
+            Text(
+                text = stringResource(id = R.string.degrees, item.main.temp.roundToInt()),
+                style = MaterialTheme.typography.titleLarge,
+            )
+            AsyncImage(
+                model = "https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png",
+                placeholder = debugPlaceholder(debugPreview = R.drawable.ic_settings_24dp),
+                contentDescription = item.weather.first().main,
+            )
+            val timeFormat = (DateFormat.getTimeFormat(LocalContext.current) as SimpleDateFormat).toLocalizedPattern()
+            Text(
+                text =
+                    DateFormat.format(
+                        timeFormat,
+                        Calendar.getInstance(Locale.ENGLISH).apply {
+                            timeInMillis = item.dt.toLong() * 1000L
+                        },
+                    ).toString(),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
+    }
 }
-
 
 @CombinedPreviews
 @Composable
-private fun WeatherItemPreview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
-	SimpleWeatherTheme {
-		LazyVerticalGrid(columns = GridCells.Fixed(4)) {
-			items(forecast.list.take(4)) { item ->
-				WeatherItem(
-					modifier = Modifier.padding(4.dp),
-					item = item,
-					onClick = {}
-				)
-			}
-		}
-	}
+private fun WeatherItemPreview(
+    @PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
+) {
+    SimpleWeatherTheme {
+        LazyVerticalGrid(columns = GridCells.Fixed(4)) {
+            items(forecast.list.take(4)) { item ->
+                WeatherItem(
+                    modifier = Modifier.padding(4.dp),
+                    item = item,
+                    onClick = {},
+                )
+            }
+        }
+    }
 }

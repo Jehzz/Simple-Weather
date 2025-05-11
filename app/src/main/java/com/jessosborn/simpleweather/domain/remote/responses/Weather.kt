@@ -99,7 +99,7 @@ data class Wind(
 
 @Keep
 data class Rain(
-    val `3h`: Float
+    val `3h`: Float,
 )
 
 class RainTypeConverter {
@@ -116,7 +116,7 @@ class RainTypeConverter {
 
 @Keep
 data class Snow(
-    val `3h`: Float
+    val `3h`: Float,
 )
 
 class SnowTypeConverter {

@@ -7,7 +7,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface OpenWeatherEndpoint {
-
     @GET("weather")
     suspend fun getCurrentWeather(
         @Query("zip") location: String,
@@ -23,6 +22,6 @@ interface OpenWeatherEndpoint {
     ): Response<ForecastWeather>
 
     companion object {
-        const val baseApiUrl: String = "https://api.openweathermap.org/data/2.5/"
+        const val API_BASE_URL: String = "https://api.openweathermap.org/data/2.5/"
     }
 }

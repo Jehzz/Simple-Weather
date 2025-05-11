@@ -7,19 +7,20 @@ import androidx.compose.ui.graphics.Color
 
 @Immutable
 data class ExtendedColors(
-	val hot: Color,
-	val cold: Color
+    val hot: Color,
+    val cold: Color,
 )
 
-val LocalExtendedColors = staticCompositionLocalOf {
-	ExtendedColors(
-		hot = Color.Unspecified,
-		cold = Color.Unspecified
-	)
-}
+val LocalExtendedColors =
+    staticCompositionLocalOf {
+        ExtendedColors(
+            hot = Color.Unspecified,
+            cold = Color.Unspecified,
+        )
+    }
 
 object ExtendedTheme {
-	val colors: ExtendedColors
-		@Composable
-		get() = LocalExtendedColors.current
+    val colors: ExtendedColors
+        @Composable
+        get() = LocalExtendedColors.current
 }

@@ -18,39 +18,42 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Provides
     @Singleton
     fun provideWeatherRepository(
-		@ApplicationContext context: Context,
-		network: OpenWeatherEndpoint,
-		dao: WeatherSnapshotDao,
-		glanceManager: GlanceAppWidgetManager
-	): IWeatherRepository {
-		return WeatherRepository(
-			context = context,
-			service = network,
-			weatherSnapshotDao = dao,
-			glanceManager = glanceManager
-		)
-	}
+        @ApplicationContext context: Context,
+        network: OpenWeatherEndpoint,
+        dao: WeatherSnapshotDao,
+        glanceManager: GlanceAppWidgetManager,
+    ): IWeatherRepository {
+        return WeatherRepository(
+            context = context,
+            service = network,
+            weatherSnapshotDao = dao,
+            glanceManager = glanceManager,
+        )
+    }
 
-	@Provides
-	@Singleton
-	fun providesAppDatabase(@ApplicationContext context: Context): WeatherSnapshotDb {
-		return Room
-			.databaseBuilder(context = context, klass = WeatherSnapshotDb::class.java, name = "current_weather")
-			.build()
-	}
+    @Provides
+    @Singleton
+    fun providesAppDatabase(
+        @ApplicationContext context: Context,
+    ): WeatherSnapshotDb {
+        return Room
+            .databaseBuilder(context = context, klass = WeatherSnapshotDb::class.java, name = "current_weather")
+            .build()
+    }
 
-	@Provides
-	fun providesCurrentWeatherDao(db: WeatherSnapshotDb): WeatherSnapshotDao {
-		return db.weatherSnapshotDao()
-	}
+    @Provides
+    fun providesCurrentWeatherDao(db: WeatherSnapshotDb): WeatherSnapshotDao {
+        return db.weatherSnapshotDao()
+    }
 
-	@Provides
-	@Singleton
-	fun providesWidgetManager(@ApplicationContext context: Context): GlanceAppWidgetManager {
-		return GlanceAppWidgetManager(context)
-	}
+    @Provides
+    @Singleton
+    fun providesWidgetManager(
+        @ApplicationContext context: Context,
+    ): GlanceAppWidgetManager {
+        return GlanceAppWidgetManager(context)
+    }
 }

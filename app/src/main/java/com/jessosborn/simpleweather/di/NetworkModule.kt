@@ -22,55 +22,59 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+    @Provides
+    @Singleton
+    fun provideClient(
+        @ApplicationContext context: Context,
+    ): OkHttpClient {
+        val client =
+            OkHttpClient.Builder()
+                .cache(Cache(File(context.cacheDir, "cache"), (5 * 1024 * 1024).toLong()))
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addNetworkInterceptor(
+                    Interceptor { chain ->
+                        val response = chain.proceed(chain.request())
+                        val cacheControl =
+                            CacheControl.Builder()
+                                .maxAge(10, TimeUnit.MINUTES)
+                                .build()
+                        response.newBuilder()
+                            .header("Cache-Control", cacheControl.toString())
+                            .build()
+                    },
+                )
+                .addInterceptor(
+                    Interceptor { chain ->
+                        var request = chain.request()
+                        if (context.isOnline().not()) {
+                            val cacheControl =
+                                CacheControl.Builder()
+                                    .maxStale(1, TimeUnit.DAYS)
+                                    .build()
+                            request =
+                                request.newBuilder()
+                                    .cacheControl(cacheControl)
+                                    .build()
+                        }
+                        chain.proceed(request)
+                    },
+                )
+        return client.build()
+    }
 
-	@Provides
-	@Singleton
-	fun provideClient(@ApplicationContext context: Context): OkHttpClient {
-		val client = OkHttpClient.Builder()
-			.cache(Cache(File(context.cacheDir, "cache"), (5 * 1024 * 1024).toLong()))
-			.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-			.addNetworkInterceptor(
-				Interceptor { chain ->
-					val response = chain.proceed(chain.request())
-					val cacheControl = CacheControl.Builder()
-						.maxAge(10, TimeUnit.MINUTES)
-						.build()
-					response.newBuilder()
-						.header("Cache-Control", cacheControl.toString())
-						.build()
-				}
-			)
-			.addInterceptor(
-				Interceptor { chain ->
-					var request = chain.request()
-					if (context.isOnline().not()) {
-						val cacheControl = CacheControl.Builder()
-							.maxStale(1, TimeUnit.DAYS)
-							.build()
-						request = request.newBuilder()
-							.cacheControl(cacheControl)
-							.build()
-					}
-					chain.proceed(request)
-				}
-			)
-		return client.build()
-	}
+    @Provides
+    @Singleton
+    fun provideOpenWeatherEndpoint(retrofit: Retrofit): OpenWeatherEndpoint {
+        return retrofit.create(OpenWeatherEndpoint::class.java)
+    }
 
-	@Provides
-	@Singleton
-	fun provideOpenWeatherEndpoint(retrofit: Retrofit): OpenWeatherEndpoint {
-		return retrofit.create(OpenWeatherEndpoint::class.java)
-	}
-
-	@Provides
-	@Singleton
-	fun provideRetrofit(client: OkHttpClient): Retrofit {
-		return Retrofit.Builder()
-			.client(client)
-			.baseUrl(OpenWeatherEndpoint.baseApiUrl)
-			.addConverterFactory(GsonConverterFactory.create())
-			.build()
-	}
-
+    @Provides
+    @Singleton
+    fun provideRetrofit(client: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .client(client)
+            .baseUrl(OpenWeatherEndpoint.API_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 }

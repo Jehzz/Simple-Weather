@@ -18,39 +18,41 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun WeatherDetailDialog(
-	weatherSnapshot: WeatherSnapshot,
-	onDismiss: () -> Unit,
+    weatherSnapshot: WeatherSnapshot,
+    onDismiss: () -> Unit,
 ) {
-	BasicAlertDialog(
-		onDismissRequest = { onDismiss() },
-		content = {
-			Card {
-				Column(
-					modifier = Modifier.padding(12.dp)
-				) {
-					Text(text = "Temperature : ${weatherSnapshot.main.temp}")
-					Text(text = "Humidity : ${weatherSnapshot.main.humidity}")
-					Text(text = weatherSnapshot.weather.first().description)
-					Text(text = "Precipitation : ${(weatherSnapshot.pop * 100).toInt()}%")
-					weatherSnapshot.snow?.let {
-						Text(text = "Snow : ${it.`3h`}mm")
-					}
-					weatherSnapshot.rain?.let {
-						Text(text = "Rain : ${it.`3h`}mm")
-					}
-				}
-			}
-		}
-	)
+    BasicAlertDialog(
+        onDismissRequest = { onDismiss() },
+        content = {
+            Card {
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                ) {
+                    Text(text = "Temperature : ${weatherSnapshot.main.temp}")
+                    Text(text = "Humidity : ${weatherSnapshot.main.humidity}")
+                    Text(text = weatherSnapshot.weather.first().description)
+                    Text(text = "Precipitation : ${(weatherSnapshot.pop * 100).toInt()}%")
+                    weatherSnapshot.snow?.let {
+                        Text(text = "Snow : ${it.`3h`}mm")
+                    }
+                    weatherSnapshot.rain?.let {
+                        Text(text = "Rain : ${it.`3h`}mm")
+                    }
+                }
+            }
+        },
+    )
 }
 
 @CombinedPreviews
 @Composable
-private fun WeatherDetailDialogPreview(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
-	SimpleWeatherTheme {
-		WeatherDetailDialog(
-			weatherSnapshot = forecast.list.first(),
-			onDismiss = {}
-		)
-	}
+private fun WeatherDetailDialogPreview(
+    @PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
+) {
+    SimpleWeatherTheme {
+        WeatherDetailDialog(
+            weatherSnapshot = forecast.list.first(),
+            onDismiss = {},
+        )
+    }
 }
