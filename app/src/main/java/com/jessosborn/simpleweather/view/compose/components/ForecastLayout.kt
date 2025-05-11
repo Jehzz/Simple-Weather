@@ -28,10 +28,12 @@ import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import com.jessosborn.simpleweather.domain.remote.responses.Main
+import com.jessosborn.simpleweather.domain.remote.responses.Rain
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherData
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
 import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.utils.DataStoreUtil
+import com.jessosborn.simpleweather.view.compose.RainRow
 import com.jessosborn.simpleweather.view.compose.theme.ExtendedTheme
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import java.text.SimpleDateFormat
@@ -59,6 +61,8 @@ fun ForecastLayout(
         ForecastRow(weather = tomorrowsWeather, onSnapshotSelected = onSnapshotSelected)
         ForecastHeader(text = stringResource(id = R.string.the_day_after))
         ForecastRow(weather = dayAftersWeather, onSnapshotSelected = onSnapshotSelected)
+        ForecastHeader(text = stringResource(R.string.rain_forecast),)
+        RainRow(weatherSnapshots = forecastWeather.list)
     }
 }
 
@@ -263,6 +267,7 @@ class ForecastPreviewParams : PreviewParameterProvider<ForecastWeather> {
 								WeatherData(800, "Clear", "clear sky", "01n"),
 							),
 						pop = 0.0f,
+						rain = Rain (380.0f)
 					),
 					WeatherSnapshot(
 						dt = timeValue[10].toString(),
@@ -273,6 +278,7 @@ class ForecastPreviewParams : PreviewParameterProvider<ForecastWeather> {
 								WeatherData(804, "Clouds", "overcast clouds", "04n"),
 							),
 						pop = 0.0f,
+						rain = Rain (267.0f)
 					),
 					WeatherSnapshot(
 						dt = timeValue[11].toString(),
