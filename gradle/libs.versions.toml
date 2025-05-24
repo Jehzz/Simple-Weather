@@ -6,13 +6,14 @@ composeBom = "2025.08.00"
 converterGson = "2.9.0"
 coreKtx = "1.15.0"
 coreSplashscreen = "1.0.1"
+dagger-hilt = "2.55"
 datastorePreferences = "1.0.0"
 glance = "1.1.1"
 gradle = "8.9.2"
 gradle-ktlint = "12.2.0"
-hiltAndroid = "2.49"
-hiltAndroidCompiler = "2.48"
+hiltCompiler = "1.2.0"
 hiltNavigationCompose = "1.2.0"
+hiltWork = "1.2.0"
 junit = "4.13.2"
 kotlin = "2.0.21"
 kotlinGradlePlugin = "2.0.21"
@@ -21,8 +22,11 @@ loggingInterceptor = "5.0.0-alpha.11"
 material3Android = "1.3.1"
 retrofit = "2.9.0"
 room = "2.7.2"
+workRuntimeKtx = "2.8.1"
 
 [libraries]
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
@@ -32,6 +36,7 @@ androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 compose-material = { module = "androidx.compose.material:material" }
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 compose-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
@@ -39,8 +44,8 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
-hilt-android = { group = "com.google.dagger", name = "hilt-android" , version.ref = "hiltAndroid"}
-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android" , version.ref = "dagger-hilt" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger-hilt" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
@@ -51,6 +56,6 @@ ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 gradle-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "gradle-ktlint" }
-hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
+hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "dagger-hilt" }
 kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
