@@ -2,7 +2,7 @@
 activityKtx = "1.10.1"
 appcompat = "1.7.0"
 coilCompose = "2.4.0"
-composeBom = "2025.03.00"
+composeBom = "2025.08.00"
 converterGson = "2.9.0"
 coreKtx = "1.15.0"
 coreSplashscreen = "1.0.1"
