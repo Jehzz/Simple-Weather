@@ -74,7 +74,7 @@ private fun Content(weather: List<WeatherSnapshot>) {
             GlanceModifier
                 .fillMaxSize()
                 .background(GlanceTheme.colors.background)
-                .clickable { actionStartActivity<MainActivity>() },
+                .clickable(actionStartActivity<MainActivity>()),
     ) {
         weather.take(10).forEach { weather -> GlanceWeatherItem(weather = weather) }
     }
