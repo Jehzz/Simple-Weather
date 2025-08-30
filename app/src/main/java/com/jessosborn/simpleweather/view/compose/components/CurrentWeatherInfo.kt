@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,19 +65,23 @@ fun CurrentWeatherInfo(
             label = "Temperature Color",
         )
     Column(
-        modifier =
-            Modifier
-                .background(color = backgroundColor.value)
-                .fillMaxWidth(1f)
-                .padding(horizontal = 8.dp)
-                .statusBarsPadding(),
+        modifier = Modifier
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        backgroundColor.value,
+                        backgroundColor.value,
+                        MaterialTheme.colorScheme.background
+                    )
+                )
+            )
+            .fillMaxWidth(1f)
+            .padding(8.dp)
+            .statusBarsPadding(),
     ) {
-        Row(
-            modifier = Modifier.padding(all = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).padding(start = 12.dp),
                 text = data?.name.orEmpty(),
                 style = MaterialTheme.typography.headlineMedium,
             )
@@ -92,7 +97,8 @@ fun CurrentWeatherInfo(
                     .fillMaxWidth()
                     .padding(all = 4.dp),
             horizontalArrangement = Arrangement.SpaceAround,
-        ) {
+            verticalAlignment = Alignment.CenterVertically,
+            ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
