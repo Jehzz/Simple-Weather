@@ -83,7 +83,7 @@ fun CurrentWeatherInfo(
             Text(
                 modifier = Modifier.weight(1f).padding(start = 12.dp),
                 text = data?.name.orEmpty(),
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.displaySmall,
             )
             Icon(
                 modifier = Modifier.clickable { onSettingsClicked() },
@@ -107,7 +107,7 @@ fun CurrentWeatherInfo(
                         data?.main?.temp?.let {
                             stringResource(id = R.string.degrees, it.roundToInt())
                         }.orEmpty(),
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.displayMedium,
                 )
                 Text(
                     text = data?.weather?.get(0)?.main.orEmpty(),

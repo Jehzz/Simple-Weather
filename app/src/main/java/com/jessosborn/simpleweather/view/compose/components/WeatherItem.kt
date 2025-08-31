@@ -51,7 +51,7 @@ fun WeatherItem(
         ) {
             Text(
                 text = stringResource(id = R.string.degrees, item.main.temp.roundToInt()),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
             )
             AsyncImage(
                 model = "https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png",
@@ -59,15 +59,15 @@ fun WeatherItem(
                 contentDescription = item.weather.first().main,
             )
             val timeFormat = (DateFormat.getTimeFormat(LocalContext.current) as SimpleDateFormat).toLocalizedPattern()
+            val time = DateFormat.format(
+                timeFormat,
+                Calendar.getInstance(Locale.ENGLISH).apply {
+                    timeInMillis = item.dt.toLong() * 1000L
+                },
+            )
             Text(
-                text =
-                    DateFormat.format(
-                        timeFormat,
-                        Calendar.getInstance(Locale.ENGLISH).apply {
-                            timeInMillis = item.dt.toLong() * 1000L
-                        },
-                    ).toString(),
-                style = MaterialTheme.typography.titleMedium,
+                text = time.toString(),
+                style = MaterialTheme.typography.labelMedium,
             )
         }
     }
