@@ -16,8 +16,8 @@
     <string name="todays_forecast">Today\'s forecast</string>
     <string name="tomorrows_weather">Tomorrow\'s forecast</string>
     <string name="units">Units</string>
-    <string name="units_imperial" translatable="false">Imperial</string>
-    <string name="units_metric" translatable="false">Metric</string>
+    <string name="units_imperial">Imperial</string>
+    <string name="units_metric">Metric</string>
     <string name="wind_speed">Wind speed %s</string>
     <string name="zip_code">ZipCode</string>
 

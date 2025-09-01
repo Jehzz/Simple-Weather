@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.utils.CombinedPreviews
@@ -53,7 +54,7 @@ fun UnitsSelectionChip(
                 )
             }
         },
-        label = { Text(text = unit.name) },
+        label = { Text(text = stringResource(unit.stringName)) },
         onClick = onClick,
     )
 }
