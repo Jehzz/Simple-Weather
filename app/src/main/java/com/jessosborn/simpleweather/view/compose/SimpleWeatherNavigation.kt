@@ -25,6 +25,7 @@ fun SimpleWeatherNavigation() {
     val theme by DataStoreUtil.getTheme(context).collectAsState(initial = Theme.FollowSystem)
     val units by DataStoreUtil.getUnits(context).collectAsState(initial = Units.Imperial)
     val zipCode by DataStoreUtil.getZip(context).collectAsState(initial = "")
+    val refreshTime by DataStoreUtil.getRefreshTime(context).collectAsState(initial = 2)
 
     NavHost(navController = navController, startDestination = Screen.Main.route) {
         composable(route = Screen.Main.route) {
@@ -48,9 +49,11 @@ fun SimpleWeatherNavigation() {
                 units = units,
                 theme = theme,
                 zipCode = zipCode,
+                refreshTime = refreshTime,
                 onThemeChosen = { chosenTheme -> scope.launch { DataStoreUtil.saveTheme(context, chosenTheme) } },
                 onUnitsChosen = { chosenUnits -> scope.launch { DataStoreUtil.saveUnits(context, chosenUnits) } },
                 onZipEntered = { chosenZip -> scope.launch { DataStoreUtil.saveZip(context, chosenZip) } },
+                onRefreshTimeEntered = { chosenRefreshTime -> scope.launch { DataStoreUtil.saveRefreshTime(context, chosenRefreshTime) } },
                 onSaveClicked = { navController.popBackStack() },
             )
         }

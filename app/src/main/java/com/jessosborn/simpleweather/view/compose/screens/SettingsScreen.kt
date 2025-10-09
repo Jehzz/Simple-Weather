@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -45,14 +47,18 @@ fun SettingsScreen(
     theme: Theme,
     units: Units,
     zipCode: String,
+    refreshTime: Int,
     onThemeChosen: (Theme) -> Unit,
     onUnitsChosen: (Units) -> Unit,
     onZipEntered: (String) -> Unit,
+    onRefreshTimeEntered: (Int) -> Unit,
     onSaveClicked: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     var zipCodeTextFieldValue by remember { mutableStateOf(TextFieldValue(text = zipCode)) }
+
+    var refreshTimeTextFieldValue by remember { mutableStateOf(TextFieldValue(text = refreshTime.toString())) }
 
     Scaffold(
         topBar = {
@@ -84,7 +90,7 @@ fun SettingsScreen(
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
                         text = stringResource(id = R.string.theme),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                     )
                     ThemeSelector(
                         modifier = Modifier.padding(end = 10.dp),
@@ -102,7 +108,7 @@ fun SettingsScreen(
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
                         text = stringResource(id = R.string.units),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                     )
                     UnitsSelector(
                         modifier = Modifier.padding(end = 10.dp),
@@ -118,7 +124,7 @@ fun SettingsScreen(
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
                         text = stringResource(id = R.string.zip_code),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                     )
                     OutlinedTextField(
                         value = zipCodeTextFieldValue,
@@ -144,6 +150,41 @@ fun SettingsScreen(
                             ),
                     )
                 }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        text = "Auto refresh time (h)",
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    OutlinedTextField(
+                        value = refreshTimeTextFieldValue,
+                        onValueChange = {
+                            refreshTimeTextFieldValue = it
+                            if (it.text.toIntOrNull() != null) onRefreshTimeEntered(refreshTimeTextFieldValue.text.toInt())
+                        },
+                        modifier = Modifier.padding(horizontal = 4.dp),
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
+                        label = {
+                            if (refreshTimeTextFieldValue.text.toIntOrNull() == null) {
+                                Text(text = "Enter a number")
+                            }
+                        },
+                        isError = refreshTimeTextFieldValue.text.toIntOrNull() == null,
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardActions =
+                            KeyboardActions(
+                                onDone = {
+                                    keyboardController?.hide()
+                                    onSaveClicked()
+                                },
+                            ),
+                    )
+                }
             }
         },
     )
@@ -157,9 +198,11 @@ private fun Preview() {
             theme = Theme.FollowSystem,
             units = Units.Metric,
             zipCode = "90210",
+            refreshTime = 7,
             onThemeChosen = {},
             onUnitsChosen = {},
             onZipEntered = {},
+            onRefreshTimeEntered = {},
             onSaveClicked = {},
         )
     }
@@ -173,9 +216,11 @@ private fun ErrorPreview() {
             theme = Theme.FollowSystem,
             units = Units.Metric,
             zipCode = "9021",
+            refreshTime = 7,
             onThemeChosen = {},
             onUnitsChosen = {},
             onZipEntered = {},
+            onRefreshTimeEntered = {},
             onSaveClicked = {},
         )
     }

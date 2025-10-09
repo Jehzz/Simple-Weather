@@ -17,6 +17,7 @@ object DataStoreUtil {
     private const val USER_UNITS = "units"
     private const val USER_ZIP = "zip"
     private const val USER_THEME = "theme"
+    private const val USER_REFRESH_TIME = "refreshTime"
 
     private suspend fun saveString(
         context: Context,
@@ -57,6 +58,12 @@ object DataStoreUtil {
         }
     }
 
+    fun getRefreshTime(context: Context): Flow<Int> {
+        return getString(context = context, key = USER_REFRESH_TIME).map {
+            it?.toInt() ?: 2
+        }
+    }
+
     suspend fun saveUnits(
         context: Context,
         value: Units,
@@ -68,4 +75,9 @@ object DataStoreUtil {
         context: Context,
         value: String,
     ) = saveString(context, USER_ZIP, value)
+
+	suspend fun saveRefreshTime(
+        context: Context,
+        value: Int
+    ) = saveString(context, USER_REFRESH_TIME, value.toString())
 }

@@ -51,8 +51,8 @@ class WeatherRepository(
                         weatherSnapshotDao.deleteForecast(zip, units)
                         weatherSnapshotDao.insertForecast(snapshotsToInsert)
 
-                        // Notify widgets to update
                         glanceManager.getGlanceIds(WeatherWidget::class.java).forEach { id ->
+                            Log.d("WeatherRepository", "Updating widget with ID: $id")
                             WeatherWidget().update(context, id)
                         }
                     }

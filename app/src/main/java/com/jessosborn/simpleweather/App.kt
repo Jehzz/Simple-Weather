@@ -6,7 +6,10 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.jessosborn.simpleweather.utils.DataStoreUtil
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -27,9 +30,10 @@ class App @Inject constructor() : Application(), Configuration.Provider {
 	}
 
 	private fun schedulePeriodicUpdate() {
-		Log.d("SimpleWeather", "schedulePeriodicUpdate()")
+		val interval = runBlocking { DataStoreUtil.getRefreshTime(this@App).first() }
+		Log.d("SimpleWeather", "schedulePeriodicUpdate() every $interval hours")
 		val updateRequest = PeriodicWorkRequestBuilder<ForecastWeatherWorker>(
-			repeatInterval = 2,
+			repeatInterval = interval.toLong(),
 			repeatIntervalTimeUnit = TimeUnit.HOURS
 		).build()
 
