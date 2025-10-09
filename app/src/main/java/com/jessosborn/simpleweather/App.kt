@@ -29,8 +29,8 @@ class App @Inject constructor() : Application(), Configuration.Provider {
 	private fun schedulePeriodicUpdate() {
 		Log.d("SimpleWeather", "schedulePeriodicUpdate()")
 		val updateRequest = PeriodicWorkRequestBuilder<ForecastWeatherWorker>(
-			repeatInterval = 15,
-			repeatIntervalTimeUnit = TimeUnit.MINUTES
+			repeatInterval = 2,
+			repeatIntervalTimeUnit = TimeUnit.HOURS
 		).build()
 
 		WorkManager.getInstance(this).enqueue(updateRequest)
