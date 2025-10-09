@@ -2,12 +2,30 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3499748e4ce987791c5641ea3fd884a0",
+    "identityHash": "5244c593c304bd09f7d00e8f02de9eb0",
     "entities": [
       {
         "tableName": "weather_snapshot",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dt` TEXT NOT NULL, `dt_txt` TEXT NOT NULL, `main` TEXT NOT NULL, `weather` TEXT NOT NULL, `pop` REAL NOT NULL, `rain` TEXT, `snow` TEXT, PRIMARY KEY(`dt`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `zip` TEXT NOT NULL, `units` TEXT NOT NULL, `dt` TEXT NOT NULL, `dt_txt` TEXT NOT NULL, `main` TEXT NOT NULL, `weather` TEXT NOT NULL, `pop` REAL NOT NULL, `rain` TEXT, `snow` TEXT, `createdAt` INTEGER NOT NULL)",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "zip",
+            "columnName": "zip",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "units",
+            "columnName": "units",
+            "affinity": "TEXT",
+            "notNull": true
+          },
           {
             "fieldPath": "dt",
             "columnName": "dt",
@@ -41,30 +59,31 @@
           {
             "fieldPath": "rain",
             "columnName": "rain",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "snow",
             "columnName": "snow",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
-            "dt"
+            "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       }
     ],
-    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3499748e4ce987791c5641ea3fd884a0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5244c593c304bd09f7d00e8f02de9eb0')"
     ]
   }
 }

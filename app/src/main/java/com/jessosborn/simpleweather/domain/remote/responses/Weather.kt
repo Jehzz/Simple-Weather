@@ -29,7 +29,12 @@ data class ForecastWeather(
 @Keep
 @Entity(tableName = "weather_snapshot")
 data class WeatherSnapshot(
-    @PrimaryKey()
+    // It's better to have a unique ID for each row.
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    // Add columns for zip and units to identify the forecast this snapshot belongs to.
+    val zip: String = "",
+    val units: String = "",
     val dt: String,
     val dt_txt: String, // Time of data forecasted, ISO, UTC
     val main: Main,
@@ -37,6 +42,7 @@ data class WeatherSnapshot(
     val pop: Float,
     val rain: Rain? = null,
     val snow: Snow? = null, // Added optional snow field
+    var createdAt: Long = System.currentTimeMillis()
 )
 
 @Keep

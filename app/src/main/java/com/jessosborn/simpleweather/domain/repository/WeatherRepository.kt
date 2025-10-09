@@ -1,17 +1,21 @@
 package com.jessosborn.simpleweather.domain.repository
 
 import android.content.Context
-import androidx.glance.appwidget.GlanceAppWidget
+import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.domain.db.dao.WeatherSnapshotDao
 import com.jessosborn.simpleweather.domain.remote.OpenWeatherEndpoint
 import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
+import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
 import com.jessosborn.simpleweather.view.compose.widget.WeatherWidget
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class WeatherRepository(
     private val context: Context,
@@ -26,26 +30,57 @@ class WeatherRepository(
         country: String,
         units: String,
     ): Result<ForecastWeather> {
-        val response = service.getForecastWeather(location = "$zip,$country", apiKey = key, units = units)
+
+        val cachedDataResult = getCachedForecastData(zip, units)
+        if (cachedDataResult.isSuccess) {
+            Log.d("WeatherRepository", "Returning cached data")
+            return cachedDataResult
+        }
+
+        // --- If cache is missing, expired, or for a different location, fetch from network ---
+        val networkResponse = service.getForecastWeather(location = "$zip,$country", apiKey = key, units = units)
+
         return try {
-            if (response.isSuccessful) {
-                response.body()?.let {
+            if (networkResponse.isSuccessful) {
+                networkResponse.body()?.let { forecastWeather ->
                     withContext(Dispatchers.IO) {
-                        weatherSnapshotDao.deleteAll()
-                        weatherSnapshotDao.insert(it.list)
-                        glanceManager.getGlanceIds(GlanceAppWidget::class.java).forEach { id ->
+                        val createdAt = System.currentTimeMillis()
+                        val snapshotsToInsert = forecastWeather.list.map { snapshot ->
+                            snapshot.copy(zip = zip, units = units, createdAt = createdAt)
+                        }
+                        weatherSnapshotDao.deleteForecast(zip, units)
+                        weatherSnapshotDao.insertForecast(snapshotsToInsert)
+
+                        // Notify widgets to update
+                        glanceManager.getGlanceIds(WeatherWidget::class.java).forEach { id ->
                             WeatherWidget().update(context, id)
                         }
                     }
-                    Result.success(it)
-                } ?: run {
-                    Result.failure(IOException("Body null"))
-                }
+                    Result.success(forecastWeather)
+                } ?: Result.failure(IOException("Response body is null"))
             } else {
-                Result.failure(IOException(response.errorBody()?.string() ?: "Fail"))
+                Result.failure(IOException(networkResponse.errorBody()?.string() ?: "API request failed"))
             }
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    override suspend fun getCachedForecastData(zip: String, units: String): Result<ForecastWeather> {
+        val cachedForecast: List<WeatherSnapshot>? = weatherSnapshotDao.getForecast(zip, units).firstOrNull()
+
+        if (cachedForecast.isNullOrEmpty()) {
+            return Result.failure(IOException("No cached data for $zip with units $units"))
+        }
+
+        val firstSnapshot = cachedForecast.first()
+        val lifeSpan = 4.toDuration(DurationUnit.HOURS)
+        val age = (System.currentTimeMillis() - firstSnapshot.createdAt).toDuration(DurationUnit.MILLISECONDS)
+
+        return if (age < lifeSpan) {
+            Result.success(ForecastWeather(cachedForecast))
+        } else {
+            Result.failure(IOException("Cache expired for $zip. Data is $age old."))
         }
     }
 

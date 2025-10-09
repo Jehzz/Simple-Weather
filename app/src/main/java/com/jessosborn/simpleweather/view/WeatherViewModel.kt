@@ -16,11 +16,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WeatherViewModel
-    @Inject
-    constructor(
-        private val weatherRepo: IWeatherRepository,
-    ) : ViewModel() {
+class WeatherViewModel @Inject constructor(
+    private val weatherRepo: IWeatherRepository
+) : ViewModel() {
         private val _currentWeather = MutableStateFlow<CurrentWeather?>(null)
         val currentWeather = _currentWeather.asStateFlow()
 
