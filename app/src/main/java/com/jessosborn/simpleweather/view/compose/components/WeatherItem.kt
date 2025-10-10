@@ -1,11 +1,13 @@
 package com.jessosborn.simpleweather.view.compose.components
 
 import android.text.format.DateFormat
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -16,15 +18,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
 import com.jessosborn.simpleweather.utils.CombinedPreviews
-import com.jessosborn.simpleweather.utils.debugPlaceholder
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -47,16 +48,18 @@ fun WeatherItem(
                     .fillMaxWidth()
                     .clickable { onClick(item) },
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 text = stringResource(id = R.string.degrees, item.main.temp.roundToInt()),
                 style = MaterialTheme.typography.titleMedium,
             )
-            AsyncImage(
-                model = "https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png",
-                placeholder = debugPlaceholder(debugPreview = R.drawable.ic_settings_24dp),
+            val id = "icon_${item.weather.first().icon}_t"
+            val icon = painterResource(LocalContext.current.resources.getIdentifier(id, "drawable", LocalContext.current.packageName))
+            Image(
+                painter = icon,
                 contentDescription = item.weather.first().main,
+                modifier = Modifier.size(52.dp)
             )
             val timeFormat = (DateFormat.getTimeFormat(LocalContext.current) as SimpleDateFormat).toLocalizedPattern()
             val time = DateFormat.format(

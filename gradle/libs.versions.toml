@@ -1,7 +1,6 @@
 [versions]
 activityKtx = "1.10.1"
 appcompat = "1.7.0"
-coilCompose = "2.4.0"
 composeBom = "2025.08.00"
 converterGson = "2.9.0"
 coreKtx = "1.15.0"
@@ -40,7 +39,6 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 compose-material = { module = "androidx.compose.material:material" }
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 compose-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }

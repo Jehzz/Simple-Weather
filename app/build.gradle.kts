@@ -81,9 +81,6 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.ui.tooling)
 
-    // Coil image loading
-    implementation(libs.coil.compose)
-
     // DataStore
     implementation(libs.androidx.datastore.preferences)
 
