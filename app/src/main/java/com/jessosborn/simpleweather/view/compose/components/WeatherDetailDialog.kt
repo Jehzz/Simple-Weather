@@ -23,6 +23,7 @@ import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
 import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
+import kotlin.math.roundToInt
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,7 +36,7 @@ fun WeatherDetailDialog(
         content = {
             Card {
                 Row(
-                    modifier = Modifier.padding(12.dp).fillMaxWidth(1f),
+                    modifier = Modifier.padding(8.dp).fillMaxWidth(1f),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
@@ -55,15 +56,32 @@ fun WeatherDetailDialog(
                             style = MaterialTheme.typography.labelSmall
                         )
                     }
-                    Column {
-                        Text(text = "Temperature : ${weatherSnapshot.main.temp}°")
-                        Text(text = "Humidity : ${weatherSnapshot.main.humidity}")
-                        Text(text = "Precipitation : ${(weatherSnapshot.pop * 100).toInt()}%")
+                    Column(
+                        verticalArrangement = Arrangement.SpaceAround,
+                    ) {
+                        Text(
+                            text = "Temp : ${weatherSnapshot.main.temp.roundToInt()}°",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        Text(
+                            text = "Humidity : ${weatherSnapshot.main.humidity}",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        Text(
+                            text = "Precipitation : ${(weatherSnapshot.pop * 100).toInt()}%",
+                            style = MaterialTheme.typography.labelMedium
+                        )
                         weatherSnapshot.snow?.let {
-                            Text(text = "Snow : ${it.`3h`}mm")
+                            Text(
+                                text = "Snow : ${it.`3h`}mm",
+                                style = MaterialTheme.typography.labelMedium
+                            )
                         }
                         weatherSnapshot.rain?.let {
-                            Text(text = "Rain : ${it.`3h`}mm")
+                            Text(
+                                text = "Rain : ${it.`3h`}mm",
+                                style = MaterialTheme.typography.labelMedium
+                            )
                         }
                     }
                 }

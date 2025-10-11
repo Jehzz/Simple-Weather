@@ -163,7 +163,7 @@ class ForecastPreviewParams : PreviewParameterProvider<ForecastWeather> {
                     WeatherSnapshot(
                         dt = timeValue[0].toString(),
                         dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[0]),
-                        main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                        main = Main(humidity = "10", temp = 88.8f, temp_min = 80f, temp_max = 90f),
                         weather =
                             listOf(
                                 WeatherData(804, "Clouds", "overcast clouds", "04n"),
@@ -173,7 +173,7 @@ class ForecastPreviewParams : PreviewParameterProvider<ForecastWeather> {
                     WeatherSnapshot(
                         dt = timeValue[1].toString(),
                         dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[1]),
-                        main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                        main = Main(humidity = "12", temp = 50.0f, temp_min = 40f, temp_max = 90f),
                         weather =
                             listOf(
                                 WeatherData(800, "Clear", "clear sky", "01n"),
@@ -183,7 +183,7 @@ class ForecastPreviewParams : PreviewParameterProvider<ForecastWeather> {
                     WeatherSnapshot(
                         dt = timeValue[2].toString(),
                         dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[2]),
-                        main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                        main = Main(humidity = "14", temp = 88.8f, temp_min = 80f, temp_max = 90f),
                         weather =
                             listOf(
                                 WeatherData(804, "Clouds", "overcast clouds", "04n"),
@@ -193,7 +193,7 @@ class ForecastPreviewParams : PreviewParameterProvider<ForecastWeather> {
                     WeatherSnapshot(
                         dt = timeValue[3].toString(),
                         dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[3]),
-                        main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                        main = Main(humidity = "16", temp = 50.0f, temp_min = 40f, temp_max = 90f),
                         weather =
                             listOf(
                                 WeatherData(800, "Clear", "clear sky", "01n"),

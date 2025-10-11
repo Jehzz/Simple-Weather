@@ -3,10 +3,11 @@ package com.jessosborn.simpleweather.view.compose.widget
 import android.content.Context
 import android.text.format.DateFormat
 import androidx.annotation.DrawableRes
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -57,7 +58,7 @@ private fun Content(weather: List<WeatherSnapshot>) {
 		modifier =
 			GlanceModifier
 				.fillMaxSize()
-				.background(GlanceTheme.colors.background)
+				.background(Color.Transparent)
 				.clickable(actionStartActivity<MainActivity>()),
 	) {
 		weather.take(10).forEach { weather -> GlanceWeatherItem(weather = weather) }
@@ -80,7 +81,7 @@ private fun GlanceWeatherItem(
 	) {
 		Text(
 			text = " ${weather.main.temp.roundToInt()} °",
-			style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = 14.sp),
+			style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = Typography().labelLarge.fontSize),
 			maxLines = 1,
 		)
 
@@ -98,14 +99,14 @@ private fun GlanceWeatherItem(
 						timeInMillis = weather.dt.toLong() * 1000L
 					},
 				).toString(),
-			style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = 10.sp),
+			style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = Typography().labelSmall.fontSize),
 			maxLines = 1,
 		)
 	}
 }
 
 @DrawableRes
-fun getIconResource(iconCode: String): Int {
+private fun getIconResource(iconCode: String): Int {
 	return when (iconCode) {
 		"01d" -> R.drawable.icon_01d_t
 		"01n" -> R.drawable.icon_01n_t
