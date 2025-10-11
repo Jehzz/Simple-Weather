@@ -34,6 +34,7 @@ class WeatherRepository(
         val cachedDataResult = getCachedForecastData(zip, units)
         if (cachedDataResult.isSuccess) {
             Log.d("WeatherRepository", "Returning cached data")
+            updateWidgetState()
             return cachedDataResult
         }
 
@@ -50,11 +51,7 @@ class WeatherRepository(
                         }
                         weatherSnapshotDao.deleteForecast(zip, units)
                         weatherSnapshotDao.insertForecast(snapshotsToInsert)
-
-                        glanceManager.getGlanceIds(WeatherWidget::class.java).forEach { id ->
-                            Log.d("WeatherRepository", "Updating widget with ID: $id")
-                            WeatherWidget().update(context, id)
-                        }
+                        updateWidgetState()
                     }
                     Result.success(forecastWeather)
                 } ?: Result.failure(IOException("Response body is null"))
@@ -63,6 +60,13 @@ class WeatherRepository(
             }
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    private suspend fun updateWidgetState() {
+        glanceManager.getGlanceIds(WeatherWidget::class.java).forEach { id ->
+            Log.d("WeatherRepository", "Updating widget with ID: $id")
+            WeatherWidget().update(context, id)
         }
     }
 
