@@ -6,7 +6,6 @@ import androidx.annotation.DrawableRes
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
@@ -58,7 +57,7 @@ private fun Content(weather: List<WeatherSnapshot>) {
 		modifier =
 			GlanceModifier
 				.fillMaxSize()
-				.background(Color.Transparent)
+				.background(GlanceTheme.colors.background)
 				.clickable(actionStartActivity<MainActivity>()),
 	) {
 		weather.take(10).forEach { weather -> GlanceWeatherItem(weather = weather) }
