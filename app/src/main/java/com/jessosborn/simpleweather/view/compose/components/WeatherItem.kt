@@ -26,6 +26,7 @@ import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
 import com.jessosborn.simpleweather.utils.CombinedPreviews
+import com.jessosborn.simpleweather.utils.getIconResource
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -54,10 +55,8 @@ fun WeatherItem(
                 text = stringResource(id = R.string.degrees, item.main.temp.roundToInt()),
                 style = MaterialTheme.typography.titleMedium,
             )
-            val id = "icon_${item.weather.first().icon}_t"
-            val icon = painterResource(LocalContext.current.resources.getIdentifier(id, "drawable", LocalContext.current.packageName))
             Image(
-                painter = icon,
+                painter = painterResource(id = getIconResource(item.weather.first().icon)),
                 contentDescription = item.weather.first().main,
                 modifier = Modifier.size(52.dp)
             )
