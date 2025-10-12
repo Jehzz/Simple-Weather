@@ -21,5 +21,6 @@
     <string name="wind_speed">Wind speed %s</string>
     <string name="zip_code">ZipCode</string>
     <string name="rain_forecast">Rain Forecast</string>
+    <string name="snow_forecast">Snow Forecast</string>
 
 </resources>

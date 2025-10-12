@@ -33,7 +33,7 @@ import com.jessosborn.simpleweather.domain.remote.responses.WeatherData
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
 import com.jessosborn.simpleweather.utils.CombinedPreviews
 import com.jessosborn.simpleweather.utils.DataStoreUtil
-import com.jessosborn.simpleweather.view.compose.RainRow
+import com.jessosborn.simpleweather.view.compose.PrecipitationGraph
 import com.jessosborn.simpleweather.view.compose.theme.ExtendedTheme
 import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 import java.text.SimpleDateFormat
@@ -61,8 +61,14 @@ fun ForecastLayout(
         ForecastRow(weather = tomorrowsWeather, onSnapshotSelected = onSnapshotSelected)
         ForecastHeader(text = stringResource(id = R.string.the_day_after))
         ForecastRow(weather = dayAftersWeather, onSnapshotSelected = onSnapshotSelected)
-        ForecastHeader(text = stringResource(R.string.rain_forecast),)
-        RainRow(weatherSnapshots = forecastWeather.list)
+        if (forecastWeather.list.any { it.rain != null }) {
+            ForecastHeader(text = stringResource(R.string.rain_forecast),)
+            PrecipitationGraph(data = forecastWeather.list.map { it.rain?.`3h` ?: 0f })
+        }
+        if (forecastWeather.list.any { it.snow != null }) {
+            ForecastHeader(text = stringResource(R.string.snow_forecast),)
+            PrecipitationGraph(data = forecastWeather.list.map { it.snow?.`3h` ?: 0f })
+        }
     }
 }
 

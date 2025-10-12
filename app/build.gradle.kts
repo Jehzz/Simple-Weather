@@ -136,6 +136,9 @@ dependencies {
     // Glance
     implementation(libs.glance.appwidget)
 
+    // Graphs
+    implementation(libs.ycharts)
+
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
