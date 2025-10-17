@@ -32,11 +32,12 @@ class App @Inject constructor() : Application(), Configuration.Provider {
 	private fun schedulePeriodicUpdate() {
 		val interval = runBlocking { DataStoreUtil.getRefreshTime(this@App).first() }
 		Log.d("SimpleWeather", "schedulePeriodicUpdate() every $interval hours")
-		val updateRequest = PeriodicWorkRequestBuilder<ForecastWeatherWorker>(
-			repeatInterval = interval.toLong(),
-			repeatIntervalTimeUnit = TimeUnit.HOURS
-		).build()
+		val updateRequest = PeriodicWorkRequestBuilder<ForecastWeatherWorker>(interval.toLong(), TimeUnit.HOURS)
+			.addTag(ForecastWeatherWorker.TAG)
+			.build()
 
-		WorkManager.getInstance(this).enqueue(updateRequest)
+		val workManager = WorkManager.getInstance(this)
+		workManager.cancelUniqueWork(ForecastWeatherWorker.TAG)
+		workManager.enqueue(updateRequest)
 	}
 }

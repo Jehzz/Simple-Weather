@@ -43,6 +43,6 @@ class ForecastWeatherWorker @AssistedInject constructor(
 		}
 	}
 	companion object {
-		private const val TAG = "ForecastWeatherWorker"
+		internal const val TAG = "ForecastWeatherWorker"
 	}
 }
