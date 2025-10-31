@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
 import kotlinx.coroutines.flow.Flow
 
@@ -31,4 +32,10 @@ interface WeatherSnapshotDao {
      */
     @Query("DELETE FROM weather_snapshot WHERE zip = :zip AND units = :units")
     fun deleteForecast(zip: String, units: String)
+
+    @Transaction
+    suspend fun replaceForecast(zip: String, units: String, weatherData: List<WeatherSnapshot>) {
+        deleteForecast(zip, units)
+        insertForecast(weatherData)
+    }
 }

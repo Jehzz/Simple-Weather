@@ -2,18 +2,12 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5244c593c304bd09f7d00e8f02de9eb0",
+    "identityHash": "2bbd286456b20d8e04312f3db5d0a80b",
     "entities": [
       {
         "tableName": "weather_snapshot",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `zip` TEXT NOT NULL, `units` TEXT NOT NULL, `dt` TEXT NOT NULL, `dt_txt` TEXT NOT NULL, `main` TEXT NOT NULL, `weather` TEXT NOT NULL, `pop` REAL NOT NULL, `rain` TEXT, `snow` TEXT, `createdAt` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`zip` TEXT NOT NULL, `units` TEXT NOT NULL, `dt` TEXT NOT NULL, `dt_txt` TEXT NOT NULL, `main` TEXT NOT NULL, `weather` TEXT NOT NULL, `pop` REAL NOT NULL, `rain` TEXT, `snow` TEXT, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`dt`))",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "zip",
             "columnName": "zip",
@@ -74,16 +68,16 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
-            "id"
+            "dt"
           ]
         }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5244c593c304bd09f7d00e8f02de9eb0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2bbd286456b20d8e04312f3db5d0a80b')"
     ]
   }
 }

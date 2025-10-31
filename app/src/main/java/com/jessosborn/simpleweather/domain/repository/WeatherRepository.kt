@@ -9,8 +9,10 @@ import com.jessosborn.simpleweather.domain.remote.OpenWeatherEndpoint
 import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
 import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import com.jessosborn.simpleweather.domain.remote.responses.WeatherSnapshot
+import com.jessosborn.simpleweather.utils.DataStoreUtil
 import com.jessosborn.simpleweather.view.compose.widget.WeatherWidget
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -49,8 +51,7 @@ class WeatherRepository(
                         val snapshotsToInsert = forecastWeather.list.map { snapshot ->
                             snapshot.copy(zip = zip, units = units, createdAt = createdAt)
                         }
-                        weatherSnapshotDao.deleteForecast(zip, units)
-                        weatherSnapshotDao.insertForecast(snapshotsToInsert)
+                        weatherSnapshotDao.replaceForecast(zip, units, snapshotsToInsert)
                         updateWidgetState()
                     }
                     Result.success(forecastWeather)
@@ -78,12 +79,13 @@ class WeatherRepository(
         }
 
         val firstSnapshot = cachedForecast.first()
-        val lifeSpan = 4.toDuration(DurationUnit.HOURS)
+        val lifeSpan = DataStoreUtil.getRefreshTime(context).first().toDuration(DurationUnit.HOURS)
         val age = (System.currentTimeMillis() - firstSnapshot.createdAt).toDuration(DurationUnit.MILLISECONDS)
 
         return if (age < lifeSpan) {
             Result.success(ForecastWeather(cachedForecast))
         } else {
+            weatherSnapshotDao.deleteForecast(zip, units)
             Result.failure(IOException("Cache expired for $zip. Data is $age old."))
         }
     }
