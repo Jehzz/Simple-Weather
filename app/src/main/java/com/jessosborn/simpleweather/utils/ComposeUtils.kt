@@ -43,7 +43,7 @@ annotation class DayNightPreviews
     name = "large screen",
     group = "screen scales",
     showBackground = true,
-    device = Devices.TABLET,
+    device = Devices.PIXEL_XL,
 )
 annotation class ScreenSizePreviews
 
