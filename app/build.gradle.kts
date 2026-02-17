@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     kotlin("android")
+    id("jacoco")
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.kotlinAndroidKsp)
@@ -24,7 +25,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_10.toString()
+        jvmTarget = "17"
     }
 
     signingConfigs {
@@ -48,6 +49,10 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
+        }
         getByName("release") {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -56,13 +61,57 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_10
-        targetCompatibility = JavaVersion.VERSION_1_10
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+jacoco {
+    toolVersion = libs.versions.jacoco.get()
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val fileFilter = listOf(
+        "**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*",
+        "**/*Test*.*", "android/**/*.*", "**/*_Impl*.*", "**/*_ViewBinding*.*",
+        "**/*MembersInjector*.*", "**/*_Factory*.*", "**/*_Provide*Factory*.*",
+        "**/*_HiltModules*.*", "**/*Hilt_*.class", "**/Hilt_*.class",
+        "**/view/**"
+    )
+
+    val debugTree = fileTree("${project.layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+        exclude(fileFilter)
+    }
+    val mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(debugTree))
+    executionData.setFrom(fileTree(project.layout.buildDirectory.get()) {
+        include("jacoco/testDebugUnitTest.exec", "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+    })
+
+    doLast {
+        val reportFile = reports.html.outputLocation.asFile.get().resolve("index.html")
+        if (reportFile.exists()) {
+            val os = System.getProperty("os.name").lowercase()
+            when {
+                os.contains("win") -> exec { commandLine("cmd", "/c", "start", reportFile.absolutePath) }
+                os.contains("mac") -> exec { commandLine("open", reportFile.absolutePath) }
+                os.contains("linux") -> exec { commandLine("xdg-open", reportFile.absolutePath) }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -91,8 +140,10 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
 
-    // Junit
+    // Testing
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     // Retrofit
     implementation(libs.retrofit)

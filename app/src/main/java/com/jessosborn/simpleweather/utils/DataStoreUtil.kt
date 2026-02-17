@@ -14,10 +14,10 @@ import kotlinx.coroutines.flow.map
 val Context.datastore: DataStore<Preferences> by preferencesDataStore("settings")
 
 object DataStoreUtil {
-    private const val USER_UNITS = "units"
-    private const val USER_ZIP = "zip"
-    private const val USER_THEME = "theme"
-    private const val USER_REFRESH_TIME = "refreshTime"
+    const val USER_UNITS = "units"
+    const val USER_ZIP = "zip"
+    const val USER_THEME = "theme"
+    const val USER_REFRESH_TIME = "refreshTime"
 
     private suspend fun saveString(
         context: Context,

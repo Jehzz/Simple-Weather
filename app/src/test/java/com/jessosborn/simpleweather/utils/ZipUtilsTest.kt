@@ -1,57 +1,65 @@
 package com.jessosborn.simpleweather.utils
 
+import com.jessosborn.simpleweather.domain.CountryCode
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ZipUtilsTest {
+
     @Test
-    fun isValidZip() {
-        assertTrue(VALID_USA_ZIP.isValidZip())
-        assertTrue(VALID_CAN_ZIP.isValidZip())
-        assertTrue(VALID_UK_3_ZIP.isValidZip())
-        assertTrue(VALID_UK_4_ZIP.isValidZip())
+    fun `isValidZip returns true for valid zips`() {
+        assertTrue("10168".isValidZip())
+        assertTrue("M4V".isValidZip())
+        assertTrue("WC2N".isValidZip())
+        assertTrue("PR6".isValidZip())
     }
 
     @Test
-    fun validUsZipIsUsZip() {
-        assertTrue(VALID_USA_ZIP.isUsZip())
+    fun `isValidZip returns false for invalid zips`() {
+        assertFalse("1234".isValidZip())
+        assertFalse("123456".isValidZip())
+        assertFalse("ABC DE".isValidZip())
+        assertFalse("".isValidZip())
     }
 
     @Test
-    fun nonUsZipIsNotUsZip() {
-        assertFalse(VALID_CAN_ZIP.isUsZip())
-        assertFalse(VALID_UK_3_ZIP.isUsZip())
-        assertFalse(VALID_UK_4_ZIP.isUsZip())
+    fun `isInvalidZip returns correct value`() {
+        assertTrue("1234".isInvalidZip())
+        assertFalse("10168".isInvalidZip())
     }
 
     @Test
-    fun validCanZipIsCanZip() {
-        assertTrue(VALID_CAN_ZIP.isCanadianZip())
+    fun `isUsZip validates correctly`() {
+        assertTrue("10168".isUsZip())
+        assertFalse("1016".isUsZip())
+        assertFalse("101689".isUsZip())
+        assertFalse("ABCDE".isUsZip())
     }
 
     @Test
-    fun nonCanZipIsNotCanZip() {
-        assertFalse(VALID_USA_ZIP.isCanadianZip())
-        assertFalse(VALID_UK_3_ZIP.isCanadianZip())
-        assertFalse(VALID_UK_4_ZIP.isCanadianZip())
+    fun `isCanadianZip validates correctly`() {
+        assertTrue("M4V".isCanadianZip())
+        assertTrue("m4v".isCanadianZip())
+        assertFalse("M4V1".isCanadianZip())
+        assertFalse("123".isCanadianZip())
     }
 
     @Test
-    fun validUkZipIsUkZip() {
-        assertTrue(VALID_UK_4_ZIP.isUkZip())
-        assertTrue(VALID_UK_3_ZIP.isUkZip())
+    fun `isUkZip validates correctly`() {
+        assertTrue("WC2N".isUkZip())
+        assertTrue("PR6".isUkZip())
+        assertTrue("wc2n".isUkZip())
+        assertFalse("WC2N12".isUkZip())
+        assertFalse("1234".isUkZip())
     }
 
     @Test
-    fun nonUkZipIsNotUkZip() {
-        assertFalse(VALID_USA_ZIP.isUkZip())
-    }
-
-    companion object {
-        const val VALID_UK_4_ZIP = "WC2N"
-        const val VALID_UK_3_ZIP = "PR6"
-        const val VALID_USA_ZIP = "10168"
-        const val VALID_CAN_ZIP = "M4V"
+    fun `getCountryFromZip returns correct codes`() {
+        assertEquals(CountryCode.US.code, getCountryFromZip("10168"))
+        assertEquals(CountryCode.CANADA.code, getCountryFromZip("M4V"))
+        assertEquals(CountryCode.UK.code, getCountryFromZip("WC2N"))
+        assertEquals("NULL", getCountryFromZip("INVALID"))
     }
 }
