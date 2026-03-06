@@ -18,23 +18,24 @@ class WidgetRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val weatherSnapshotDao: WeatherSnapshotDao,
 ) {
-        @EntryPoint
-        @InstallIn(SingletonComponent::class)
-        interface RepositoryEntryPoint {
-            fun widgetRepository(): WidgetRepository
-        }
-
-        fun getWeather(): Flow<List<WeatherSnapshot>> {
-            val units = runBlocking { DataStoreUtil.getUnits(context).first() }
-            val zip = runBlocking { DataStoreUtil.getZip(context).first() }
-            return weatherSnapshotDao.getForecast(zip, units.name)
-        }
-
-        companion object {
-            fun getRepository(context: Context) =
-                EntryPoints.get(
-                    context,
-                    RepositoryEntryPoint::class.java,
-                ).widgetRepository()
-        }
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface RepositoryEntryPoint {
+        fun widgetRepository(): WidgetRepository
     }
+
+    fun getWeather(): Flow<List<WeatherSnapshot>> {
+        val units = runBlocking { DataStoreUtil.getUnits(context).first() }
+        val zips = runBlocking { DataStoreUtil.getZips(context).first() }
+        val primaryZip = zips.firstOrNull() ?: ""
+        return weatherSnapshotDao.getForecast(primaryZip, units.name)
+    }
+
+    companion object {
+        fun getRepository(context: Context) =
+            EntryPoints.get(
+                context,
+                RepositoryEntryPoint::class.java,
+            ).widgetRepository()
+    }
+}

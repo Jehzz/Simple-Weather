@@ -5,12 +5,15 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.jessosborn.simpleweather.domain.remote.responses.ForecastWeather
 import com.jessosborn.simpleweather.domain.repository.IWeatherRepository
 import com.jessosborn.simpleweather.utils.DataStoreUtil
 import com.jessosborn.simpleweather.utils.getCountryFromZip
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.first
+import androidx.work.ListenableWorker.Result as WorkerResult
+import kotlin.Result as KotlinResult
 
 @HiltWorker
 class ForecastWeatherWorker @AssistedInject constructor(
@@ -19,26 +22,36 @@ class ForecastWeatherWorker @AssistedInject constructor(
 	val weatherRepository: IWeatherRepository
 ) : CoroutineWorker(context, workerParams) {
 
-	override suspend fun doWork(): Result {
+	override suspend fun doWork(): WorkerResult {
 		Log.d(TAG, "doWork")
 
-		val zip = DataStoreUtil.getZip(context).first()
+		val zipcodes = DataStoreUtil.getZips(context).first()
 		val units = DataStoreUtil.getUnits(context).first()
+		var result: KotlinResult<ForecastWeather>? = null
 
-		val result = weatherRepository.fetchForecastData(
-			zip = zip,
-			country = getCountryFromZip(zip),
-			units = units.name
-		)
+		zipcodes.forEach { zip ->
+			Log.d(TAG, "Updating zipcode $zip")
+			weatherRepository.fetchForecastData(
+				zip = zip,
+				country = getCountryFromZip(zip),
+				units = units.name
+			).also { apiResult ->
+				result = apiResult
+				if (apiResult.isFailure) {
+					Log.d(TAG, "Zipcode $zip failed to update")
+					return@forEach
+				}
+			}
+		}
 
 		when {
-			result.isSuccess -> {
+			result?.isSuccess == true -> {
 				Log.d(TAG, "Success")
-				return Result.success()
+				return WorkerResult.success()
 			}
 			else -> {
 				Log.d(TAG, "Error")
-				return Result.failure()
+				return WorkerResult.failure()
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.jessosborn.simpleweather.domain.Theme
 import com.jessosborn.simpleweather.domain.Units
@@ -16,6 +17,7 @@ val Context.datastore: DataStore<Preferences> by preferencesDataStore("settings"
 object DataStoreUtil {
     const val USER_UNITS = "units"
     const val USER_ZIP = "zip"
+    const val USER_ZIPS = "zips"
     const val USER_THEME = "theme"
     const val USER_REFRESH_TIME = "refreshTime"
 
@@ -76,7 +78,27 @@ object DataStoreUtil {
         value: String,
     ) = saveString(context, USER_ZIP, value)
 
-	suspend fun saveRefreshTime(
+    fun getZips(context: Context): Flow<List<String>> {
+        return context.datastore.data.map { prefs ->
+            prefs[stringSetPreferencesKey(USER_ZIPS)]?.toList() ?: emptyList()
+        }
+    }
+
+    suspend fun addZip(context: Context, zip: String) {
+        context.datastore.edit { prefs ->
+            val current = prefs[stringSetPreferencesKey(USER_ZIPS)] ?: emptySet()
+            prefs[stringSetPreferencesKey(USER_ZIPS)] = current + zip
+        }
+    }
+
+    suspend fun removeZip(context: Context, zip: String) {
+        context.datastore.edit { prefs ->
+            val current = prefs[stringSetPreferencesKey(USER_ZIPS)] ?: emptySet()
+            prefs[stringSetPreferencesKey(USER_ZIPS)] = current - zip
+        }
+    }
+
+    suspend fun saveRefreshTime(
         context: Context,
         value: Int
     ) = saveString(context, USER_REFRESH_TIME, value.toString())

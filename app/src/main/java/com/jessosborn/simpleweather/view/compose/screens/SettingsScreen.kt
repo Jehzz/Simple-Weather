@@ -1,17 +1,21 @@
 package com.jessosborn.simpleweather.view.compose.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -35,7 +39,6 @@ import com.jessosborn.simpleweather.R
 import com.jessosborn.simpleweather.domain.Theme
 import com.jessosborn.simpleweather.domain.Units
 import com.jessosborn.simpleweather.utils.CombinedPreviews
-import com.jessosborn.simpleweather.utils.isInvalidZip
 import com.jessosborn.simpleweather.utils.isValidZip
 import com.jessosborn.simpleweather.view.compose.components.ThemeSelector
 import com.jessosborn.simpleweather.view.compose.components.UnitsSelector
@@ -46,18 +49,17 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 fun SettingsScreen(
     theme: Theme,
     units: Units,
-    zipCode: String,
+    zipCodes: List<String>,
     refreshTime: Int,
     onThemeChosen: (Theme) -> Unit,
     onUnitsChosen: (Units) -> Unit,
-    onZipEntered: (String) -> Unit,
+    onAddZip: (String) -> Unit,
+    onRemoveZip: (String) -> Unit,
     onRefreshTimeEntered: (Int) -> Unit,
     onSaveClicked: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    var zipCodeTextFieldValue by remember { mutableStateOf(TextFieldValue(text = zipCode)) }
-
+    var newZipTextFieldValue by remember { mutableStateOf(TextFieldValue("")) }
     var refreshTimeTextFieldValue by remember { mutableStateOf(TextFieldValue(text = refreshTime.toString())) }
 
     Scaffold(
@@ -73,117 +75,119 @@ fun SettingsScreen(
             }
         },
         content = { padding ->
-            Column(
-                modifier =
-                    Modifier.padding(
-                        vertical = padding.calculateTopPadding(),
-                        horizontal = 12.dp,
-                    ),
+            LazyColumn(
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(horizontal = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(40.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.theme),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        ThemeSelector(
+                            selectedTheme = theme,
+                            onClick = { onThemeChosen(it) },
+                        )
+                    }
+                }
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.units),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        UnitsSelector(
+                            selectedUnits = units,
+                            onClick = { onUnitsChosen(it) },
+                        )
+                    }
+                }
+                
+                item {
                     Text(
-                        modifier = Modifier.padding(horizontal = 12.dp),
-                        text = stringResource(id = R.string.theme),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    ThemeSelector(
-                        modifier = Modifier.padding(end = 10.dp),
-                        selectedTheme = theme,
-                        onClick = { chosenTheme ->
-                            onThemeChosen(chosenTheme)
-                        },
+                        text = "Manage Cities",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(vertical = 10.dp)
                     )
                 }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 12.dp),
-                        text = stringResource(id = R.string.units),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    UnitsSelector(
-                        modifier = Modifier.padding(end = 10.dp),
-                        selectedUnits = units,
-                        onClick = { chosenUnits -> onUnitsChosen(chosenUnits) },
-                    )
+
+                items(zipCodes) { zip ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = zip, style = MaterialTheme.typography.bodyLarge)
+                        IconButton(onClick = { onRemoveZip(zip) }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Remove")
+                        }
+                    }
                 }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 12.dp),
-                        text = stringResource(id = R.string.zip_code),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    OutlinedTextField(
-                        value = zipCodeTextFieldValue,
-                        onValueChange = {
-                            zipCodeTextFieldValue = it
-                            if (it.text.isValidZip()) onZipEntered(zipCodeTextFieldValue.text)
-                        },
-                        modifier = Modifier.padding(horizontal = 4.dp),
-                        textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
-                        label = {
-                            if (zipCodeTextFieldValue.text.isInvalidZip()) {
-                                Text(text = "Enter a valid ZipCode")
-                            }
-                        },
-                        isError = zipCodeTextFieldValue.text.isInvalidZip(),
-                        singleLine = true,
-                        keyboardActions =
-                            KeyboardActions(
-                                onDone = {
+
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        OutlinedTextField(
+                            value = newZipTextFieldValue,
+                            onValueChange = { newZipTextFieldValue = it },
+                            modifier = Modifier.weight(1f).padding(end = 8.dp),
+                            label = { Text("Add Zip Code") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        )
+                        IconButton(
+                            onClick = {
+                                if (newZipTextFieldValue.text.isValidZip()) {
+                                    onAddZip(newZipTextFieldValue.text)
+                                    newZipTextFieldValue = TextFieldValue("")
                                     keyboardController?.hide()
-                                    onSaveClicked()
-                                },
-                            ),
-                    )
+                                }
+                            },
+                            enabled = newZipTextFieldValue.text.isValidZip()
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = "Add")
+                        }
+                    }
                 }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 12.dp),
-                        text = "Auto refresh time (h)",
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    OutlinedTextField(
-                        value = refreshTimeTextFieldValue,
-                        onValueChange = {
-                            refreshTimeTextFieldValue = it
-                            if (it.text.toIntOrNull() != null) onRefreshTimeEntered(refreshTimeTextFieldValue.text.toInt())
-                        },
-                        modifier = Modifier.padding(horizontal = 4.dp),
-                        textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
-                        label = {
-                            if (refreshTimeTextFieldValue.text.toIntOrNull() == null) {
-                                Text(text = "Enter a number")
-                            }
-                        },
-                        isError = refreshTimeTextFieldValue.text.toIntOrNull() == null,
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        keyboardActions =
-                            KeyboardActions(
-                                onDone = {
-                                    keyboardController?.hide()
-                                    onSaveClicked()
-                                },
-                            ),
-                    )
+
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 80.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(
+                            text = "Auto refresh (h)",
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        OutlinedTextField(
+                            value = refreshTimeTextFieldValue,
+                            onValueChange = {
+                                refreshTimeTextFieldValue = it
+                                it.text.toIntOrNull()?.let { time -> onRefreshTimeEntered(time) }
+                            },
+                            modifier = Modifier.width(100.dp),
+                            textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
+                            isError = refreshTimeTextFieldValue.text.toIntOrNull() == null,
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        )
+                    }
                 }
             }
         },
@@ -197,29 +201,12 @@ private fun Preview() {
         SettingsScreen(
             theme = Theme.FollowSystem,
             units = Units.Metric,
-            zipCode = "90210",
+            zipCodes = listOf("90210", "10001"),
             refreshTime = 7,
             onThemeChosen = {},
             onUnitsChosen = {},
-            onZipEntered = {},
-            onRefreshTimeEntered = {},
-            onSaveClicked = {},
-        )
-    }
-}
-
-@CombinedPreviews
-@Composable
-private fun ErrorPreview() {
-    SimpleWeatherTheme {
-        SettingsScreen(
-            theme = Theme.FollowSystem,
-            units = Units.Metric,
-            zipCode = "9021",
-            refreshTime = 7,
-            onThemeChosen = {},
-            onUnitsChosen = {},
-            onZipEntered = {},
+            onAddZip = {},
+            onRemoveZip = {},
             onRefreshTimeEntered = {},
             onSaveClicked = {},
         )
