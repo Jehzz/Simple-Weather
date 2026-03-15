@@ -75,7 +75,10 @@ fun PrecipitationGraph(
 				val labelScale = (index.toFloat() / verticalSteps.toFloat())
 				val max = data.maxOf { it }
 				val data = (max * (labelScale)).toString()
-				"$data mm"
+				when {
+					index == verticalSteps || index == 0 || verticalSteps.div(2) == index -> "$data mm"
+					else -> ""
+				}
 			}
 			.build()
 
