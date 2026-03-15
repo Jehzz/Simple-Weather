@@ -1,8 +1,8 @@
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
-    kotlin("android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
     id("jacoco")
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hiltAndroid)
@@ -19,24 +19,6 @@ android {
     namespace = "com.jessosborn.simpleweather"
     compileSdk = 35
 
-    buildFeatures {
-        buildConfig = true
-        compose = true
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
-    signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
-        }
-    }
-
     defaultConfig {
         applicationId = "com.jessosborn.weatherapp"
         minSdk = 27
@@ -45,7 +27,21 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        resValue("string", "api_key", apiProperties["apikey"].toString())
+        resValue("string", "api_key", apiProperties["apikey"]?.toString() ?: "")
+    }
+
+    buildFeatures {
+        buildConfig = true
+        compose = true
+    }
+
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as? String
+            keyPassword = keystoreProperties["keyPassword"] as? String
+            storeFile = (keystoreProperties["storeFile"] as? String)?.let { file(it) }
+            storePassword = keystoreProperties["storePassword"] as? String
+        }
     }
 
     buildTypes {
@@ -63,6 +59,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 
@@ -123,12 +123,12 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
 
     // Compose
-    platform(libs.androidx.compose.bom)
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.compose.material)
     implementation(libs.compose.material.icons.extended)
     implementation(libs.compose.material3.android)
     implementation(libs.hilt.navigation.compose)
-    implementation(libs.ui.tooling)
+	implementation(libs.ui.tooling)
 
     // DataStore
     implementation(libs.androidx.datastore.preferences)
@@ -154,11 +154,11 @@ dependencies {
     implementation(libs.logging.interceptor)
 
     // Room
-    ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
-    //WorkManager
+    // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
