@@ -31,16 +31,19 @@ class WeatherRepository(
         zip: String,
         country: String,
         units: String,
+        forceRefresh: Boolean,
     ): Result<ForecastWeather> {
 
-        val cachedDataResult = getCachedForecastData(zip, units)
-        if (cachedDataResult.isSuccess) {
-            Log.d("WeatherRepository", "Returning cached data")
-            updateWidgetState()
-            return cachedDataResult
+        if (!forceRefresh) {
+            val cachedDataResult = getCachedForecastData(zip, units)
+            if (cachedDataResult.isSuccess) {
+                Log.d("WeatherRepository", "Returning cached data")
+                updateWidgetState()
+                return cachedDataResult
+            }
         }
 
-        // --- If cache is missing, expired, or for a different location, fetch from network ---
+        // --- If cache is missing, expired, forced, or for a different location, fetch from network ---
         val networkResponse = service.getForecastWeather(location = "$zip,$country", apiKey = key, units = units)
 
         return try {
@@ -85,7 +88,6 @@ class WeatherRepository(
         return if (age < lifeSpan) {
             Result.success(ForecastWeather(cachedForecast))
         } else {
-            weatherSnapshotDao.deleteForecast(zip, units)
             Result.failure(IOException("Cache expired for $zip. Data is $age old."))
         }
     }

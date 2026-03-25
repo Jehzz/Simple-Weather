@@ -16,5 +16,6 @@ interface IWeatherRepository {
         zip: String,
         country: String,
         units: String,
+        forceRefresh: Boolean = false
     ): Result<ForecastWeather>
 }

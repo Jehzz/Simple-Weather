@@ -101,7 +101,7 @@ class WeatherRepositoryTest {
         every { DataStoreUtil.getRefreshTime(context) } returns flowOf(2) // 2 hours
         coEvery { glanceManager.getGlanceIds(WeatherWidget::class.java) } returns emptyList()
 
-        val result = repository.fetchForecastData(zip, "US", units)
+        val result = repository.fetchForecastData(zip, "US", units, forceRefresh = false)
 
         assertTrue(result.isSuccess)
         assertEquals(snapshots, result.getOrNull()?.list)
@@ -117,7 +117,6 @@ class WeatherRepositoryTest {
         val snapshots = listOf(createFakeWeatherSnapshot(zip, units, expiredTime))
         
         coEvery { dao.getForecast(zip, units) } returns flowOf(snapshots)
-        coEvery { dao.deleteForecast(zip, units) } just Runs
         every { DataStoreUtil.getRefreshTime(context) } returns flowOf(2)
         
         val networkForecast = ForecastWeather(listOf(createFakeWeatherSnapshot(zip, units, System.currentTimeMillis())))
@@ -125,10 +124,32 @@ class WeatherRepositoryTest {
         coEvery { dao.replaceForecast(any(), any(), any()) } just Runs
         coEvery { glanceManager.getGlanceIds(WeatherWidget::class.java) } returns emptyList()
 
-        val result = repository.fetchForecastData(zip, "US", units)
+        val result = repository.fetchForecastData(zip, "US", units, forceRefresh = false)
 
         assertTrue(result.isSuccess)
-        coVerify { dao.deleteForecast(zip, units) }
+        // We no longer call deleteForecast directly in getCachedForecastData
+        coVerify(exactly = 0) { dao.deleteForecast(zip, units) }
+        coVerify { service.getForecastWeather("$zip,US", "fake_api_key", units) }
+        coVerify { dao.replaceForecast(zip, units, any()) }
+    }
+
+    @Test
+    fun `fetchForecastData fetches from network when forceRefresh is true even if cache is valid`() = runTest {
+        val zip = "12345"
+        val units = "metric"
+        val snapshots = listOf(createFakeWeatherSnapshot(zip, units, System.currentTimeMillis()))
+        
+        coEvery { dao.getForecast(zip, units) } returns flowOf(snapshots)
+        every { DataStoreUtil.getRefreshTime(context) } returns flowOf(2)
+        
+        val networkForecast = ForecastWeather(listOf(createFakeWeatherSnapshot(zip, units, System.currentTimeMillis())))
+        coEvery { service.getForecastWeather(any(), any(), any()) } returns Response.success(networkForecast)
+        coEvery { dao.replaceForecast(any(), any(), any()) } just Runs
+        coEvery { glanceManager.getGlanceIds(WeatherWidget::class.java) } returns emptyList()
+
+        val result = repository.fetchForecastData(zip, "US", units, forceRefresh = true)
+
+        assertTrue(result.isSuccess)
         coVerify { service.getForecastWeather("$zip,US", "fake_api_key", units) }
         coVerify { dao.replaceForecast(zip, units, any()) }
     }
@@ -141,7 +162,7 @@ class WeatherRepositoryTest {
         coEvery { dao.getForecast(zip, units) } returns flowOf(emptyList())
         coEvery { service.getForecastWeather(any(), any(), any()) } returns Response.error(500, "Server Error".toResponseBody())
 
-        val result = repository.fetchForecastData(zip, "US", units)
+        val result = repository.fetchForecastData(zip, "US", units, forceRefresh = false)
 
         assertTrue(result.isFailure)
     }
