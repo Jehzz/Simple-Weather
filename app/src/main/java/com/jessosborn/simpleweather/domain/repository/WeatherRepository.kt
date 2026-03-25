@@ -33,7 +33,6 @@ class WeatherRepository(
         units: String,
         forceRefresh: Boolean,
     ): Result<ForecastWeather> {
-
         if (!forceRefresh) {
             val cachedDataResult = getCachedForecastData(zip, units)
             if (cachedDataResult.isSuccess) {
@@ -51,9 +50,10 @@ class WeatherRepository(
                 networkResponse.body()?.let { forecastWeather ->
                     withContext(Dispatchers.IO) {
                         val createdAt = System.currentTimeMillis()
-                        val snapshotsToInsert = forecastWeather.list.map { snapshot ->
-                            snapshot.copy(zip = zip, units = units, createdAt = createdAt)
-                        }
+                        val snapshotsToInsert =
+                            forecastWeather.list.map { snapshot ->
+                                snapshot.copy(zip = zip, units = units, createdAt = createdAt)
+                            }
                         weatherSnapshotDao.replaceForecast(zip, units, snapshotsToInsert)
                         updateWidgetState()
                     }
@@ -74,7 +74,10 @@ class WeatherRepository(
         }
     }
 
-    override suspend fun getCachedForecastData(zip: String, units: String): Result<ForecastWeather> {
+    override suspend fun getCachedForecastData(
+        zip: String,
+        units: String,
+    ): Result<ForecastWeather> {
         val cachedForecast: List<WeatherSnapshot>? = weatherSnapshotDao.getForecast(zip, units).firstOrNull()
 
         if (cachedForecast.isNullOrEmpty()) {

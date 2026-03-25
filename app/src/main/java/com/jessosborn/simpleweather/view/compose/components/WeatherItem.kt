@@ -58,15 +58,16 @@ fun WeatherItem(
             Image(
                 painter = painterResource(id = getIconResource(item.weather.first().icon)),
                 contentDescription = item.weather.first().main,
-                modifier = Modifier.size(52.dp)
+                modifier = Modifier.size(52.dp),
             )
             val timeFormat = (DateFormat.getTimeFormat(LocalContext.current) as SimpleDateFormat).toLocalizedPattern()
-            val time = DateFormat.format(
-                timeFormat,
-                Calendar.getInstance(Locale.ENGLISH).apply {
-                    timeInMillis = item.dt.toLong() * 1000L
-                },
-            )
+            val time =
+                DateFormat.format(
+                    timeFormat,
+                    Calendar.getInstance(Locale.ENGLISH).apply {
+                        timeInMillis = item.dt.toLong() * 1000L
+                    },
+                )
             Text(
                 text = time.toString(),
                 style = MaterialTheme.typography.labelMedium,

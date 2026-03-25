@@ -37,141 +37,147 @@ import com.jessosborn.simpleweather.view.compose.theme.SimpleWeatherTheme
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun TemperatureGauge(
-	modifier: Modifier = Modifier,
-	colors: List<Color> = listOf(
-		Color.White,
-		Color(0xFF800080),
-		Color.Blue,
-		Color.Green,
-		Color.Yellow,
-		Color.Red,
-		Color.Black,
-		Color.Black
-	),
-	currentTemp: Int,
-	units: Units,
-	startAngle: Float = 225f,
-	sweepAngle: Float = 270f,  // How far the arc travels clockwise
-	tickLength: Dp = 20.dp,
-	tickWidth: Dp = 4.dp,
-	tickSpacing: Dp = 18.dp,
+    modifier: Modifier = Modifier,
+    colors: List<Color> =
+        listOf(
+            Color.White,
+            Color(0xFF800080),
+            Color.Blue,
+            Color.Green,
+            Color.Yellow,
+            Color.Red,
+            Color.Black,
+            Color.Black,
+        ),
+    currentTemp: Int,
+    units: Units,
+    startAngle: Float = 225f,
+    sweepAngle: Float = 270f, // How far the arc travels clockwise
+    tickLength: Dp = 20.dp,
+    tickWidth: Dp = 4.dp,
+    tickSpacing: Dp = 18.dp,
 ) {
-	Surface(
-		modifier = modifier.aspectRatio(1f),
-		color = Color.Transparent
-	) {
-		BoxWithConstraints(contentAlignment = Alignment.Center) {
-			drawDial(
-				brush = Brush.sweepGradient(colors),
-				currentTemperature = currentTemp,
-				startAngle = startAngle,
-				sweepAngle = sweepAngle,
-				tickLength = tickLength,
-				tickWidth = tickWidth,
-				tickSpacing = tickSpacing,
-				units = units
-			)
+    Surface(
+        modifier = modifier.aspectRatio(1f),
+        color = Color.Transparent,
+    ) {
+        BoxWithConstraints(contentAlignment = Alignment.Center) {
+            drawDial(
+                brush = Brush.sweepGradient(colors),
+                currentTemperature = currentTemp,
+                startAngle = startAngle,
+                sweepAngle = sweepAngle,
+                tickLength = tickLength,
+                tickWidth = tickWidth,
+                tickSpacing = tickSpacing,
+                units = units,
+            )
 
-			// BoxWithConstraints exposes maxDimen, allows text to scale with the component size
-			val fontSize = maxWidth.value.sp / 4
-			Column(horizontalAlignment = Alignment.CenterHorizontally) {
-				Text(
-					text = "$currentTemp°",
-					fontSize = fontSize,
-					fontWeight = FontWeight.Bold,
-					textAlign = TextAlign.Center,
-					color = MaterialTheme.colorScheme.onSurface
-				)
-			}
-		}
-	}
+            // BoxWithConstraints exposes maxDimen, allows text to scale with the component size
+            val fontSize = maxWidth.value.sp / 4
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "$currentTemp°",
+                    fontSize = fontSize,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        }
+    }
 }
 
 @Composable
 private fun drawDial(
-	modifier: Modifier = Modifier,
-	brush: Brush,
-	startAngle: Float, // User input (0 is North)
-	sweepAngle: Float,
-	tickLength: Dp,
-	tickWidth: Dp,
-	tickSpacing: Dp,
-	currentTemperature: Int,
-	units: Units
+    modifier: Modifier = Modifier,
+    brush: Brush,
+    startAngle: Float, // User input (0 is North)
+    sweepAngle: Float,
+    tickLength: Dp,
+    tickWidth: Dp,
+    tickSpacing: Dp,
+    currentTemperature: Int,
+    units: Units,
 ) {
-	val needleColor = MaterialTheme.colorScheme.onSurface
+    val needleColor = MaterialTheme.colorScheme.onSurface
 
-	// Internal correction: Adjust user's "North = 0" to "3 o'clock = 0" for Canvas API
-	val adjustedStartAngle = startAngle - 90f
+    // Internal correction: Adjust user's "North = 0" to "3 o'clock = 0" for Canvas API
+    val adjustedStartAngle = startAngle - 90f
 
-	Canvas(
-		modifier = modifier
-			.fillMaxSize()
-			.padding(10.dp)
-	) {
-		// 1. Draw the Dial
-		rotate(degrees = adjustedStartAngle) {
-			drawArc(
-				brush = brush,
-				startAngle = 0f,
-				sweepAngle = sweepAngle,
-				useCenter = false,
-				style = Stroke(
-					width = tickLength.toPx(),
-					pathEffect = PathEffect.dashPathEffect(
-						intervals = floatArrayOf(tickWidth.toPx(), tickSpacing.toPx()),
-					)
-				)
-			)
-		}
+    Canvas(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(10.dp),
+    ) {
+        // 1. Draw the Dial
+        rotate(degrees = adjustedStartAngle) {
+            drawArc(
+                brush = brush,
+                startAngle = 0f,
+                sweepAngle = sweepAngle,
+                useCenter = false,
+                style =
+                    Stroke(
+                        width = tickLength.toPx(),
+                        pathEffect =
+                            PathEffect.dashPathEffect(
+                                intervals = floatArrayOf(tickWidth.toPx(), tickSpacing.toPx()),
+                            ),
+                    ),
+            )
+        }
 
-		// 2. Draw the Needle
-		// Define ranges based on the unit system
-		val (tempMin, tempMax) = if (units == Units.Metric) {
-			-20f to 45f  // Typical Celsius range
-		} else {
-			0f to 110f   // Typical Fahrenheit range
-		}
+        // 2. Draw the Needle
+        // Define ranges based on the unit system
+        val (tempMin, tempMax) =
+            if (units == Units.Metric) {
+                -20f to 45f // Typical Celsius range
+            } else {
+                0f to 110f // Typical Fahrenheit range
+            }
 
-		val clampedTemp = currentTemperature.toFloat().coerceIn(tempMin, tempMax)
+        val clampedTemp = currentTemperature.toFloat().coerceIn(tempMin, tempMax)
 
-		// Calculate progress: (current - min) / (max - min)
-		val progressPercent = (clampedTemp - tempMin) / (tempMax - tempMin)
+        // Calculate progress: (current - min) / (max - min)
+        val progressPercent = (clampedTemp - tempMin) / (tempMax - tempMin)
 
-		val needleRotation = startAngle + (progressPercent * sweepAngle)
+        val needleRotation = startAngle + (progressPercent * sweepAngle)
 
-		rotate(degrees = needleRotation) {
-			val radius = size.width / 2
-			val needleWidth = 30.0f
-			val needleStartOffset = radius / 2f
+        rotate(degrees = needleRotation) {
+            val radius = size.width / 2
+            val needleWidth = 30.0f
+            val needleStartOffset = radius / 2f
 
-			val needlePath = Path().apply {
-				val needleBaseY = center.y - needleStartOffset
+            val needlePath =
+                Path().apply {
+                    val needleBaseY = center.y - needleStartOffset
 
-				moveTo(center.x - needleWidth, needleBaseY) // Left base
-				lineTo(center.x, tickLength.toPx())
-				lineTo(center.x + needleWidth, needleBaseY) // Right base
-				close()
-			}
-			drawPath(path = needlePath, color = needleColor)
-		}
-	}
+                    moveTo(center.x - needleWidth, needleBaseY) // Left base
+                    lineTo(center.x, tickLength.toPx())
+                    lineTo(center.x + needleWidth, needleBaseY) // Right base
+                    close()
+                }
+            drawPath(path = needlePath, color = needleColor)
+        }
+    }
 }
 
 @DayNightPreviews
 @Composable
 private fun LargeImperialPreview(
-	@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather
+    @PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
 ) {
-	SimpleWeatherTheme {
-		Column(
-			modifier = Modifier.size(250.dp, 250.dp)
-		) {
-			val weather = forecast.list.first().main
-			TemperatureGauge(
-				currentTemp = weather.temp.toInt(),
-				units = Units.Imperial
-			)
-		}
-	}
+    SimpleWeatherTheme {
+        Column(
+            modifier = Modifier.size(250.dp, 250.dp),
+        ) {
+            val weather = forecast.list.first().main
+            TemperatureGauge(
+                currentTemp = weather.temp.toInt(),
+                units = Units.Imperial,
+            )
+        }
+    }
 }

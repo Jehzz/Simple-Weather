@@ -16,48 +16,49 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(
-    private val weatherRepo: IWeatherRepository
-) : ViewModel() {
-    private val _weatherData = MutableStateFlow<Map<String, WeatherResult>>(emptyMap())
-    val weatherData = _weatherData.asStateFlow()
+class WeatherViewModel
+    @Inject
+    constructor(
+        private val weatherRepo: IWeatherRepository,
+    ) : ViewModel() {
+        private val _weatherData = MutableStateFlow<Map<String, WeatherResult>>(emptyMap())
+        val weatherData = _weatherData.asStateFlow()
 
-    private val _isNetworkLoading = MutableStateFlow(false)
-    val isNetworkLoading = _isNetworkLoading.asStateFlow()
+        private val _isNetworkLoading = MutableStateFlow(false)
+        val isNetworkLoading = _isNetworkLoading.asStateFlow()
 
-    private val _networkError = MutableSharedFlow<String>()
-    val networkError = _networkError.asSharedFlow()
+        private val _networkError = MutableSharedFlow<String>()
+        val networkError = _networkError.asSharedFlow()
 
-    fun fetchWeatherForZip(
-        zip: String,
-        units: Units,
-    ) {
-        viewModelScope.launch {
-            _isNetworkLoading.value = true
-            try {
-                val currentResult = weatherRepo.fetchCurrentData(zip, getCountryFromZip(zip), units.name)
-                val forecastResult = weatherRepo.fetchForecastData(zip, getCountryFromZip(zip), units.name)
+        fun fetchWeatherForZip(
+            zip: String,
+            units: Units,
+        ) {
+            viewModelScope.launch {
+                _isNetworkLoading.value = true
+                try {
+                    val currentResult = weatherRepo.fetchCurrentData(zip, getCountryFromZip(zip), units.name)
+                    val forecastResult = weatherRepo.fetchForecastData(zip, getCountryFromZip(zip), units.name)
 
-                val current = currentResult.getOrNull()
-                val forecast = forecastResult.getOrNull()
+                    val current = currentResult.getOrNull()
+                    val forecast = forecastResult.getOrNull()
 
-                if (current != null && forecast != null) {
-                    _weatherData.value = _weatherData.value + (zip to WeatherResult(current, forecast))
+                    if (current != null && forecast != null) {
+                        _weatherData.value = _weatherData.value + (zip to WeatherResult(current, forecast))
+                    }
+
+                    currentResult.onFailure { _networkError.emit(it.message.toString()) }
+                    forecastResult.onFailure { _networkError.emit(it.message.toString()) }
+                } catch (e: Exception) {
+                    _networkError.emit(e.message.toString())
+                } finally {
+                    _isNetworkLoading.value = false
                 }
-
-                currentResult.onFailure { _networkError.emit(it.message.toString()) }
-                forecastResult.onFailure { _networkError.emit(it.message.toString()) }
-
-            } catch (e: Exception) {
-                _networkError.emit(e.message.toString())
-            } finally {
-                _isNetworkLoading.value = false
             }
         }
-    }
 
-    data class WeatherResult(
-        val currentWeather: CurrentWeather,
-        val forecastWeather: ForecastWeather
-    )
-}
+        data class WeatherResult(
+            val currentWeather: CurrentWeather,
+            val forecastWeather: ForecastWeather,
+        )
+    }

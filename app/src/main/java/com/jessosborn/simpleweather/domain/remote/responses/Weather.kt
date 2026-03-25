@@ -40,7 +40,7 @@ data class WeatherSnapshot(
     val pop: Float,
     val rain: Rain? = null,
     val snow: Snow? = null, // Added optional snow field
-    var createdAt: Long = System.currentTimeMillis()
+    var createdAt: Long = System.currentTimeMillis(),
 )
 
 @Keep

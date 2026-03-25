@@ -62,11 +62,11 @@ fun ForecastLayout(
         ForecastHeader(text = stringResource(id = R.string.the_day_after))
         ForecastRow(weather = dayAftersWeather, onSnapshotSelected = onSnapshotSelected)
         if (forecastWeather.list.any { it.rain != null }) {
-            ForecastHeader(text = stringResource(R.string.rain_forecast),)
+            ForecastHeader(text = stringResource(R.string.rain_forecast))
             PrecipitationGraph(data = forecastWeather.list.map { it.rain?.`3h` ?: 0f })
         }
         if (forecastWeather.list.any { it.snow != null }) {
-            ForecastHeader(text = stringResource(R.string.snow_forecast),)
+            ForecastHeader(text = stringResource(R.string.snow_forecast))
             PrecipitationGraph(data = forecastWeather.list.map { it.snow?.`3h` ?: 0f })
         }
     }
@@ -159,265 +159,265 @@ fun ForecastPreview(
 }
 
 class ForecastPreviewParams : PreviewParameterProvider<ForecastWeather> {
-	private val currentTime = Calendar.getInstance().timeInMillis
-	private val timeValue =
-		ArrayList<Long>().apply {
-			add(currentTime)
-			for (index in 1..23) add(currentTime + (10800 * index))
-		}
+    private val currentTime = Calendar.getInstance().timeInMillis
+    private val timeValue =
+        ArrayList<Long>().apply {
+            add(currentTime)
+            for (index in 1..23) add(currentTime + (10800 * index))
+        }
 
-	override val values: Sequence<ForecastWeather> =
-		sequenceOf(
-			ForecastWeather(
-				listOf(
-					WeatherSnapshot(
-						dt = timeValue[0].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[0]),
-						main = Main(humidity = "10", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[1].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[1]),
-						main = Main(humidity = "12", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[2].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[2]),
-						main = Main(humidity = "14", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[3].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[3]),
-						main = Main(humidity = "16", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[4].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[4]),
-						main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[5].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[5]),
-						main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[6].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[6]),
-						main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-					)
-				)
-			),
-			ForecastWeather(
-				list = listOf(
-					WeatherSnapshot(
-						dt = timeValue[7].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[7]),
-						main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[8].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[8]),
-						main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[9].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[9]),
-						main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-						rain = Rain (380.0f)
-					),
-					WeatherSnapshot(
-						dt = timeValue[10].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[10]),
-						main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-						rain = Rain (267.0f)
-					),
-					WeatherSnapshot(
-						dt = timeValue[11].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[11]),
-						main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[12].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[12]),
-						main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[13].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[13]),
-						main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[14].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[14]),
-						main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[15].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[15]),
-						main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[16].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[16]),
-						main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[17].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[17]),
-						main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[18].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[18]),
-						main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[19].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[19]),
-						main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[20].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[20]),
-						main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[21].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[21]),
-						main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[22].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[22]),
-						main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(804, "Clouds", "overcast clouds", "04n"),
-							),
-						pop = 0.0f,
-					),
-					WeatherSnapshot(
-						dt = timeValue[23].toString(),
-						dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[23]),
-						main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
-						weather =
-							listOf(
-								WeatherData(800, "Clear", "clear sky", "01n"),
-							),
-						pop = 0.0f,
-					),
-				)
-			)
-
-		)
+    override val values: Sequence<ForecastWeather> =
+        sequenceOf(
+            ForecastWeather(
+                listOf(
+                    WeatherSnapshot(
+                        dt = timeValue[0].toString(),
+                        dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[0]),
+                        main = Main(humidity = "10", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                        weather =
+                            listOf(
+                                WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                            ),
+                        pop = 0.0f,
+                    ),
+                    WeatherSnapshot(
+                        dt = timeValue[1].toString(),
+                        dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[1]),
+                        main = Main(humidity = "12", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                        weather =
+                            listOf(
+                                WeatherData(800, "Clear", "clear sky", "01n"),
+                            ),
+                        pop = 0.0f,
+                    ),
+                    WeatherSnapshot(
+                        dt = timeValue[2].toString(),
+                        dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[2]),
+                        main = Main(humidity = "14", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                        weather =
+                            listOf(
+                                WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                            ),
+                        pop = 0.0f,
+                    ),
+                    WeatherSnapshot(
+                        dt = timeValue[3].toString(),
+                        dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[3]),
+                        main = Main(humidity = "16", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                        weather =
+                            listOf(
+                                WeatherData(800, "Clear", "clear sky", "01n"),
+                            ),
+                        pop = 0.0f,
+                    ),
+                    WeatherSnapshot(
+                        dt = timeValue[4].toString(),
+                        dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[4]),
+                        main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                        weather =
+                            listOf(
+                                WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                            ),
+                        pop = 0.0f,
+                    ),
+                    WeatherSnapshot(
+                        dt = timeValue[5].toString(),
+                        dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[5]),
+                        main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                        weather =
+                            listOf(
+                                WeatherData(800, "Clear", "clear sky", "01n"),
+                            ),
+                        pop = 0.0f,
+                    ),
+                    WeatherSnapshot(
+                        dt = timeValue[6].toString(),
+                        dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[6]),
+                        main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                        weather =
+                            listOf(
+                                WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                            ),
+                        pop = 0.0f,
+                    ),
+                ),
+            ),
+            ForecastWeather(
+                list =
+                    listOf(
+                        WeatherSnapshot(
+                            dt = timeValue[7].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[7]),
+                            main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(800, "Clear", "clear sky", "01n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[8].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[8]),
+                            main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[9].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[9]),
+                            main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(800, "Clear", "clear sky", "01n"),
+                                ),
+                            pop = 0.0f,
+                            rain = Rain(380.0f),
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[10].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[10]),
+                            main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                                ),
+                            pop = 0.0f,
+                            rain = Rain(267.0f),
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[11].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[11]),
+                            main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(800, "Clear", "clear sky", "01n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[12].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[12]),
+                            main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[13].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[13]),
+                            main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(800, "Clear", "clear sky", "01n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[14].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[14]),
+                            main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[15].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[15]),
+                            main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(800, "Clear", "clear sky", "01n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[16].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[16]),
+                            main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[17].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[17]),
+                            main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(800, "Clear", "clear sky", "01n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[18].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[18]),
+                            main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[19].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[19]),
+                            main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(800, "Clear", "clear sky", "01n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[20].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[20]),
+                            main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[21].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[21]),
+                            main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(800, "Clear", "clear sky", "01n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[22].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[22]),
+                            main = Main(humidity = "89", temp = 88.8f, temp_min = 80f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(804, "Clouds", "overcast clouds", "04n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                        WeatherSnapshot(
+                            dt = timeValue[23].toString(),
+                            dt_txt = SimpleDateFormat.getDateInstance().format(timeValue[23]),
+                            main = Main(humidity = "89", temp = 50.0f, temp_min = 40f, temp_max = 90f),
+                            weather =
+                                listOf(
+                                    WeatherData(800, "Clear", "clear sky", "01n"),
+                                ),
+                            pop = 0.0f,
+                        ),
+                    ),
+            ),
+        )
 }

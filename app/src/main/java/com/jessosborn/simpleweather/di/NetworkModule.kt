@@ -16,15 +16,14 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideClient(): OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-        .build()
+    fun provideClient(): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .build()
 
     @Provides
     @Singleton
-    fun provideOpenWeatherEndpoint(retrofit: Retrofit): OpenWeatherEndpoint =
-        retrofit.create(OpenWeatherEndpoint::class.java)
-
+    fun provideOpenWeatherEndpoint(retrofit: Retrofit): OpenWeatherEndpoint = retrofit.create(OpenWeatherEndpoint::class.java)
 
     @Provides
     @Singleton

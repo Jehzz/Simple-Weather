@@ -37,107 +37,119 @@ import kotlin.math.roundToInt
 
 @Composable
 fun PrecipitationGraph(
-	data: List<Float>,
-	modifier: Modifier = Modifier,
-	verticalSteps: Int = 4,
-	height: Dp = 100.dp,
-	horizontalStepSize: Dp = height / verticalSteps,
+    data: List<Float>,
+    modifier: Modifier = Modifier,
+    verticalSteps: Int = 4,
+    height: Dp = 100.dp,
+    horizontalStepSize: Dp = height / verticalSteps,
 ) {
-	Row(
-		modifier = modifier
-			.height(height)
-			.border(
-				width = 1.dp,
-				color = ExtendedTheme.colors.cold,
-				shape = RoundedCornerShape(10.dp),
-			)
-	) {
+    Row(
+        modifier =
+            modifier
+                .height(height)
+                .border(
+                    width = 1.dp,
+                    color = ExtendedTheme.colors.cold,
+                    shape = RoundedCornerShape(10.dp),
+                ),
+    ) {
+        val xAxis =
+            AxisData.Builder()
+                .steps(data.size - 1)
+                .axisOffset(0.dp)
+                .axisStepSize(horizontalStepSize)
+                .bottomPadding(0.dp)
+                .topPadding(0.dp)
+                .backgroundColor(Color.Transparent)
+                .build()
 
-		val xAxis = AxisData.Builder()
-			.steps(data.size - 1)
-			.axisOffset(0.dp)
-			.axisStepSize(horizontalStepSize)
-			.bottomPadding(0.dp)
-			.topPadding(0.dp)
-			.backgroundColor(Color.Transparent)
-			.build()
+        val yAxis =
+            AxisData.Builder()
+                .backgroundColor(Color.Transparent)
+                .steps(verticalSteps)
+                .startPadding(10.dp)
+                .axisOffset(20.dp)
+                .bottomPadding(0.dp)
+                .topPadding(0.dp)
+                .axisLabelDescription { "Rain" }
+                .axisLabelColor(MaterialTheme.colorScheme.onSurface)
+                .labelData { index ->
+                    val labelScale = (index.toFloat() / verticalSteps.toFloat())
+                    val max = data.maxOf { it }
+                    val data = (max * (labelScale)).toString()
+                    when {
+                        index == verticalSteps || index == 0 || verticalSteps.div(2) == index -> "$data mm"
+                        else -> ""
+                    }
+                }
+                .build()
 
-		val yAxis = AxisData.Builder()
-			.backgroundColor(Color.Transparent)
-			.steps(verticalSteps)
-			.startPadding(10.dp)
-			.axisOffset(20.dp)
-			.bottomPadding(0.dp)
-			.topPadding(0.dp)
-			.axisLabelDescription { "Rain" }
-			.axisLabelColor(MaterialTheme.colorScheme.onSurface)
-			.labelData { index ->
-				val labelScale = (index.toFloat() / verticalSteps.toFloat())
-				val max = data.maxOf { it }
-				val data = (max * (labelScale)).toString()
-				when {
-					index == verticalSteps || index == 0 || verticalSteps.div(2) == index -> "$data mm"
-					else -> ""
-				}
-			}
-			.build()
-
-		val lineChartData = LineChartData(
-			xAxisData = xAxis,
-			yAxisData = yAxis,
-			paddingTop = 10.dp,
-			bottomPadding = 0.dp,
-			backgroundColor = MaterialTheme.colorScheme.background,
-			gridLines = GridLines(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)),
-			linePlotData = LinePlotData(
-				plotType = PlotType.Line,
-				lines = listOf(
-					Line(
-						dataPoints = data.mapIndexed { index, data ->
-							Point(
-								x = index.toFloat(),
-								y = data,
-								description = "$data mm in $index hours"
-							)
-						},
-						lineStyle = LineStyle(
-							color = MaterialTheme.colorScheme.secondary,
-							width = 3f,
-							lineType = LineType.SmoothCurve()
-						),
-						intersectionPoint = IntersectionPoint(color = MaterialTheme.colorScheme.tertiary),
-						selectionHighlightPoint = SelectionHighlightPoint(color = MaterialTheme.colorScheme.primary),
-						selectionHighlightPopUp = SelectionHighlightPopUp(
-							backgroundColor = MaterialTheme.colorScheme.background,
-							labelColor = MaterialTheme.colorScheme.onSurface,
-							popUpLabel = { hour, data -> "$data mm in ${hour.roundToInt() + 1} hours" },
-							paddingBetweenPopUpAndPoint = 16.dp
-						),
-						shadowUnderLine = ShadowUnderLine(
-							alpha = 0.5f,
-							brush = Brush.verticalGradient(
-								colors = listOf(MaterialTheme.colorScheme.inversePrimary, Color.Transparent)
-							),
-						),
-					)
-				)
-			)
-		)
-		LineChart(
-			modifier = Modifier.fillMaxSize(),
-			lineChartData = lineChartData,
-		)
-	}
+        val lineChartData =
+            LineChartData(
+                xAxisData = xAxis,
+                yAxisData = yAxis,
+                paddingTop = 10.dp,
+                bottomPadding = 0.dp,
+                backgroundColor = MaterialTheme.colorScheme.background,
+                gridLines = GridLines(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)),
+                linePlotData =
+                    LinePlotData(
+                        plotType = PlotType.Line,
+                        lines =
+                            listOf(
+                                Line(
+                                    dataPoints =
+                                        data.mapIndexed { index, data ->
+                                            Point(
+                                                x = index.toFloat(),
+                                                y = data,
+                                                description = "$data mm in $index hours",
+                                            )
+                                        },
+                                    lineStyle =
+                                        LineStyle(
+                                            color = MaterialTheme.colorScheme.secondary,
+                                            width = 3f,
+                                            lineType = LineType.SmoothCurve(),
+                                        ),
+                                    intersectionPoint = IntersectionPoint(color = MaterialTheme.colorScheme.tertiary),
+                                    selectionHighlightPoint = SelectionHighlightPoint(color = MaterialTheme.colorScheme.primary),
+                                    selectionHighlightPopUp =
+                                        SelectionHighlightPopUp(
+                                            backgroundColor = MaterialTheme.colorScheme.background,
+                                            labelColor = MaterialTheme.colorScheme.onSurface,
+                                            popUpLabel = { hour, data -> "$data mm in ${hour.roundToInt() + 1} hours" },
+                                            paddingBetweenPopUpAndPoint = 16.dp,
+                                        ),
+                                    shadowUnderLine =
+                                        ShadowUnderLine(
+                                            alpha = 0.5f,
+                                            brush =
+                                                Brush.verticalGradient(
+                                                    colors = listOf(MaterialTheme.colorScheme.inversePrimary, Color.Transparent),
+                                                ),
+                                        ),
+                                ),
+                            ),
+                    ),
+            )
+        LineChart(
+            modifier = Modifier.fillMaxSize(),
+            lineChartData = lineChartData,
+        )
+    }
 }
 
 @DayNightPreviews
 @Composable
-fun PrecipitationLineGraphPreviewNoData(@PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather) {
-	SimpleWeatherTheme {
-		PrecipitationGraph(
-			data = forecast.list.map { it.rain?.`3h` ?: 0f },
-			modifier = Modifier.fillMaxWidth(),
-			height = 200.dp
-		)
-	}
+fun PrecipitationLineGraphPreviewNoData(
+    @PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
+) {
+    SimpleWeatherTheme {
+        PrecipitationGraph(
+            data = forecast.list.map { it.rain?.`3h` ?: 0f },
+            modifier = Modifier.fillMaxWidth(),
+            height = 200.dp,
+        )
+    }
 }

@@ -76,9 +76,10 @@ fun SettingsScreen(
         },
         content = { padding ->
             LazyColumn(
-                modifier = Modifier
-                    .padding(padding)
-                    .padding(horizontal = 12.dp),
+                modifier =
+                    Modifier
+                        .padding(padding)
+                        .padding(horizontal = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
@@ -114,12 +115,12 @@ fun SettingsScreen(
                         )
                     }
                 }
-                
+
                 item {
                     Text(
                         text = "Manage Cities",
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(vertical = 10.dp)
+                        modifier = Modifier.padding(vertical = 10.dp),
                     )
                 }
 
@@ -127,7 +128,7 @@ fun SettingsScreen(
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(text = zip, style = MaterialTheme.typography.bodyLarge)
                         IconButton(onClick = { onRemoveZip(zip) }) {
@@ -158,7 +159,7 @@ fun SettingsScreen(
                                     keyboardController?.hide()
                                 }
                             },
-                            enabled = newZipTextFieldValue.text.isValidZip()
+                            enabled = newZipTextFieldValue.text.isValidZip(),
                         ) {
                             Icon(Icons.Default.Add, contentDescription = "Add")
                         }

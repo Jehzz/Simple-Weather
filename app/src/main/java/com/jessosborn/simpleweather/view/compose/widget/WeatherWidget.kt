@@ -36,69 +36,71 @@ import java.util.Calendar
 import java.util.Locale
 import kotlin.math.roundToInt
 
-
 class WeatherWidget : GlanceAppWidget() {
-	override suspend fun provideGlance(context: Context, id: GlanceId) {
-		val weather: Flow<List<WeatherSnapshot>> = WidgetRepository.getRepository(context).getWeather()
-		provideContent {
-			weather.collectAsState(initial = null).value?.let {
-				GlanceTheme {
-					Content(it)
-				}
-			}
-		}
-	}
+    override suspend fun provideGlance(
+        context: Context,
+        id: GlanceId,
+    ) {
+        val weather: Flow<List<WeatherSnapshot>> = WidgetRepository.getRepository(context).getWeather()
+        provideContent {
+            weather.collectAsState(initial = null).value?.let {
+                GlanceTheme {
+                    Content(it)
+                }
+            }
+        }
+    }
 }
 
 @Composable
 private fun Content(weather: List<WeatherSnapshot>) {
-	Row(
-		modifier =
-			GlanceModifier
-				.fillMaxSize()
-				.background(GlanceTheme.colors.background)
-				.clickable(actionStartActivity<MainActivity>()),
-	) {
-		weather.take(10).forEach { weather -> GlanceWeatherItem(weather = weather) }
-	}
+    Row(
+        modifier =
+            GlanceModifier
+                .fillMaxSize()
+                .background(GlanceTheme.colors.background)
+                .clickable(actionStartActivity<MainActivity>()),
+    ) {
+        weather.take(10).forEach { weather -> GlanceWeatherItem(weather = weather) }
+    }
 }
 
 @Composable
 private fun GlanceWeatherItem(
-	modifier: GlanceModifier = GlanceModifier,
-	weather: WeatherSnapshot,
+    modifier: GlanceModifier = GlanceModifier,
+    weather: WeatherSnapshot,
 ) {
-	Column(
-		modifier =
-			modifier
-				.padding(vertical = 4.dp, horizontal = 4.dp)
-				.wrapContentWidth()
-				.fillMaxHeight(),
-		horizontalAlignment = Alignment.CenterHorizontally,
-		verticalAlignment = Alignment.CenterVertically,
-	) {
-		Text(
-			text = " ${weather.main.temp.roundToInt()} °",
-			style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = Typography().labelLarge.fontSize),
-			maxLines = 1,
-		)
+    Column(
+        modifier =
+            modifier
+                .padding(vertical = 4.dp, horizontal = 4.dp)
+                .wrapContentWidth()
+                .fillMaxHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = " ${weather.main.temp.roundToInt()} °",
+            style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = Typography().labelLarge.fontSize),
+            maxLines = 1,
+        )
 
-		Image(
-			modifier = GlanceModifier.defaultWeight().wrapContentWidth(),
-			provider = ImageProvider(resId = getIconResource(weather.weather.first().icon)),
-			contentDescription = "weather",
-		)
+        Image(
+            modifier = GlanceModifier.defaultWeight().wrapContentWidth(),
+            provider = ImageProvider(resId = getIconResource(weather.weather.first().icon)),
+            contentDescription = "weather",
+        )
 
-		Text(
-			text =
-				DateFormat.format(
-					(DateFormat.getTimeFormat(LocalContext.current) as SimpleDateFormat).toLocalizedPattern(),
-					Calendar.getInstance(Locale.ENGLISH).apply {
-						timeInMillis = weather.dt.toLong() * 1000L
-					},
-				).toString(),
-			style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = Typography().labelSmall.fontSize),
-			maxLines = 1,
-		)
-	}
+        Text(
+            text =
+                DateFormat.format(
+                    (DateFormat.getTimeFormat(LocalContext.current) as SimpleDateFormat).toLocalizedPattern(),
+                    Calendar.getInstance(Locale.ENGLISH).apply {
+                        timeInMillis = weather.dt.toLong() * 1000L
+                    },
+                ).toString(),
+            style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = Typography().labelSmall.fontSize),
+            maxLines = 1,
+        )
+    }
 }

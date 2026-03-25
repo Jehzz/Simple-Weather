@@ -106,19 +106,20 @@ fun MainScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { padding ->
             Box(
-                modifier = Modifier
-                    .padding(bottom = padding.calculateBottomPadding())
-                    .pullRefresh(pullRefreshState)
+                modifier =
+                    Modifier
+                        .padding(bottom = padding.calculateBottomPadding())
+                        .pullRefresh(pullRefreshState),
             ) {
                 if (zipCodes.isEmpty()) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Center,
                     ) {
                         Text(
                             text = "No cities added yet",
-                            style = MaterialTheme.typography.headlineSmall
+                            style = MaterialTheme.typography.headlineSmall,
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = onSettingsClicked) {
@@ -137,10 +138,11 @@ fun MainScreen(
                             val data = weatherData[zip]
 
                             Box(
-								modifier = Modifier
-									.fillMaxSize()
-									.verticalScroll(rememberScrollState())
-							) {
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .verticalScroll(rememberScrollState()),
+                            ) {
                                 Column {
                                     CurrentWeatherInfo(
                                         data = data?.currentWeather,
@@ -163,7 +165,7 @@ fun MainScreen(
                         }
 
                         if (zipCodes.size > 1) {
-							PageIndicator(zipCodes, pagerState)
+                            PageIndicator(zipCodes, pagerState)
                         }
                     }
                 }
@@ -193,32 +195,35 @@ fun MainScreen(
 
 @Composable
 private fun PageIndicator(
-	zipCodes: List<String>,
-	pagerState: PagerState
+    zipCodes: List<String>,
+    pagerState: PagerState,
 ) {
-	Row(
-		modifier = Modifier
-			.height(36.dp)
-			.fillMaxWidth(),
-		horizontalArrangement = Arrangement.Center,
-		verticalAlignment = Alignment.CenterVertically
-	) {
-		repeat(zipCodes.size) { iteration ->
-			Box(
-				modifier = Modifier
-					.padding(4.dp)
-					.clip(CircleShape)
-					.background(
-						color = if (pagerState.currentPage == iteration) {
-							MaterialTheme.colorScheme.primary
-						} else {
-							MaterialTheme.colorScheme.outlineVariant
-						}
-					)
-					.size(8.dp)
-			)
-		}
-	}
+    Row(
+        modifier =
+            Modifier
+                .height(36.dp)
+                .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        repeat(zipCodes.size) { iteration ->
+            Box(
+                modifier =
+                    Modifier
+                        .padding(4.dp)
+                        .clip(CircleShape)
+                        .background(
+                            color =
+                                if (pagerState.currentPage == iteration) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.outlineVariant
+                                },
+                        )
+                        .size(8.dp),
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -228,29 +233,33 @@ private fun Preview(
     @PreviewParameter(ForecastPreviewParams::class) forecast: ForecastWeather,
 ) {
     val zip = "90210"
-    val currentWeather = CurrentWeather(
-        name = "Hollywood",
-        main = Main(
-            temp = 73.38f,
-            temp_min = 67.01f,
-            temp_max = 76.87f,
-            humidity = "78",
-        ),
-        sys = Sys(
-            country = "US",
-            sunrise = "1674998066",
-            sunset = "1675036678",
-        ),
-        weather = listOf(
-            WeatherData(
-                id = 804,
-                main = "Clouds",
-                description = "overcast clouds",
-                icon = "04d",
-            ),
-        ),
-        wind = Wind(speed = "14.97", deg = "200"),
-    )
+    val currentWeather =
+        CurrentWeather(
+            name = "Hollywood",
+            main =
+                Main(
+                    temp = 73.38f,
+                    temp_min = 67.01f,
+                    temp_max = 76.87f,
+                    humidity = "78",
+                ),
+            sys =
+                Sys(
+                    country = "US",
+                    sunrise = "1674998066",
+                    sunset = "1675036678",
+                ),
+            weather =
+                listOf(
+                    WeatherData(
+                        id = 804,
+                        main = "Clouds",
+                        description = "overcast clouds",
+                        icon = "04d",
+                    ),
+                ),
+            wind = Wind(speed = "14.97", deg = "200"),
+        )
 
     SimpleWeatherTheme {
         MainScreen(

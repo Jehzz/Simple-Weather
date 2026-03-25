@@ -5,7 +5,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ResourceUtilsTest {
-
     @Test
     fun `getIconResource returns correct drawable for valid codes`() {
         assertEquals(R.drawable.icon_01d_t, getIconResource("01d"))

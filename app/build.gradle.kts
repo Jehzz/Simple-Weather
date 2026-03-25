@@ -82,24 +82,28 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         html.required.set(true)
     }
 
-    val fileFilter = listOf(
-        "**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*",
-        "**/*Test*.*", "android/**/*.*", "**/*_Impl*.*", "**/*_ViewBinding*.*",
-        "**/*MembersInjector*.*", "**/*_Factory*.*", "**/*_Provide*Factory*.*",
-        "**/*_HiltModules*.*", "**/*Hilt_*.class", "**/Hilt_*.class",
-        "**/view/**"
-    )
+    val fileFilter =
+        listOf(
+            "**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*",
+            "**/*Test*.*", "android/**/*.*", "**/*_Impl*.*", "**/*_ViewBinding*.*",
+            "**/*MembersInjector*.*", "**/*_Factory*.*", "**/*_Provide*Factory*.*",
+            "**/*_HiltModules*.*", "**/*Hilt_*.class", "**/Hilt_*.class",
+            "**/view/**",
+        )
 
-    val debugTree = fileTree("${project.layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
-        exclude(fileFilter)
-    }
+    val debugTree =
+        fileTree("${project.layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+            exclude(fileFilter)
+        }
     val mainSrc = "${project.projectDir}/src/main/java"
 
     sourceDirectories.setFrom(files(mainSrc))
     classDirectories.setFrom(files(debugTree))
-    executionData.setFrom(fileTree(project.layout.buildDirectory.get()) {
-        include("jacoco/testDebugUnitTest.exec", "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
-    })
+    executionData.setFrom(
+        fileTree(project.layout.buildDirectory.get()) {
+            include("jacoco/testDebugUnitTest.exec", "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+        },
+    )
 
     doLast {
         val reportFile = reports.html.outputLocation.asFile.get().resolve("index.html")
@@ -128,7 +132,7 @@ dependencies {
     implementation(libs.compose.material.icons.extended)
     implementation(libs.compose.material3.android)
     implementation(libs.hilt.navigation.compose)
-	implementation(libs.ui.tooling)
+    implementation(libs.ui.tooling)
 
     // DataStore
     implementation(libs.androidx.datastore.preferences)

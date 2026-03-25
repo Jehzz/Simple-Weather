@@ -15,7 +15,10 @@ interface WeatherSnapshotDao {
      * This now returns a Flow of a list specific to the location.
      */
     @Query("SELECT * FROM weather_snapshot WHERE zip = :zip AND units = :units ORDER BY dt ASC")
-    fun getForecast(zip: String, units: String): Flow<List<WeatherSnapshot>>
+    fun getForecast(
+        zip: String,
+        units: String,
+    ): Flow<List<WeatherSnapshot>>
 
     /**
      * Inserts a list of snapshots.
@@ -31,10 +34,17 @@ interface WeatherSnapshotDao {
      * This is crucial for replacing old data with fresh data for ONE location.
      */
     @Query("DELETE FROM weather_snapshot WHERE zip = :zip AND units = :units")
-    fun deleteForecast(zip: String, units: String)
+    fun deleteForecast(
+        zip: String,
+        units: String,
+    )
 
     @Transaction
-    suspend fun replaceForecast(zip: String, units: String, weatherData: List<WeatherSnapshot>) {
+    suspend fun replaceForecast(
+        zip: String,
+        units: String,
+        weatherData: List<WeatherSnapshot>,
+    ) {
         deleteForecast(zip, units)
         insertForecast(weatherData)
     }

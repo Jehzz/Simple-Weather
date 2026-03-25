@@ -38,7 +38,7 @@ fun WeatherDetailDialog(
                 Row(
                     modifier = Modifier.padding(8.dp).fillMaxWidth(1f),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceAround
+                    horizontalArrangement = Arrangement.SpaceAround,
                 ) {
                     Column(
                         modifier = Modifier.padding(horizontal = 12.dp),
@@ -47,11 +47,11 @@ fun WeatherDetailDialog(
                         Image(
                             painter = painterResource(id = getIconResource(weatherSnapshot.weather.first().icon)),
                             contentDescription = weatherSnapshot.weather.first().main,
-                            modifier = Modifier.size(86.dp)
+                            modifier = Modifier.size(86.dp),
                         )
                         Text(
                             text = weatherSnapshot.weather.first().description,
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelSmall,
                         )
                     }
                     Column(
@@ -59,26 +59,26 @@ fun WeatherDetailDialog(
                     ) {
                         Text(
                             text = "Temp : ${weatherSnapshot.main.temp.roundToInt()}°",
-                            style = MaterialTheme.typography.labelMedium
+                            style = MaterialTheme.typography.labelMedium,
                         )
                         Text(
                             text = "Humidity : ${weatherSnapshot.main.humidity}",
-                            style = MaterialTheme.typography.labelMedium
+                            style = MaterialTheme.typography.labelMedium,
                         )
                         Text(
                             text = "Precipitation : ${(weatherSnapshot.pop * 100).toInt()}%",
-                            style = MaterialTheme.typography.labelMedium
+                            style = MaterialTheme.typography.labelMedium,
                         )
                         weatherSnapshot.snow?.let {
                             Text(
                                 text = "Snow : ${it.`3h`}mm",
-                                style = MaterialTheme.typography.labelMedium
+                                style = MaterialTheme.typography.labelMedium,
                             )
                         }
                         weatherSnapshot.rain?.let {
                             Text(
                                 text = "Rain : ${it.`3h`}mm",
-                                style = MaterialTheme.typography.labelMedium
+                                style = MaterialTheme.typography.labelMedium,
                             )
                         }
                     }

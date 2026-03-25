@@ -37,7 +37,6 @@ import org.junit.Test
 import retrofit2.Response
 
 class WeatherRepositoryTest {
-
     private lateinit var repository: WeatherRepository
     private val context: Context = mockk(relaxed = true)
     private val service: OpenWeatherEndpoint = mockk()
@@ -49,12 +48,12 @@ class WeatherRepositoryTest {
     fun setup() {
         mockkStatic(Log::class)
         every { Log.d(any(), any()) } returns 0
-        
+
         mockkObject(DataStoreUtil)
-        
+
         every { context.resources } returns resources
         every { resources.getString(R.string.api_key) } returns "fake_api_key"
-        
+
         // Mocking WeatherWidget constructor and update method
         mockkConstructor(WeatherWidget::class)
         coEvery { anyConstructed<WeatherWidget>().update(any(), any()) } just Runs
@@ -68,114 +67,125 @@ class WeatherRepositoryTest {
     }
 
     @Test
-    fun `fetchCurrentData returns success when service response is successful`() = runTest {
-        val currentWeather = createFakeCurrentWeather()
-        coEvery {
-            service.getCurrentWeather(any(), any(), any())
-        } returns Response.success(currentWeather)
+    fun `fetchCurrentData returns success when service response is successful`() =
+        runTest {
+            val currentWeather = createFakeCurrentWeather()
+            coEvery {
+                service.getCurrentWeather(any(), any(), any())
+            } returns Response.success(currentWeather)
 
-        val result = repository.fetchCurrentData("12345", "US", "metric")
+            val result = repository.fetchCurrentData("12345", "US", "metric")
 
-        assertTrue(result.isSuccess)
-        assertEquals(currentWeather, result.getOrNull())
-    }
-
-    @Test
-    fun `fetchCurrentData returns failure when service response is unsuccessful`() = runTest {
-        coEvery {
-            service.getCurrentWeather(any(), any(), any())
-        } returns Response.error(404, "Not Found".toResponseBody())
-
-        val result = repository.fetchCurrentData("12345", "US", "metric")
-
-        assertTrue(result.isFailure)
-    }
+            assertTrue(result.isSuccess)
+            assertEquals(currentWeather, result.getOrNull())
+        }
 
     @Test
-    fun `fetchForecastData returns cached data when cache is valid`() = runTest {
-        val zip = "12345"
-        val units = "metric"
-        val snapshots = listOf(createFakeWeatherSnapshot(zip, units, System.currentTimeMillis()))
-        
-        coEvery { dao.getForecast(zip, units) } returns flowOf(snapshots)
-        every { DataStoreUtil.getRefreshTime(context) } returns flowOf(2) // 2 hours
-        coEvery { glanceManager.getGlanceIds(WeatherWidget::class.java) } returns emptyList()
+    fun `fetchCurrentData returns failure when service response is unsuccessful`() =
+        runTest {
+            coEvery {
+                service.getCurrentWeather(any(), any(), any())
+            } returns Response.error(404, "Not Found".toResponseBody())
 
-        val result = repository.fetchForecastData(zip, "US", units, forceRefresh = false)
+            val result = repository.fetchCurrentData("12345", "US", "metric")
 
-        assertTrue(result.isSuccess)
-        assertEquals(snapshots, result.getOrNull()?.list)
-        coVerify(exactly = 0) { service.getForecastWeather(any(), any(), any()) }
-    }
+            assertTrue(result.isFailure)
+        }
 
     @Test
-    fun `fetchForecastData fetches from network when cache is expired`() = runTest {
-        val zip = "12345"
-        val units = "metric"
-        // 5 hours ago (expired if refresh time is 2 hours)
-        val expiredTime = System.currentTimeMillis() - (5 * 60 * 60 * 1000)
-        val snapshots = listOf(createFakeWeatherSnapshot(zip, units, expiredTime))
-        
-        coEvery { dao.getForecast(zip, units) } returns flowOf(snapshots)
-        every { DataStoreUtil.getRefreshTime(context) } returns flowOf(2)
-        
-        val networkForecast = ForecastWeather(listOf(createFakeWeatherSnapshot(zip, units, System.currentTimeMillis())))
-        coEvery { service.getForecastWeather(any(), any(), any()) } returns Response.success(networkForecast)
-        coEvery { dao.replaceForecast(any(), any(), any()) } just Runs
-        coEvery { glanceManager.getGlanceIds(WeatherWidget::class.java) } returns emptyList()
+    fun `fetchForecastData returns cached data when cache is valid`() =
+        runTest {
+            val zip = "12345"
+            val units = "metric"
+            val snapshots = listOf(createFakeWeatherSnapshot(zip, units, System.currentTimeMillis()))
 
-        val result = repository.fetchForecastData(zip, "US", units, forceRefresh = false)
+            coEvery { dao.getForecast(zip, units) } returns flowOf(snapshots)
+            every { DataStoreUtil.getRefreshTime(context) } returns flowOf(2) // 2 hours
+            coEvery { glanceManager.getGlanceIds(WeatherWidget::class.java) } returns emptyList()
 
-        assertTrue(result.isSuccess)
-        // We no longer call deleteForecast directly in getCachedForecastData
-        coVerify(exactly = 0) { dao.deleteForecast(zip, units) }
-        coVerify { service.getForecastWeather("$zip,US", "fake_api_key", units) }
-        coVerify { dao.replaceForecast(zip, units, any()) }
-    }
+            val result = repository.fetchForecastData(zip, "US", units, forceRefresh = false)
+
+            assertTrue(result.isSuccess)
+            assertEquals(snapshots, result.getOrNull()?.list)
+            coVerify(exactly = 0) { service.getForecastWeather(any(), any(), any()) }
+        }
 
     @Test
-    fun `fetchForecastData fetches from network when forceRefresh is true even if cache is valid`() = runTest {
-        val zip = "12345"
-        val units = "metric"
-        val snapshots = listOf(createFakeWeatherSnapshot(zip, units, System.currentTimeMillis()))
-        
-        coEvery { dao.getForecast(zip, units) } returns flowOf(snapshots)
-        every { DataStoreUtil.getRefreshTime(context) } returns flowOf(2)
-        
-        val networkForecast = ForecastWeather(listOf(createFakeWeatherSnapshot(zip, units, System.currentTimeMillis())))
-        coEvery { service.getForecastWeather(any(), any(), any()) } returns Response.success(networkForecast)
-        coEvery { dao.replaceForecast(any(), any(), any()) } just Runs
-        coEvery { glanceManager.getGlanceIds(WeatherWidget::class.java) } returns emptyList()
+    fun `fetchForecastData fetches from network when cache is expired`() =
+        runTest {
+            val zip = "12345"
+            val units = "metric"
+            // 5 hours ago (expired if refresh time is 2 hours)
+            val expiredTime = System.currentTimeMillis() - (5 * 60 * 60 * 1000)
+            val snapshots = listOf(createFakeWeatherSnapshot(zip, units, expiredTime))
 
-        val result = repository.fetchForecastData(zip, "US", units, forceRefresh = true)
+            coEvery { dao.getForecast(zip, units) } returns flowOf(snapshots)
+            every { DataStoreUtil.getRefreshTime(context) } returns flowOf(2)
 
-        assertTrue(result.isSuccess)
-        coVerify { service.getForecastWeather("$zip,US", "fake_api_key", units) }
-        coVerify { dao.replaceForecast(zip, units, any()) }
-    }
+            val networkForecast = ForecastWeather(listOf(createFakeWeatherSnapshot(zip, units, System.currentTimeMillis())))
+            coEvery { service.getForecastWeather(any(), any(), any()) } returns Response.success(networkForecast)
+            coEvery { dao.replaceForecast(any(), any(), any()) } just Runs
+            coEvery { glanceManager.getGlanceIds(WeatherWidget::class.java) } returns emptyList()
+
+            val result = repository.fetchForecastData(zip, "US", units, forceRefresh = false)
+
+            assertTrue(result.isSuccess)
+            // We no longer call deleteForecast directly in getCachedForecastData
+            coVerify(exactly = 0) { dao.deleteForecast(zip, units) }
+            coVerify { service.getForecastWeather("$zip,US", "fake_api_key", units) }
+            coVerify { dao.replaceForecast(zip, units, any()) }
+        }
 
     @Test
-    fun `fetchForecastData returns failure when network call fails and no cache`() = runTest {
-        val zip = "12345"
-        val units = "metric"
-        
-        coEvery { dao.getForecast(zip, units) } returns flowOf(emptyList())
-        coEvery { service.getForecastWeather(any(), any(), any()) } returns Response.error(500, "Server Error".toResponseBody())
+    fun `fetchForecastData fetches from network when forceRefresh is true even if cache is valid`() =
+        runTest {
+            val zip = "12345"
+            val units = "metric"
+            val snapshots = listOf(createFakeWeatherSnapshot(zip, units, System.currentTimeMillis()))
 
-        val result = repository.fetchForecastData(zip, "US", units, forceRefresh = false)
+            coEvery { dao.getForecast(zip, units) } returns flowOf(snapshots)
+            every { DataStoreUtil.getRefreshTime(context) } returns flowOf(2)
 
-        assertTrue(result.isFailure)
-    }
+            val networkForecast = ForecastWeather(listOf(createFakeWeatherSnapshot(zip, units, System.currentTimeMillis())))
+            coEvery { service.getForecastWeather(any(), any(), any()) } returns Response.success(networkForecast)
+            coEvery { dao.replaceForecast(any(), any(), any()) } just Runs
+            coEvery { glanceManager.getGlanceIds(WeatherWidget::class.java) } returns emptyList()
 
-    private fun createFakeCurrentWeather() = CurrentWeather(
-        name = "Test City",
-        main = Main(temp = 20f, temp_min = 15f, temp_max = 25f, humidity = "50"),
-        sys = Sys(country = "US", sunrise = "1000", sunset = "2000"),
-        weather = listOf(WeatherData(1, "Cloudy", "scattered clouds", "03d")),
-        wind = Wind(speed = "5", deg = "180")
-    )
+            val result = repository.fetchForecastData(zip, "US", units, forceRefresh = true)
 
-    private fun createFakeWeatherSnapshot(zip: String, units: String, createdAt: Long) = WeatherSnapshot(
+            assertTrue(result.isSuccess)
+            coVerify { service.getForecastWeather("$zip,US", "fake_api_key", units) }
+            coVerify { dao.replaceForecast(zip, units, any()) }
+        }
+
+    @Test
+    fun `fetchForecastData returns failure when network call fails and no cache`() =
+        runTest {
+            val zip = "12345"
+            val units = "metric"
+
+            coEvery { dao.getForecast(zip, units) } returns flowOf(emptyList())
+            coEvery { service.getForecastWeather(any(), any(), any()) } returns Response.error(500, "Server Error".toResponseBody())
+
+            val result = repository.fetchForecastData(zip, "US", units, forceRefresh = false)
+
+            assertTrue(result.isFailure)
+        }
+
+    private fun createFakeCurrentWeather() =
+        CurrentWeather(
+            name = "Test City",
+            main = Main(temp = 20f, temp_min = 15f, temp_max = 25f, humidity = "50"),
+            sys = Sys(country = "US", sunrise = "1000", sunset = "2000"),
+            weather = listOf(WeatherData(1, "Cloudy", "scattered clouds", "03d")),
+            wind = Wind(speed = "5", deg = "180"),
+        )
+
+    private fun createFakeWeatherSnapshot(
+        zip: String,
+        units: String,
+        createdAt: Long,
+    ) = WeatherSnapshot(
         zip = zip,
         units = units,
         dt = "123456789",
@@ -183,6 +193,6 @@ class WeatherRepositoryTest {
         main = Main(temp = 20f, temp_min = 15f, temp_max = 25f, humidity = "50"),
         weather = listOf(WeatherData(1, "Cloudy", "scattered clouds", "03d")),
         pop = 0.1f,
-        createdAt = createdAt
+        createdAt = createdAt,
     )
 }

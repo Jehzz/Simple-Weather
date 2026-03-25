@@ -10,12 +10,15 @@ interface IWeatherRepository {
         units: String,
     ): Result<CurrentWeather>
 
-    suspend fun getCachedForecastData(zip: String, units: String): Result<ForecastWeather>
+    suspend fun getCachedForecastData(
+        zip: String,
+        units: String,
+    ): Result<ForecastWeather>
 
     suspend fun fetchForecastData(
         zip: String,
         country: String,
         units: String,
-        forceRefresh: Boolean = false
+        forceRefresh: Boolean = false,
     ): Result<ForecastWeather>
 }

@@ -84,14 +84,20 @@ object DataStoreUtil {
         }
     }
 
-    suspend fun addZip(context: Context, zip: String) {
+    suspend fun addZip(
+        context: Context,
+        zip: String,
+    ) {
         context.datastore.edit { prefs ->
             val current = prefs[stringSetPreferencesKey(USER_ZIPS)] ?: emptySet()
             prefs[stringSetPreferencesKey(USER_ZIPS)] = current + zip
         }
     }
 
-    suspend fun removeZip(context: Context, zip: String) {
+    suspend fun removeZip(
+        context: Context,
+        zip: String,
+    ) {
         context.datastore.edit { prefs ->
             val current = prefs[stringSetPreferencesKey(USER_ZIPS)] ?: emptySet()
             prefs[stringSetPreferencesKey(USER_ZIPS)] = current - zip
@@ -100,6 +106,6 @@ object DataStoreUtil {
 
     suspend fun saveRefreshTime(
         context: Context,
-        value: Int
+        value: Int,
     ) = saveString(context, USER_REFRESH_TIME, value.toString())
 }
