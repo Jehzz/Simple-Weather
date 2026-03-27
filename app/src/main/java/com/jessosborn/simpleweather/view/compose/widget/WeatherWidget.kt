@@ -5,6 +5,7 @@ import android.text.format.DateFormat
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
@@ -54,11 +55,14 @@ class WeatherWidget : GlanceAppWidget() {
 
 @Composable
 private fun Content(weather: List<WeatherSnapshot>) {
+	val isNight = (LocalContext.current.resources.configuration.uiMode and
+			android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+			android.content.res.Configuration.UI_MODE_NIGHT_YES
     Row(
         modifier =
             GlanceModifier
                 .fillMaxSize()
-                .background(GlanceTheme.colors.background)
+                .background(color = if (isNight) Color.Black else GlanceTheme.colors.surface.getColor(LocalContext.current))
                 .clickable(actionStartActivity<MainActivity>()),
     ) {
         weather.take(10).forEach { weather -> GlanceWeatherItem(weather = weather) }

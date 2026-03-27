@@ -119,7 +119,7 @@ private fun ClockWidgetContent() {
     ) {
         Image(
             provider = ImageProvider(bitmap),
-            contentDescription = "Stencil Clock Widget",
+            contentDescription = "Simple Clock Widget",
             modifier = GlanceModifier.fillMaxSize(),
             contentScale = ContentScale.Fit
         )
@@ -175,7 +175,7 @@ private fun createStencilBitmap(
     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
 
-    val mainColor = if (isNight) Color.parseColor("#1C1C1C") else Color.WHITE
+    val mainColor = if (isNight) Color.BLACK else Color.WHITE
     val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
