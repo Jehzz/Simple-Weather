@@ -25,7 +25,8 @@
         </activity>
         <receiver
             android:name=".view.compose.widget.SimpleWeatherGlanceWidgetReceiver"
-            android:exported="false">
+            android:exported="false"
+            android:label="Simple Weather Widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -33,6 +34,19 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/simple_weather_glance_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".view.compose.widget.ClockWidgetReceiver"
+            android:exported="false"
+            android:label="Simple Clock Widget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/clock_widget_info" />
         </receiver>
 
         <provider
