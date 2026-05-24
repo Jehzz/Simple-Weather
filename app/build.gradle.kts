@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 plugins {
@@ -60,9 +61,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
 
-    kotlinOptions {
-        jvmTarget = "17"
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
@@ -110,9 +113,9 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         if (reportFile.exists()) {
             val os = System.getProperty("os.name").lowercase()
             when {
-                os.contains("win") -> exec { commandLine("cmd", "/c", "start", reportFile.absolutePath) }
-                os.contains("mac") -> exec { commandLine("open", reportFile.absolutePath) }
-                os.contains("linux") -> exec { commandLine("xdg-open", reportFile.absolutePath) }
+                os.contains("win") -> ProcessBuilder("cmd", "/c", "start", reportFile.absolutePath).start()
+                os.contains("mac") -> ProcessBuilder("open", reportFile.absolutePath).start()
+                os.contains("linux") -> ProcessBuilder("xdg-open", reportFile.absolutePath).start()
             }
         }
     }
