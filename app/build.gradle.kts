@@ -95,15 +95,15 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         )
 
     val debugTree =
-        fileTree("${project.layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+        fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
             exclude(fileFilter)
         }
-    val mainSrc = "${project.projectDir}/src/main/java"
+    val mainSrc = layout.projectDirectory.dir("src/main/java")
 
     sourceDirectories.setFrom(files(mainSrc))
     classDirectories.setFrom(files(debugTree))
     executionData.setFrom(
-        fileTree(project.layout.buildDirectory.get()) {
+        fileTree(layout.buildDirectory) {
             include("jacoco/testDebugUnitTest.exec", "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
         },
     )
@@ -135,7 +135,8 @@ dependencies {
     implementation(libs.compose.material.icons.extended)
     implementation(libs.compose.material3.android)
     implementation(libs.hilt.navigation.compose)
-    implementation(libs.ui.tooling)
+    debugImplementation(libs.ui.tooling)
+    implementation(libs.ui.tooling.preview)
 
     // DataStore
     implementation(libs.androidx.datastore.preferences)

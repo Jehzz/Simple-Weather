@@ -10,6 +10,6 @@ plugins {
     alias(libs.plugins.gradle.ktlint) apply false
 }
 
-task<Delete>("clean") {
-    delete = setOf(getLayout().buildDirectory)
+tasks.register<Delete>("clean") {
+    delete(rootProject.layout.buildDirectory)
 }
