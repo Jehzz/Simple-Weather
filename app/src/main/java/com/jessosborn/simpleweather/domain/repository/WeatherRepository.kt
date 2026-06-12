@@ -3,7 +3,7 @@ package com.jessosborn.simpleweather.domain.repository
 import android.content.Context
 import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
-import com.jessosborn.simpleweather.R
+import com.jessosborn.simpleweather.BuildConfig
 import com.jessosborn.simpleweather.domain.db.dao.WeatherSnapshotDao
 import com.jessosborn.simpleweather.domain.remote.OpenWeatherEndpoint
 import com.jessosborn.simpleweather.domain.remote.responses.CurrentWeather
@@ -25,7 +25,7 @@ class WeatherRepository(
     private val weatherSnapshotDao: WeatherSnapshotDao,
     private val glanceManager: GlanceAppWidgetManager,
 ) : IWeatherRepository {
-    private val key = context.resources.getString(R.string.api_key)
+    private val key = BuildConfig.API_KEY
 
     override suspend fun fetchForecastData(
         zip: String,
