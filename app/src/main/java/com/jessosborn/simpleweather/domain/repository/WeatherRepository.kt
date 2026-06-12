@@ -43,7 +43,9 @@ class WeatherRepository(
         }
 
         // --- If cache is missing, expired, forced, or for a different location, fetch from network ---
-        val networkResponse = service.getForecastWeather(location = "$zip,$country", apiKey = key, units = units)
+        val networkResponse = withContext(Dispatchers.IO) {
+            service.getForecastWeather(location = "$zip,$country", apiKey = key, units = units)
+        }
 
         return try {
             if (networkResponse.isSuccessful) {
@@ -68,9 +70,11 @@ class WeatherRepository(
     }
 
     private suspend fun updateWidgetState() {
-        glanceManager.getGlanceIds(WeatherWidget::class.java).forEach { id ->
-            Log.d("WeatherRepository", "Updating widget with ID: $id")
-            WeatherWidget().update(context, id)
+        withContext(Dispatchers.IO) {
+            glanceManager.getGlanceIds(WeatherWidget::class.java).forEach { id ->
+                Log.d("WeatherRepository", "Updating widget with ID: $id")
+                WeatherWidget().update(context, id)
+            }
         }
     }
 
@@ -100,7 +104,9 @@ class WeatherRepository(
         country: String,
         units: String,
     ): Result<CurrentWeather> {
-        val response = service.getCurrentWeather(location = "$zip,$country", apiKey = key, units = units)
+        val response = withContext(Dispatchers.IO) {
+            service.getCurrentWeather(location = "$zip,$country", apiKey = key, units = units)
+        }
         return try {
             if (response.isSuccessful) {
                 response.body()?.let {
